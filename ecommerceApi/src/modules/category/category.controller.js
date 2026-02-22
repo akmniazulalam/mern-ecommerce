@@ -54,6 +54,13 @@ const singleCategoryController = asyncHandler(async (req, res) => {
 const deleteCategoryController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const deleteCategory = await categorySchema.findByIdAndDelete(id);
+
+  if (!deleteCategory) {
+    return res.status(404).json({
+      message: "Category not found",
+    });
+  }
+
   res.status(200).json({
     message: "Success",
     data: deleteCategory,
