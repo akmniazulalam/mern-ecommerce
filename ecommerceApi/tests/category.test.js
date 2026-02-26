@@ -68,6 +68,15 @@ describe("GET /api/v1/category/getallcategory", () => {
       ]),
     );
   });
+
+  it("should return an empty array when no categories exist", async () => {
+    await Category.deleteMany({});
+
+    const response = await request(app).get("/api/v1/category/getallcategory");
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toEqual([]);
+  });
 });
 
 // Database integration test for creating a category
