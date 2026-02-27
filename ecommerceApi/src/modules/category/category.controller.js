@@ -45,6 +45,12 @@ const singleCategoryController = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const singleCategory = await categorySchema.findById(id);
 
+  if (!singleCategory) {
+    return res.status(404).json({
+      message: "Category not found",
+    });
+  }
+
   res.status(200).send({
     message: "Success",
     data: singleCategory,
