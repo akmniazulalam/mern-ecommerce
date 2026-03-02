@@ -3,7 +3,7 @@ const express = require("express");
 const path = require('path');
 const cors = require('cors');
 const session = require("express-session")
-const dbConnection = require("./database/dbconnection");
+const dbConnection = require("./database/dbConnection");
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(express.json())
