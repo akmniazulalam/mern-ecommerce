@@ -14,7 +14,7 @@ const Category = () => {
     description: categoryDescription
   }
   const handleCreateCategory = () => {
-    axios.post("http://localhost:3000/api/v1/category/createcategory", formData)
+    axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/category/createcategory", formData)
     toast.success('Successfully added!');
     setCategoryName("")
     setCategoryDescription("")
