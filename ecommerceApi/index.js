@@ -28,5 +28,5 @@ app.use(route)
 dbConnection()
 
 app.listen(port, () => {
-  console.log("Server Running on port 3000");
+  console.log(`Server Running on port ${port}`);
 });

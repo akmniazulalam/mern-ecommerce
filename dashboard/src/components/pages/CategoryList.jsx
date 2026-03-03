@@ -23,7 +23,7 @@ const CategoryList = () => {
   useEffect(() => {
     async function final() {
       const data = await axios.get(
-        "http://localhost:3000/api/v1/category/getallcategory",
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
       );
       setFinalData(data.data.data);
     }
