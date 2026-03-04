@@ -10,8 +10,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { Link, useParams } from "react-router-dom";
 
 const CategoryList = () => {
+  
   const categories = [
     { id: 1, name: "Electronics", description: "Phones, Laptops, etc." },
     { id: 2, name: "Fashion", description: "Clothes, Shoes, Bags" },
@@ -38,26 +40,30 @@ const CategoryList = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
+              <TableHead>Serial</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {finalData.map((item) => (
+            {finalData.map((item, index) => (
               <TableRow key={item.name}>
-                <TableCell>{item._id}</TableCell>
+                <TableCell className={"px-6"}>{index+1}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline">
-                      Edit
-                    </Button>
-                    <Button size="sm" variant="destructive">
-                      Delete
-                    </Button>
+                    <Link to={`/updatecategory/${item._id}`}>
+                      <Button size="sm" variant="outline">
+                        Edit
+                      </Button>
+                    </Link>
+                    <Link to={"/"}>
+                      <Button size="sm" variant="destructive">
+                        Delete
+                      </Button>
+                    </Link>
                   </div>
                 </TableCell>
               </TableRow>

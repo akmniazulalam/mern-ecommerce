@@ -257,7 +257,7 @@ const Sidebar = () => {
               )
             }>
             <Package className="w-5 h-5" />
-            Products
+            Add Products
           </NavLink>
 
           <NavLink
