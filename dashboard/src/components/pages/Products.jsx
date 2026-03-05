@@ -4,31 +4,47 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Products = () => {
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [price, setPrice] = useState("");
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
   const [ram, setRam] = useState("");
   const [storage, setStorage] = useState("");
+  const [image, setImage] = useState("");
 
   const handleCreateProduct = () => {
-    console.log("jkkk");
+    const formData = new FormData();
+
+    formData.append("name", productName);
+    formData.append("description", productDescription);
+    formData.append("category", selectedCategory);
+    formData.append("price", price);
+    formData.append("size", size);
+    formData.append("color", color);
+    formData.append("ram", ram);
+    formData.append("storage", storage);
+    formData.append("image", image);
+
+
+    axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/product/createproduct", formData);
+    toast.success("Successfully added!");
   };
+
   const [getCategory, setGetCategory] = useState([]);
 
   useEffect(() => {
     axios
-      .get(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
-      )
+      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory")
       .then((res) => setGetCategory(res.data.data));
   }, []);
 
   console.log(getCategory);
-  
+
   return (
     <>
       <h3 className="font-bold">Add Product</h3>
@@ -53,7 +69,9 @@ const Products = () => {
           </Field>
           <Field>
             <FieldLabel>Category</FieldLabel>
-            <select className="border border-gray-200 rounded-sm p-2">
+            <select
+              className="border border-gray-200 rounded-sm p-2"
+              onChange={(e) => setSelectedCategory(e.target.value)}>
               {getCategory.map((item) => (
                 <option>{item.name}</option>
               ))}
@@ -102,9 +120,9 @@ const Products = () => {
           <Field>
             <FieldLabel>Product Image</FieldLabel>
             <Input
-            type={"file"}
+              type={"file"}
               placeholder="Product Image"
-              // onChange={(e) => setStorage(e.target.value)}
+              onChange={(e) => setImage(e.target.files[0])}
             />
           </Field>
 
