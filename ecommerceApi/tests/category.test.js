@@ -582,6 +582,16 @@ describe("DELETE /api/v1/category/deletecategory/:id", () => {
       field: "id",
     });
   });
+
+  it("should return 404 when category does not exist", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId();
+
+    const response = await agent.delete(
+      `/api/v1/category/deletecategory/${nonExistentId}`,
+    );
+
+    expect(response.status).toBe(404);
+  });
 });
 
 describe("DELETE /api/v1/category/deletecategory/:id - Authentication", () => {
