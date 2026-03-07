@@ -55,12 +55,12 @@ const CategoryList = () => {
                 <TableCell>
                   <div className="flex gap-2">
                     <Link to={`/updatecategory/${item._id}`}>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" className={"cursor-pointer"}>
                         Edit
                       </Button>
                     </Link>
                     <Link to={"/"}>
-                      <Button size="sm" variant="destructive">
+                      <Button size="sm" variant="destructive" className={"cursor-pointer"}>
                         Delete
                       </Button>
                     </Link>

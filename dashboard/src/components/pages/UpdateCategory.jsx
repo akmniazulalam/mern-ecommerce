@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ const UpdateCategory = () => {
   const { id } = useParams();
   const [updateName, setUpdateName] = useState("")
   const [updateDes, setUpdateDes] = useState("")
+  const navigate = useNavigate()
   useEffect(() => {
     axios
       .get(
@@ -31,6 +32,9 @@ const UpdateCategory = () => {
     toast.success("Successfully Updated")
     setUpdateName("")
     setUpdateDes("")
+    setTimeout(() => {
+      navigate("/categorylist")
+    }, 1000);
   }
 
   return (
