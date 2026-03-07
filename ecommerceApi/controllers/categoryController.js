@@ -43,7 +43,7 @@ async function singleCategoryController(req, res) {
   const singleCategory = await categorySchema.findById(id)
 
   res.status(200).send({
-    success: true,
+    message: "Success",
     data: singleCategory
   });
 }
