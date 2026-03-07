@@ -38,6 +38,16 @@ async function updateCategoryController(req, res) {
   });
 }
 
+async function singleCategoryController(req, res) {
+  const {id} = req.params
+  const singleCategory = await categorySchema.findById(id)
+
+  res.status(200).send({
+    success: true,
+    data: singleCategory
+  });
+}
+
 async function deleteCategoryController(req, res) {
   const { id } = req.params;
   const deleteCategory = await categorySchema.findByIdAndDelete(id);
@@ -61,4 +71,5 @@ module.exports = {
   updateCategoryController,
   deleteCategoryController,
   deleteAllCategoryController,
+  singleCategoryController
 };
