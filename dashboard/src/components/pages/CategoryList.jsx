@@ -7,13 +7,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 
 const CategoryList = () => {
-  
   const categories = [
     { id: 1, name: "Electronics", description: "Phones, Laptops, etc." },
     { id: 2, name: "Fashion", description: "Clothes, Shoes, Bags" },
@@ -31,6 +41,14 @@ const CategoryList = () => {
     }
     final();
   }, []);
+
+  const handleDeleteCategory = (id) => {
+    axios.delete(
+      `https://mern-ecommerce-91cv.onrender.com/api/v1/category/deletecategory/${id}`,
+    );
+    setFinalData(finalData.filter((item) => item._id !== id));
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -49,21 +67,49 @@ const CategoryList = () => {
           <TableBody>
             {finalData.map((item, index) => (
               <TableRow key={item.name}>
-                <TableCell className={"px-6"}>{index+1}</TableCell>
+                <TableCell className={"px-6"}>{index + 1}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
                     <Link to={`/updatecategory/${item._id}`}>
-                      <Button size="sm" variant="outline" className={"cursor-pointer"}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className={"cursor-pointer"}>
                         Edit
                       </Button>
                     </Link>
-                    <Link to={"/"}>
-                      <Button size="sm" variant="destructive" className={"cursor-pointer"}>
-                        Delete
-                      </Button>
-                    </Link>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="cursor-pointer">
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete this category.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                          <AlertDialogAction
+                            onClick={() => handleDeleteCategory(item._id)}
+                            className={"cursor-pointer"}>
+                            Confirm Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>
