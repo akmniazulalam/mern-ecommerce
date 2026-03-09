@@ -17,7 +17,7 @@ const Products = () => {
   const [storage, setStorage] = useState("");
   const [image, setImage] = useState("");
 
-  const handleCreateProduct = () => {
+  const handleCreateProduct = async () => {
     const formData = new FormData();
 
     formData.append("name", productName);
@@ -30,20 +30,27 @@ const Products = () => {
     formData.append("storage", storage);
     formData.append("image", image);
 
+    try {
+      await axios.post(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/product/createproduct",
+        formData,
+      );
 
-    axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/product/createproduct", formData);
-    toast.success("Successfully added!");
+      toast.success("Successfully added!");
+    } catch (error) {
+      toast.error("Product creation failed");
+    }
   };
 
   const [getCategory, setGetCategory] = useState([]);
 
   useEffect(() => {
     axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory")
+      .get(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
+      )
       .then((res) => setGetCategory(res.data.data));
   }, []);
-
-  console.log(getCategory);
 
   return (
     <>
@@ -127,7 +134,9 @@ const Products = () => {
           </Field>
 
           <Field orientation="horizontal">
-            <Button onClick={handleCreateProduct}>Add Product</Button>
+            <Button onClick={handleCreateProduct} className={"cursor-pointer"}>
+              Add Product
+            </Button>
           </Field>
         </FieldGroup>
       </div>

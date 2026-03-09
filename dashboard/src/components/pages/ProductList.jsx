@@ -53,15 +53,11 @@ const ProductList = () => {
 
       {/* PAGE HEADER */}
 
-      <div className="flex justify-between items-center mb-6">
+      <div className="mb-6">
 
         <h1 className="text-2xl font-bold">
-          Products
+          Product List
         </h1>
-
-        <Button>
-          Add Product
-        </Button>
 
       </div>
 
