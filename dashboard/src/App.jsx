@@ -8,6 +8,7 @@ import Category from "./components/pages/Category"
 import Settings from "./components/pages/Settings"
 import CategoryList from "./components/pages/CategoryList"
 import UpdateCategory from "./components/pages/UpdateCategory"
+import ProductList from "./components/pages/ProductList"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/productlist" element={<ProductList />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/category" element={<Category />} />
           <Route path="/updatecategory/:id" element={<UpdateCategory />} />
