@@ -18,7 +18,7 @@ const {
   updateProductController,
   getProductController,
   deleteProduct,
-  deleteAllProduct,
+  deleteAllProduct
 } = require("../../controllers/productController");
 
 router.post("/createproduct", upload.single('image'), productController);
