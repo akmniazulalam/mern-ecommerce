@@ -14,6 +14,11 @@ const ProductList = () => {
       .then((res) => setProducts(res.data.data));
   }, []);
 
+  const handleProductDelete = (id) => {
+    axios.delete(`https://mern-ecommerce-91cv.onrender.com/api/v1/product/deleteproduct/${id}`)
+    setProducts(products.filter(item => item._id !== id))
+  }
+
   return (
     <>
       <div className="mb-6">
@@ -64,7 +69,8 @@ const ProductList = () => {
                 <Button
                   variant="destructive"
                   size="sm"
-                  className={"cursor-pointer"}>
+                  className={"cursor-pointer"}
+                  onClick={() => handleProductDelete(product._id)}>
                   <Trash size={16} />
                   Delete
                 </Button>

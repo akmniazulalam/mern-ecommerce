@@ -5,10 +5,12 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { useState } from "react";
 import toast from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 const Category = () => {
   const [categoryName, setCategoryName] = useState("")
   const [categoryDescription, setCategoryDescription] = useState("")
+  const navigate = useNavigate()
   const formData = {
     name: categoryName,
     description: categoryDescription
@@ -18,6 +20,9 @@ const Category = () => {
     toast.success('Successfully added!');
     setCategoryName("")
     setCategoryDescription("")
+    setTimeout(()=> {
+      navigate("/categorylist")
+    }, 1000)
   }
   return (
     <>
@@ -33,7 +38,7 @@ const Category = () => {
             <Textarea value={categoryDescription} placeholder="Type your description here..." className={"resize-none"} onChange={(e) => setCategoryDescription(e.target.value)} />
           </Field>
           <Field orientation="horizontal">
-            <Button onClick={handleCreateCategory}>Add Category</Button>
+            <Button onClick={handleCreateCategory} className={"cursor-pointer"}>Add Category</Button>
           </Field>
         </FieldGroup>
       </div>
