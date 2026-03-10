@@ -596,3 +596,42 @@ describe("DELETE /api/v1/category/deletecategory/:id - Authentication", () => {
     });
   });
 });
+
+describe("DELETE /api/v1/category/deletecategory/:id - Authorization", () => {
+  let testUser;
+  let testCategory;
+  let agent;
+
+  beforeEach(async () => {
+    const uniqueId = Date.now();
+    const testEmail = `test-user-${uniqueId}@example.com`;
+    const password = "TestPassword123!";
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    testUser = await User.create({
+      firstName: "Test",
+      lastName: "User",
+      email: testEmail,
+      password: hashedPassword,
+      isVerified: true,
+      role: "user",
+    });
+
+    testCategory = await Category.create({
+      name: `Authorization Test Category ${uniqueId}`,
+      description: "Testing delete authorization",
+    });
+
+    agent = request.agent(app);
+
+    const loginResponse = await agent.post("/api/v1/auth/login").send({
+      email: testEmail,
+      password,
+    });
+
+    expect(loginResponse.status).toBe(200);
+  });
+
+  
+});
