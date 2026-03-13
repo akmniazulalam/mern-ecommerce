@@ -643,5 +643,14 @@ describe("DELETE /api/v1/category/deletecategory/:id - Authorization", () => {
     }
   });
 
-  
+  it("should return 403 when a normal user tries to delete a category", async () => {
+    const response = await agent.delete(
+      `/api/v1/category/deletecategory/${testCategory._id}`,
+    );
+
+    expect(response.status).toBe(403);
+    expect(response.body).toEqual({
+      message: "Forbidden",
+    });
+  });
 });
