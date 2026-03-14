@@ -21,8 +21,8 @@ cloudinary.config({
 //   });
 // };
 const uploadImage = async (filename) => {
-  const result = await cloudinary.uploader.upload(filename)
-  fs.unlinkSync(filename)
+  const result = await cloudinary.uploader.upload(filename) //ekhane filename ta hocche productController er uploadImage er moddhe je imagePath naame ekta variable pass kora hoyechilo setakei ekhane filename naame pass kora hoyeche. filename ta hocche muloto imagePath jar moddhe ache image er path ta jeta user er image upload korar sathe sathe uploads folder e eshe joma hoy.
+  fs.unlinkSync(filename) //image cloudinary te upload howar por server theke mane ekhaner je uploads folder e eshe joma hoyechilo image ta seta delete hoye jabe
   return result;
 };
 
