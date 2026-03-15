@@ -11,29 +11,59 @@ const UpdateProduct = () => {
     const { id } = useParams();
   const [updateName, setUpdateName] = useState("")
   const [updateDes, setUpdateDes] = useState("")
+  const [updateCategory, setUpdateCategory] = useState("")
+  const [updatePrice, setUpdatePrice] = useState("")
+  const [updateSize, setUpdateSize] = useState("")
+  const [updateColor, setUpdateColor] = useState("")
+  const [updateRam, setUpdateRam] = useState("")
+  const [updateStorage, setUpdateStorage] = useState("")
+  const [updateImage, setUpdateImage] = useState("")
   const navigate = useNavigate()
   useEffect(() => {
     axios
       .get(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/category/singleproduct/${id}`
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/product/singleproduct/${id}`
       )
       .then((res) => {
+        
         setUpdateName(res.data.data.name);
         setUpdateDes(res.data.data.description);
+        setUpdateCategory(res.data.data.category);
+        setUpdatePrice(res.data.data.price);
+        setUpdateSize(res.data.data.size);
+        setUpdateColor(res.data.data.color);
+        setUpdateRam(res.data.data.ram);
+        setUpdateStorage(res.data.data.storage);
+        setUpdateImage(res.data.data.image);
       });
   }, []);
 
-  const handleUpdateCategory = () => {
-    const formData = {
-      name: updateName,
-      description: updateDes
+  const handleUpdateProduct = () => {
+    const formData = new FormData()
+    formData.append("name", updateName)
+    formData.append("description", updateDes)
+    formData.append("category", updateCategory)
+    formData.append("price", updatePrice)
+    formData.append("size", updateSize)
+    formData.append("color", updateColor)
+    formData.append("ram", updateRam)
+    formData.append("storage", updateStorage)
+    if(updateImage){
+      formData.append("image", updateImage)
     }
-    axios.patch(`https://mern-ecommerce-91cv.onrender.com/api/v1/category/updatecategory/${id}`, formData)
+    axios.patch(`https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`, formData)
     toast.success("Successfully Updated")
     setUpdateName("")
     setUpdateDes("")
+    setUpdateCategory("")
+    setUpdatePrice("")
+    setUpdateSize("")
+    setUpdateColor("")
+    setUpdateRam("")
+    setUpdateStorage("")
+    setUpdateImage("")
     setTimeout(() => {
-      navigate("/categorylist")
+      navigate("/productlist")
     }, 1000);
   }
   return (
@@ -42,20 +72,47 @@ const UpdateProduct = () => {
           <div className="max-w-1/3 mt-4">
             <FieldGroup>
               <Field>
-                <FieldLabel>Update Category Name</FieldLabel>
-                <Input value={updateName} placeholder="Update Category Name" onChange={(e)=> setUpdateName(e.target.value)} />
+                <FieldLabel>Update Product Name</FieldLabel>
+                <Input value={updateName} onChange={(e)=> setUpdateName(e.target.value)} />
               </Field>
               <Field>
-                <FieldLabel>Update Category Description</FieldLabel>
+                <FieldLabel>Update Product Description</FieldLabel>
                 <Textarea
                   value={updateDes}
-                  placeholder="Type your description here..."
                   className={"resize-none"}
                   onChange={(e)=> setUpdateDes(e.target.value)}
                 />
               </Field>
+              <Field>
+                <FieldLabel>Update Product Category</FieldLabel>
+                <Input value={updateCategory} onChange={(e)=> setUpdateCategory(e.target.value)} />
+              </Field>
+              <Field>
+                <FieldLabel>Update Product Price</FieldLabel>
+                <Input value={updatePrice} onChange={(e)=> setUpdatePrice(e.target.value)} />
+              </Field>
+              <Field>
+                <FieldLabel>Update Product Size</FieldLabel>
+                <Input value={updateSize} onChange={(e)=> setUpdateSize(e.target.value)} />
+              </Field>
+              <Field>
+                <FieldLabel>Update Product Color</FieldLabel>
+                <Input value={updateColor}  onChange={(e)=> setUpdateColor(e.target.value)} />
+              </Field>
+              <Field>
+                <FieldLabel>Update Product Ram</FieldLabel>
+                <Input value={updateRam} onChange={(e)=> setUpdateRam(e.target.value)} />
+              </Field>
+              <Field>
+                <FieldLabel>Update Product Storage</FieldLabel>
+                <Input value={updateStorage} onChange={(e)=> setUpdateStorage(e.target.value)} />
+              </Field>
+              <Field>
+                <FieldLabel>Update Product Image</FieldLabel>
+                <img src={updateImage} onChange={(e)=> setUpdateImage(e.target.files[0])} />
+              </Field>
               <Field orientation="horizontal">
-                <Button onClick={handleUpdateCategory} className={"cursor-pointer"}>Update Category</Button>
+                <Button onClick={handleUpdateProduct} className={"cursor-pointer"}>Update Product</Button>
               </Field>
             </FieldGroup>
           </div>

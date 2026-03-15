@@ -63,11 +63,11 @@ async function updateProductController(req, res) {
 
 async function getSingleProductController(req, res) {
   const {id} = req.params
-  const singleCategory = await categorySchema.findById(id)
+  const singleProduct = await productSchema.findById(id)
 
   res.status(200).send({
     message: "Success",
-    data: singleCategory
+    data: singleProduct
   });
 }
 
