@@ -61,6 +61,16 @@ async function updateProductController(req, res) {
   });
 }
 
+async function getSingleProductController(req, res) {
+  const {id} = req.params
+  const singleCategory = await categorySchema.findById(id)
+
+  res.status(200).send({
+    message: "Success",
+    data: singleCategory
+  });
+}
+
 async function deleteProduct(req, res) {
   const { id } = req.params;
   const deleteProduct = await productSchema.findByIdAndDelete(id);

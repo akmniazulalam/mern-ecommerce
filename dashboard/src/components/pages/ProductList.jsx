@@ -140,7 +140,7 @@ const ProductList = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Link to={`/updatecategory/${item._id}`}>
+                      <Link to={`/updateproduct/${item._id}`}>
                         <Button
                           size="sm"
                           variant="outline"

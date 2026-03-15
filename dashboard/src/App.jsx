@@ -9,6 +9,7 @@ import Settings from "./components/pages/Settings"
 import CategoryList from "./components/pages/CategoryList"
 import UpdateCategory from "./components/pages/UpdateCategory"
 import ProductList from "./components/pages/ProductList"
+import UpdateProduct from "./components/pages/UpdateProduct"
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/productlist" element={<ProductList />} />
+          <Route path="/updateproduct/:id" element={<UpdateProduct />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/category" element={<Category />} />
           <Route path="/updatecategory/:id" element={<UpdateCategory />} />
