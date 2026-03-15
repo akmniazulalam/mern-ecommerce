@@ -15,7 +15,7 @@ const UpdateProduct = () => {
   useEffect(() => {
     axios
       .get(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/category/singlecategory/${id}`
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/category/singleproduct/${id}`
       )
       .then((res) => {
         setUpdateName(res.data.data.name);
