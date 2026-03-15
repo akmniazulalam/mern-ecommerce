@@ -80,7 +80,7 @@ const Products = () => {
               className="border border-gray-200 rounded-sm p-2"
               onChange={(e) => setSelectedCategory(e.target.value)}>
               {getCategory.map((item) => (
-                <option>{item.name}</option>
+                <option className={"dark:bg-blue-900"}>{item.name}</option>
               ))}
             </select>
           </Field>

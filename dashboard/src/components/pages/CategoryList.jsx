@@ -85,7 +85,7 @@ const CategoryList = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          className="cursor-pointer">
+                          className="cursor-pointer dark:bg-red-600">
                           Delete
                         </Button>
                       </AlertDialogTrigger>
