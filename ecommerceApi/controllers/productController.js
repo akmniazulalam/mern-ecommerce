@@ -93,6 +93,7 @@ module.exports = {
   productController,
   updateProductController,
   getProductController,
+  getSingleProductController,
   deleteProduct,
   deleteAllProduct,
 };
