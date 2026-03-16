@@ -48,8 +48,9 @@ const UpdateProduct = () => {
       .then((res) => setGetCategory(res.data.data));
   }, []);
 
-  const handleUpdateProduct = () => {
-    const formData = new FormData();
+  const handleUpdateProduct = async () => {
+    try {
+      const formData = new FormData();
     formData.append("name", updateName);
     formData.append("description", updateDes);
     formData.append("category", updateCategory);
@@ -61,7 +62,7 @@ const UpdateProduct = () => {
     if (updateImage) {
       formData.append("image", updateImage);
     }
-    axios.patch(
+    await axios.patch(
       `https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`,
       formData,
     );
@@ -79,6 +80,10 @@ const UpdateProduct = () => {
     setTimeout(() => {
       navigate("/productlist");
     }, 1000);
+    }
+    catch(error){
+      toast.error("update failed")
+    }
   };
   return (
     <>
