@@ -1,3 +1,4 @@
+const cloudinary = require("cloudinary").v2;
 const uploadImage = require("../middlewares/cloudinary");
 const productSchema = require("../model/productSchema");
 
@@ -59,7 +60,7 @@ async function updateProductController(req, res) {
 
     await cloudinary.uploader.destroy(publicId)
 
-    
+
     const imagePath = req.file.path
     const imageUrl = await uploadImage(imagePath)
 
