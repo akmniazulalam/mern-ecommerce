@@ -38,6 +38,16 @@ const UpdateProduct = () => {
       });
   }, []);
 
+  const [getCategory, setGetCategory] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
+      )
+      .then((res) => setGetCategory(res.data.data));
+  }, []);
+
   const handleUpdateProduct = () => {
     const formData = new FormData();
     formData.append("name", updateName);
@@ -53,7 +63,7 @@ const UpdateProduct = () => {
     }
     axios.patch(
       `https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`,
-      formData
+      formData,
     );
     toast.success("Successfully Updated");
     setUpdateName("");
@@ -92,11 +102,16 @@ const UpdateProduct = () => {
           </Field>
           <Field>
             <FieldLabel>Update Product Category</FieldLabel>
-            <Input
+            <select
               value={updateCategory}
-              onChange={(e) => setUpdateCategory(e.target.value)}
-            />
+              className="border border-gray-200 rounded-sm p-2"
+              onChange={(e) => setUpdateCategory(e.target.value)}>
+              {getCategory.map((item) => (
+                <option className={"dark:bg-blue-900"}>{item.name}</option>
+              ))}
+            </select>
           </Field>
+
           <Field>
             <FieldLabel>Update Product Price</FieldLabel>
             <Input
@@ -135,11 +150,7 @@ const UpdateProduct = () => {
           <Field>
             <FieldLabel>Update Product Image</FieldLabel>
             {prevImage && (
-              <img
-                src={prevImage}
-                alt="product"
-                className="mb-3 rounded"
-              />
+              <img src={prevImage} alt="product" className="mb-3 rounded" />
             )}
             <input
               type={"file"}

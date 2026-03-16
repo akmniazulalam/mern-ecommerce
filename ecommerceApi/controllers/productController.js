@@ -52,7 +52,14 @@ async function updateProductController(req, res) {
   updateProduct.color = color;
   updateProduct.ram = ram;
   updateProduct.storage = storage;
+  
+  if(req.file){
+    const imagePath = req.file.path
+    const imageUrl = await uploadImage(imagePath)
 
+    updateProduct.image = imageUrl.secure_url
+  }
+  
   await updateProduct.save();
 
   res.json({
