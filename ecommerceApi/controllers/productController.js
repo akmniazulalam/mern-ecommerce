@@ -56,7 +56,7 @@ async function updateProductController(req, res) {
   
   if(req.file){
     const oldImg = updateProduct.image
-    const publicId = oldImg.split("/").slice(-2).join("/").split(".")[0]
+    const publicId = oldImg.split("/").slice(-1)[0].split(".")[0]
 
     await cloudinary.uploader.destroy(publicId)
 
