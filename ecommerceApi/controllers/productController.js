@@ -54,6 +54,12 @@ async function updateProductController(req, res) {
   updateProduct.storage = storage;
   
   if(req.file){
+    const oldImg = updateProduct.image
+    const publicId = oldImg.split("/").slice(-2).join("/").split(".")[0]
+
+    await cloudinary.uploader.destroy(publicId)
+
+    
     const imagePath = req.file.path
     const imageUrl = await uploadImage(imagePath)
 
