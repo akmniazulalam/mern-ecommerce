@@ -34,6 +34,8 @@ const ProductList = () => {
       .then((res) => setProducts(res.data.data));
   }, []);
 
+
+
   const handleProductDelete = (id) => {
     axios.delete(
       `https://mern-ecommerce-91cv.onrender.com/api/v1/product/deleteproduct/${id}`,
@@ -125,10 +127,14 @@ const ProductList = () => {
             </TableHeader>
             <TableBody>
               {products.map((item, index) => (
-                <TableRow key={item.name}>
+                <TableRow key={item._id}>
                   <TableCell className={"px-6"}>{index + 1}</TableCell>
-                  <TableCell className="max-w-40 truncate">{item.name}</TableCell>
-                  <TableCell className="max-w-50 truncate">{item.description}</TableCell>
+                  <TableCell className="max-w-40 truncate">
+                    {item.name}
+                  </TableCell>
+                  <TableCell className="max-w-50 truncate">
+                    {item.description}
+                  </TableCell>
                   <TableCell>${item.price}</TableCell>
                   <TableCell>{item.category}</TableCell>
                   <TableCell>{item.size}</TableCell>
@@ -136,7 +142,11 @@ const ProductList = () => {
                   <TableCell>{item.ram}</TableCell>
                   <TableCell>{item.storage}</TableCell>
                   <TableCell>
-                    <img src={item.image} alt={item.name} className={"h-14 rounded-sm"}/>
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className={"h-14 rounded-sm"}
+                    />
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
