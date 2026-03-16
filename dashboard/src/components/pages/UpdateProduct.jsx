@@ -53,7 +53,7 @@ const UpdateProduct = () => {
     }
     axios.patch(
       `https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`,
-      formData,
+      formData
     );
     toast.success("Successfully Updated");
     setUpdateName("");
@@ -138,7 +138,7 @@ const UpdateProduct = () => {
               <img
                 src={prevImage}
                 alt="product"
-                className="h-20 mb-3 rounded"
+                className="mb-3 rounded"
               />
             )}
             <input

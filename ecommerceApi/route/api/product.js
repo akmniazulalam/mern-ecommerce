@@ -25,7 +25,7 @@ const {
 router.post("/createproduct", upload.single('image'), productController);
 router.get("/getproduct", getProductController);
 router.get("/singleproduct/:id", getSingleProductController);
-router.patch("/updateproduct/:id", updateProductController);
+router.patch("/updateproduct/:id", upload.single('image'), updateProductController);
 router.delete("/deleteproduct/:id", deleteProduct);
 router.delete("/deleteallproduct", deleteAllProduct);
 
