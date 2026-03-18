@@ -49,7 +49,13 @@ const Products = () => {
       .get(
         "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
       )
-      .then((res) => setGetCategory(res.data.data));
+      .then((res) => {
+        setGetCategory(res.data.data)
+        if(res.data.data.length > 0) {
+          setSelectedCategory(res.data.data[0].name)
+          console.log(setSelectedCategory(res.data.data[0].name));
+        }
+      });
   }, []);
 
   return (
@@ -80,7 +86,7 @@ const Products = () => {
               className="border border-gray-200 rounded-sm p-2"
               onChange={(e) => setSelectedCategory(e.target.value)}>
               {getCategory.map((item) => (
-                <option className={"dark:bg-blue-900"}>{item.name}</option>
+                <option className={"dark:bg-blue-900"} key={item._id} value={item._id}>{item.name}</option>
               ))}
             </select>
           </Field>
