@@ -53,7 +53,6 @@ const Products = () => {
         setGetCategory(res.data.data)
         if(res.data.data.length > 0) {
           setSelectedCategory(res.data.data[0].name)
-          console.log(setSelectedCategory(res.data.data[0].name));
         }
       });
   }, []);
