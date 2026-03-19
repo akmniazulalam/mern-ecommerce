@@ -1,34 +1,12 @@
-import { useDispatch } from "react-redux"
-import { loginUser } from "@/redux/authSlice"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-
+import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 
-export default function Login() {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  })
-
-  const handleLogin = async (e) => {
-    e.preventDefault()
-
-    const res = await dispatch(loginUser(form))
-
-    if (res.payload?.message === "Login Successful") {
-      navigate("/")
-    }
-  }
-
+const Login = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted">
+        <div className="flex items-center justify-center min-h-screen bg-muted">
       <Card className="w-full max-w-md shadow-xl rounded-2xl">
         <CardHeader>
           <CardTitle className="text-center text-2xl">
@@ -37,15 +15,13 @@ export default function Login() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form className="space-y-4">
 
             <div>
               <Label>Email</Label>
               <Input
                 type="email"
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
+                placeholder="Enter your email"
               />
             </div>
 
@@ -53,9 +29,7 @@ export default function Login() {
               <Label>Password</Label>
               <Input
                 type="password"
-                onChange={(e) =>
-                  setForm({ ...form, password: e.target.value })
-                }
+                placeholder="**********"
               />
             </div>
 
@@ -66,3 +40,5 @@ export default function Login() {
     </div>
   )
 }
+
+export default Login
