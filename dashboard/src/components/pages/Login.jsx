@@ -6,10 +6,10 @@ import { Label } from "@/components/ui/label";
 
 const Login = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted">
+    <div className="flex items-center justify-center min-h-screen bg-muted w-full">
       <Card className="w-full max-w-md shadow-xl rounded-2xl">
         <CardHeader>
-          <CardTitle className="text-center text-2xl">Welcome Back</CardTitle>
+          <CardTitle className="text-center text-2xl">Login to your account</CardTitle>
         </CardHeader>
 
         <CardContent>
