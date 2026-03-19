@@ -1,7 +1,7 @@
-import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const VerifyOtp = () => {
   return (
@@ -15,24 +15,17 @@ const VerifyOtp = () => {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <Input
-            placeholder="Enter OTP"
-          />
+          <Input placeholder="Enter OTP" />
 
-          <Button className="w-full">
-            Verify
-          </Button>
+          <Button className="w-full cursor-pointer">Verify</Button>
 
-          <Button
-            variant="ghost"
-            className="w-full"
-          >
+          <Button variant="ghost" className="w-full cursor-pointer">
             Resend OTP
           </Button>
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default VerifyOtp
+export default VerifyOtp;
