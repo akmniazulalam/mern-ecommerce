@@ -10,11 +10,20 @@ import CategoryList from "./components/pages/CategoryList"
 import UpdateCategory from "./components/pages/UpdateCategory"
 import ProductList from "./components/pages/ProductList"
 import UpdateProduct from "./components/pages/UpdateProduct"
+import AuthLayout from "./components/layout/AuthLayout"
+import Signup from "./components/pages/Signup"
+import Login from "./components/pages/Login"
+import VerifyOtp from "./components/pages/VerifyOtp"
 
 function App() {
 
   return (
     <Routes>
+      <Route element={<AuthLayout/>}>
+      <Route path="/signup" element={<Signup/>} />
+      <Route path="/login" element={<Login/>} />
+      <Route path="/otp-verify" element={<VerifyOtp/>} />
+      </Route>
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
