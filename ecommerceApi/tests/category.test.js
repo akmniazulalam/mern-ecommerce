@@ -505,3 +505,47 @@ describe("PATCH /api/v1/category/updatecategory/:id - Authentication", () => {
     });
   });
 });
+
+describe("DELETE /api/v1/category/deletecategory/:id", () => {
+  let testUser;
+  let testCategory;
+  let agent;
+  let originalPrimaryAdminEmail;
+
+  beforeEach(async () => {
+    originalPrimaryAdminEmail = process.env.PRIMARY_ADMIN_EMAIL;
+
+    const uniqueId = Date.now();
+    const testEmail = `test-admin-${uniqueId}@example.com`;
+    const password = "TestPassword123!";
+
+    process.env.PRIMARY_ADMIN_EMAIL = testEmail;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    testUser = await User.create({
+      firstName: "Test",
+      lastName: "Admin",
+      email: testEmail,
+      password: hashedPassword,
+      isVerified: true,
+      role: "admin",
+    });
+
+    testCategory = await Category.create({
+      name: `Delete Test Category ${uniqueId}`,
+      description: "Testing category deletion",
+    });
+
+    agent = request.agent(app);
+
+    const loginResponse = await agent.post("/api/v1/auth/login").send({
+      email: testEmail,
+      password,
+    });
+
+    expect(loginResponse.status).toBe(200);
+  });
+
+  
+});
