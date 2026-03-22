@@ -547,5 +547,17 @@ describe("DELETE /api/v1/category/deletecategory/:id", () => {
     expect(loginResponse.status).toBe(200);
   });
 
+  afterEach(async () => {
+    if (testCategory) {
+      await Category.findByIdAndDelete(testCategory._id);
+    }
+
+    if (testUser) {
+      await User.findByIdAndDelete(testUser._id);
+    }
+
+    process.env.PRIMARY_ADMIN_EMAIL = originalPrimaryAdminEmail;
+  });
+
   
 });
