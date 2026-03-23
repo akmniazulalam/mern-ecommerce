@@ -559,5 +559,15 @@ describe("DELETE /api/v1/category/deletecategory/:id", () => {
     process.env.PRIMARY_ADMIN_EMAIL = originalPrimaryAdminEmail;
   });
 
-  
+  it("should delete a category when an admin is authenticated", async () => {
+    const response = await agent.delete(
+      `/api/v1/category/deletecategory/${testCategory._id}`,
+    );
+
+    expect(response.status).toBe(200);
+
+    const deletedCategory = await Category.findById(testCategory._id);
+
+    expect(deletedCategory).toBeNull();
+  });
 });
