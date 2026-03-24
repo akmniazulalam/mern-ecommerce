@@ -570,4 +570,16 @@ describe("DELETE /api/v1/category/deletecategory/:id", () => {
 
     expect(deletedCategory).toBeNull();
   });
+
+  it("should return 400 when category ID is invalid", async () => {
+    const response = await agent.delete(
+      "/api/v1/category/deletecategory/invalid123",
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Invalid category id",
+      field: "id",
+    });
+  });
 });
