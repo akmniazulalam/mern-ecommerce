@@ -583,3 +583,16 @@ describe("DELETE /api/v1/category/deletecategory/:id", () => {
     });
   });
 });
+
+describe("DELETE /api/v1/category/deletecategory/:id - Authentication", () => {
+  it("should return 401 when user is not authenticated", async () => {
+    const response = await request(app).delete(
+      "/api/v1/category/deletecategory/507f1f77bcf86cd799439011",
+    );
+
+    expect(response.status).toBe(401);
+    expect(response.body).toEqual({
+      message: "Unauthorized access",
+    });
+  });
+});
