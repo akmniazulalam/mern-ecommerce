@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const CategoryList = () => {
   const categories = [
@@ -50,6 +51,10 @@ const CategoryList = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Category List</title>
+    </Helmet>
     <Card>
       <CardHeader>
         <CardTitle>Category List</CardTitle>
@@ -118,6 +123,7 @@ const CategoryList = () => {
         </Table>
       </CardContent>
     </Card>
+    </>
   );
 };
 
