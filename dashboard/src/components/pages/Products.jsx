@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const Products = () => {
   const [productName, setProductName] = useState("");
@@ -60,9 +60,9 @@ const Products = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Add Products</title>
-      </Helmet>
+    <Helmet>
+      <title>Add Products</title>
+    </Helmet>
       <h3 className="font-bold">Add Product</h3>
       <div className="max-w-1/3 mt-4">
         <FieldGroup>
