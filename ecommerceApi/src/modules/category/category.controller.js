@@ -25,6 +25,12 @@ const updateCategoryController = asyncHandler(async (req, res) => {
 
   const updateCategory = await categorySchema.findById(id);
 
+  if (!updateCategory) {
+    return res.status(404).json({
+      message: "Category not found",
+    });
+  }
+
   updateCategory.name = name;
   updateCategory.description = description;
 
