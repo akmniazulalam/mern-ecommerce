@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import toast from 'react-hot-toast';
 import { useNavigate } from "react-router-dom";
 
@@ -26,6 +27,9 @@ const Category = () => {
   }
   return (
     <>
+    <Helmet>
+      <title>Add Category</title>
+    </Helmet>
       <h3 className="font-bold">Add Category</h3>
       <div className="max-w-1/3 mt-4">
         <FieldGroup>
