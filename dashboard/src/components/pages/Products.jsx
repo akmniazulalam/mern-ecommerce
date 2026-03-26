@@ -61,7 +61,7 @@ const Products = () => {
   return (
     <>
     <Helmet>
-      <title>Add Products</title>
+      <title>Add Product</title>
     </Helmet>
       <h3 className="font-bold">Add Product</h3>
       <div className="max-w-1/3 mt-4">

@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Pencil, Trash } from "lucide-react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -45,6 +46,9 @@ const ProductList = () => {
 
   return (
     <>
+    <Helmet>
+      <title>Product List</title>
+    </Helmet>
       {/* <div className="mb-6">
         <h3 className="text-2xl font-bold">Product List</h3>
       </div>

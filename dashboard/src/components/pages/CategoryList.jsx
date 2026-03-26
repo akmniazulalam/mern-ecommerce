@@ -52,10 +52,10 @@ const CategoryList = () => {
 
   return (
     <>
-    <Helmet>
-      <title>Category List</title>
-    </Helmet>
-    <Card>
+      <Helmet>
+        <title>Category List</title>
+      </Helmet>
+      <Card>
       <CardHeader>
         <CardTitle>Category List</CardTitle>
       </CardHeader>
