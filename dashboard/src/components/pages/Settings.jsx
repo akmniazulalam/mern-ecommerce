@@ -7,7 +7,7 @@ const Settings = () => {
       <Helmet>
         <title>Settings</title>
       </Helmet>
-      Settings
+      <h3>Settings</h3>
     </>
   );
 };
