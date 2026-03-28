@@ -56,73 +56,73 @@ const CategoryList = () => {
         <title>Category List</title>
       </Helmet>
       <Card>
-      <CardHeader>
-        <CardTitle>Category List</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Serial</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Action</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {finalData.map((item, index) => (
-              <TableRow key={item.name}>
-                <TableCell className={"px-6"}>{index + 1}</TableCell>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.description}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Link to={`/updatecategory/${item._id}`}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className={"cursor-pointer"}>
-                        Edit
-                      </Button>
-                    </Link>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
+        <CardHeader>
+          <CardTitle>Category List</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Serial</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {finalData.map((item, index) => (
+                <TableRow key={item.name}>
+                  <TableCell className={"px-6"}>{index + 1}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.description}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Link to={`/updatecategory/${item._id}`}>
                         <Button
                           size="sm"
-                          variant="destructive"
-                          className="cursor-pointer dark:bg-red-600">
-                          Delete
+                          variant="outline"
+                          className={"cursor-pointer"}>
+                          Edit
                         </Button>
-                      </AlertDialogTrigger>
+                      </Link>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="cursor-pointer dark:bg-red-600">
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
 
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete this category.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete this category.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
 
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-                          <AlertDialogAction
-                            onClick={() => handleDeleteCategory(item._id)}
-                            className={"cursor-pointer"}>
-                            Confirm Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteCategory(item._id)}
+                              className={"cursor-pointer"}>
+                              Confirm Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </>
   );
 };
