@@ -6,16 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 
 const UpdateCategory = () => {
   const { id } = useParams();
-  const [updateName, setUpdateName] = useState("")
-  const [updateDes, setUpdateDes] = useState("")
-  const navigate = useNavigate()
+  const [updateName, setUpdateName] = useState("");
+  const [updateDes, setUpdateDes] = useState("");
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/category/singlecategory/${id}`
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/category/singlecategory/${id}`,
       )
       .then((res) => {
         setUpdateName(res.data.data.name);
@@ -26,25 +27,36 @@ const UpdateCategory = () => {
   const handleUpdateCategory = () => {
     const formData = {
       name: updateName,
-      description: updateDes
-    }
-    axios.patch(`https://mern-ecommerce-91cv.onrender.com/api/v1/category/updatecategory/${id}`, formData)
-    toast.success("Successfully Updated")
-    setUpdateName("")
-    setUpdateDes("")
+      description: updateDes,
+    };
+    axios.patch(
+      `https://mern-ecommerce-91cv.onrender.com/api/v1/category/updatecategory/${id}`,
+      formData,
+    );
+    toast.success("Successfully Updated");
+    setUpdateName("");
+    setUpdateDes("");
     setTimeout(() => {
-      navigate("/categorylist")
+      navigate("/categorylist");
     }, 1000);
-  }
+  };
 
   return (
     <>
+      <Helmet>
+        <title>Update Category</title>
+      </Helmet>
+
       <h3 className="font-bold">Update Category</h3>
       <div className="max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
             <FieldLabel>Update Category Name</FieldLabel>
-            <Input value={updateName} placeholder="Update Category Name" onChange={(e)=> setUpdateName(e.target.value)} />
+            <Input
+              value={updateName}
+              placeholder="Update Category Name"
+              onChange={(e) => setUpdateName(e.target.value)}
+            />
           </Field>
           <Field>
             <FieldLabel>Update Category Description</FieldLabel>
@@ -52,11 +64,13 @@ const UpdateCategory = () => {
               value={updateDes}
               placeholder="Type your description here..."
               className={"resize-none"}
-              onChange={(e)=> setUpdateDes(e.target.value)}
+              onChange={(e) => setUpdateDes(e.target.value)}
             />
           </Field>
           <Field orientation="horizontal">
-            <Button onClick={handleUpdateCategory} className={"cursor-pointer"}>Update Category</Button>
+            <Button onClick={handleUpdateCategory} className={"cursor-pointer"}>
+              Update Category
+            </Button>
           </Field>
         </FieldGroup>
       </div>
