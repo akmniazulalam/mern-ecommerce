@@ -7,7 +7,7 @@ const Orders = () => {
       <Helmet>
         <title>Orders</title>
       </Helmet>
-      Orders
+      <h3>Orders</h3>
     </>
   );
 };
