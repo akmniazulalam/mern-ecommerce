@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 
 const UpdateProduct = () => {
   const { id } = useParams();
@@ -51,42 +52,45 @@ const UpdateProduct = () => {
   const handleUpdateProduct = async () => {
     try {
       const formData = new FormData();
-    formData.append("name", updateName);
-    formData.append("description", updateDes);
-    formData.append("category", updateCategory);
-    formData.append("price", updatePrice);
-    formData.append("size", updateSize);
-    formData.append("color", updateColor);
-    formData.append("ram", updateRam);
-    formData.append("storage", updateStorage);
-    if (updateImage) {
-      formData.append("image", updateImage);
-    }
-    await axios.patch(
-      `https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`,
-      formData,
-    );
-    toast.success("Successfully Updated");
-    setUpdateName("");
-    setUpdateDes("");
-    setUpdateCategory("");
-    setUpdatePrice("");
-    setUpdateSize("");
-    setUpdateColor("");
-    setUpdateRam("");
-    setUpdateStorage("");
-    setPrevImage("");
-    setUpdateImage("");
-    setTimeout(() => {
-      navigate("/productlist");
-    }, 1000);
-    }
-    catch(error){
-      toast.error("update failed")
+      formData.append("name", updateName);
+      formData.append("description", updateDes);
+      formData.append("category", updateCategory);
+      formData.append("price", updatePrice);
+      formData.append("size", updateSize);
+      formData.append("color", updateColor);
+      formData.append("ram", updateRam);
+      formData.append("storage", updateStorage);
+      if (updateImage) {
+        formData.append("image", updateImage);
+      }
+      await axios.patch(
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`,
+        formData,
+      );
+      toast.success("Successfully Updated");
+      setUpdateName("");
+      setUpdateDes("");
+      setUpdateCategory("");
+      setUpdatePrice("");
+      setUpdateSize("");
+      setUpdateColor("");
+      setUpdateRam("");
+      setUpdateStorage("");
+      setPrevImage("");
+      setUpdateImage("");
+      setTimeout(() => {
+        navigate("/productlist");
+      }, 1000);
+    } catch (error) {
+      toast.error("update failed");
     }
   };
   return (
     <>
+      <Helmet>
+        <title>Update Product</title>
+      </Helmet>
+
       <h3 className="font-bold">Update Product</h3>
       <div className="max-w-1/3 mt-4">
         <FieldGroup>
