@@ -13,6 +13,7 @@ const app = require("../src/app");
 const request = require("supertest");
 const User = require("../src/modules/auth/auth.model");
 const Category = require("../src/modules/category/category.model");
+const mongoose = require("mongoose");
 
 // Existing validation tests
 describe("GET /api/v1/category/singlecategory/:id", () => {
@@ -318,6 +319,19 @@ describe("PATCH /api/v1/category/updatecategory/:id", () => {
 
     expect(updatedCategory.name).toBe("Updated Test Category");
     expect(updatedCategory.description).toBe("Updated test description");
+  });
+
+  it("should return 404 when category does not exist", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId();
+
+    const response = await agent
+      .patch(`/api/v1/category/updatecategory/${nonExistentId}`)
+      .send({
+        name: "Updated Category",
+        description: "Updated description",
+      });
+
+    expect(response.status).toBe(404);
   });
 });
 
