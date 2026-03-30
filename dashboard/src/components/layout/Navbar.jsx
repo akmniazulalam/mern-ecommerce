@@ -19,7 +19,7 @@ const Navbar = () => {
       const newMode = !prev;
 
       if (newMode) {
-        document.documentElement.classList.add("dark");
+        document.documentElement.classList.add("dark");  //document.documentElement = <html></html> tag, classList.add("dark")= <html class="dark"></html>
         localStorage.setItem("theme", "dark");
       } else {
         document.documentElement.classList.remove("dark");
