@@ -14,8 +14,21 @@ import AuthLayout from "./components/layout/AuthLayout";
 import Signup from "./components/pages/Signup";
 import Login from "./components/pages/Login";
 import VerifyOtp from "./components/pages/VerifyOtp";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");  //document.documentElement = <html> tag
+      setDarkMode(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setDarkMode(false);
+    }
+  }, []);
   return (
     <Routes>
       <Route element={<AuthLayout />}>

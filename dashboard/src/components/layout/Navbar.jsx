@@ -10,33 +10,25 @@ const Navbar = () => {
 
   // Sync darkMode with html class on mount
   useEffect(() => {
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "dark") {
-    document.documentElement.classList.add("dark");
-    setDarkMode(true);
-  } else {
-    document.documentElement.classList.remove("dark");
-    setDarkMode(false);
-  }
-}, []);
-
+    const isDark = document.documentElement.classList.contains("dark");
+    setDarkMode(isDark);
+  }, []);
 
   const toggleDarkMode = () => {
-  setDarkMode((prev) => {
-    const newMode = !prev;
+    setDarkMode((prev) => {
+      const newMode = !prev;
 
-    if (newMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+      if (newMode) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
 
-    return newMode;
-  });
-};
+      return newMode;
+    });
+  };
 
   return (
     <header className="h-16 border-b bg-background flex items-center justify-between px-6">
