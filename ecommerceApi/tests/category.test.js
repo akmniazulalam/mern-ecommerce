@@ -332,6 +332,7 @@ describe("PATCH /api/v1/category/updatecategory/:id", () => {
       });
 
     expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Category not found");
   });
 });
 
