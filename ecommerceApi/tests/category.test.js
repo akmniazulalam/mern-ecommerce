@@ -474,3 +474,19 @@ describe("PATCH /api/v1/category/updatecategory/:id - Authorization", () => {
     });
   });
 });
+
+describe("PATCH /api/v1/category/updatecategory/:id - Authentication", () => {
+  it("should return 401 when user is not authenticated", async () => {
+    const response = await request(app)
+      .patch("/api/v1/category/updatecategory/507f1f77bcf86cd799439011")
+      .send({
+        name: "Updated Category",
+        description: "Updated description",
+      });
+
+    expect(response.status).toBe(401);
+    expect(response.body).toEqual({
+      message: "Unauthorized access",
+    });
+  });
+});
