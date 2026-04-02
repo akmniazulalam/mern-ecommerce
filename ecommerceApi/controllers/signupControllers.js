@@ -53,7 +53,7 @@ async function signupController(req, res) {
   console.log(expireOtp);
   
 
-  bcrypt.hash(password, 10, (err, hash) => {
+  bcrypt.hash(password, 10, async (err, hash) => {
     const user = new userSchema({
     firstName,
     lastName,
@@ -63,7 +63,7 @@ async function signupController(req, res) {
     otp,
     expireOtp
   });
-  user.save();
+  await user.save();
   // emailVerification(email, otp)
   })
   res.json({
