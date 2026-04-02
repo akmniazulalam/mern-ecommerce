@@ -6,6 +6,13 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -20,11 +27,16 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [otp, setOtp] = useState("");
+  const [openOtpModal, setOpenOtpModal] = useState(false);
   const handleChange = (e) => {
     setRegistrationInput({
       ...registrationInput,
       [e.target.name]: e.target.value,
     });
+  };
+  const handleVerifyOtp = () => {
+
   };
   const handleRegistration = () => {
     axios
@@ -33,10 +45,13 @@ const Signup = () => {
         registrationInput,
       )
       .then(() => {
-        toast.success("Registration done & send a verification otp to your email")
+        toast.success(
+          `Registration done & send a verification otp to your email`,
+        );
+        setOpenOtpModal(true);
       })
       .catch(() => {
-        toast.error("Registration failed")
+        toast.error("Registration failed");
       });
   };
   return (
@@ -109,6 +124,30 @@ const Signup = () => {
             </p>
           </CardContent>
         </Card>
+        {openOtpModal && (
+          <Dialog open={openOtpModal} onOpenChange={setOpenOtpModal}>
+            <DialogContent className="rounded-2xl">
+              <DialogHeader>
+                <DialogTitle>Verify OTP</DialogTitle>
+                <DialogDescription>
+                  Enter the 6-digit OTP sent to your {registrationInput.email}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4 mt-2">
+                <Input
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter OTP"
+                />
+
+                <Button onClick={handleVerifyOtp} className="w-full">
+                  Verify OTP
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </>
   );
