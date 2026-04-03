@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [registrationInput, setRegistrationInput] = useState({
@@ -29,14 +30,29 @@ const Signup = () => {
   });
   const [otp, setOtp] = useState("");
   const [openOtpModal, setOpenOtpModal] = useState(false);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setRegistrationInput({
       ...registrationInput,
       [e.target.name]: e.target.value,
     });
   };
-  const handleVerifyOtp = () => {
-
+  const handleVerifyOtp = async () => {
+    try {
+      await axios.post(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/otpverify",
+        {
+          email: registrationInput.email,
+          otp: otp,
+        },
+      );
+      toast.success("Otp verification done");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      toast.error(error)
+    }
   };
   const handleRegistration = () => {
     axios
@@ -48,7 +64,9 @@ const Signup = () => {
         toast.success(
           `Registration done & send a verification otp to your email`,
         );
-        setOpenOtpModal(true);
+        setTimeout(() => {
+          setOpenOtpModal(true);
+        }, 2000);
       })
       .catch(() => {
         toast.error("Registration failed");
@@ -139,9 +157,10 @@ const Signup = () => {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   placeholder="Enter OTP"
+                  className={"text-center"}
                 />
 
-                <Button onClick={handleVerifyOtp} className="w-full">
+                <Button onClick={handleVerifyOtp} className="w-full cursor-pointer">
                   Verify OTP
                 </Button>
               </div>
