@@ -73,7 +73,7 @@ async function signupController(req, res) {
   
 }
 
-async function getAllUsers() {
+async function getAllUsers(req, res) {
   const getAllUsers = await userSchema.find({})
   res.status(200).json({
     message: "Get all users",
