@@ -1,11 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [loginInput, setLoginInput] = useState({
+    email: "",
+    password: ""
+  })
+  const navigate = useNavigate()
+  const handleInputChange = (e) => {
+    setLoginInput({
+      ...loginInput,
+      [e.target.name] : e.target.value
+    })
+  }
+  const handleLoginBtn = async () => {
+    try {
+      await axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login", loginInput)
+      toast.success("Login done")
+      setTimeout(() => {
+        navigate("/")
+      }, 2000);
+    } catch (error) {
+      toast.error(error)
+    }
+  }
   return (
     <>
       <Helmet>
@@ -23,15 +48,15 @@ const Login = () => {
             <form className="space-y-4">
               <div>
                 <Label className={"mb-2"}>Email</Label>
-                <Input type="email" placeholder="Enter your email" />
+                <Input type="email" placeholder="Enter your email" name="email" onChange={handleInputChange} />
               </div>
 
               <div>
                 <Label className={"mb-2"}>Password</Label>
-                <Input type="password" placeholder="**********" />
+                <Input type="password" placeholder="**********" name="password" onChange={handleInputChange} />
               </div>
 
-              <Button className="w-full mt-2 cursor-pointer">Login</Button>
+              <Button className="w-full mt-2 cursor-pointer text-base dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]" onClick={handleLoginBtn}>Login</Button>
             </form>
           </CardContent>
         </Card>

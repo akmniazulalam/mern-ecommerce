@@ -138,7 +138,7 @@ const Signup = () => {
 
             <p className="text-sm text-center mt-2">
               Already have an account?{" "}
-              <span className="text-blue-500 cursor-pointer">Login</span>
+              <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>Login</span>
             </p>
           </CardContent>
         </Card>
