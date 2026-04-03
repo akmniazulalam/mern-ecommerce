@@ -15,6 +15,7 @@ import Signup from "./components/pages/Signup";
 import Login from "./components/pages/Login";
 import VerifyOtp from "./components/pages/VerifyOtp";
 import { useEffect } from "react";
+import Userlists from "./components/pages/Userlists";
 
 function App() {
   
@@ -44,6 +45,7 @@ function App() {
         <Route path="/updatecategory/:id" element={<UpdateCategory />} />
         <Route path="/categorylist" element={<CategoryList />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/userlists" element={<Userlists />} />
       </Route>
     </Routes>
   );

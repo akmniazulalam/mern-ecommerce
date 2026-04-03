@@ -9,6 +9,7 @@ import {
   List,
   Menu,
   ChevronDown,
+  User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -320,6 +321,19 @@ const Sidebar = () => {
             }>
             <Settings className="w-5 h-5" />
             Settings
+          </NavLink>
+          <NavLink
+            to="/userlists"
+            className={({ isActive }) =>
+              cn(
+                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted",
+              )
+            }>
+            <User className="w-5 h-5" />
+            Userlists
           </NavLink>
         </nav>
       </aside>
