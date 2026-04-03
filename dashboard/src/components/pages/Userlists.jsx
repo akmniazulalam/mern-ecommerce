@@ -1,10 +1,5 @@
-import React, { useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableHeader,
@@ -18,23 +13,30 @@ import { Helmet } from "react-helmet-async";
 import axios from "axios";
 
 const Userlists = () => {
-    useEffect(()=> {
-        axios.get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/signup")
-    }, [])
+  const [userList, setUserList] = useState([]);
+  useEffect(() => {
+    axios
+      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/userlist")
+      .then((res) => {
+        setUserList(res.data.data)
+        console.log(userList);
+        
+      });
+  }, []);
   return (
     <>
       <Helmet>
         <title>Userlists</title>
       </Helmet>
       <div className="p-6">
-      <Card className="shadow-xl rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold">
-            👥 Users List
-          </CardTitle>
-        </CardHeader>
+        <Card className="shadow-xl rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-2xl font-semibold">
+              👥 Users List
+            </CardTitle>
+          </CardHeader>
 
-        <CardContent>
+          <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -46,10 +48,11 @@ const Userlists = () => {
               </TableHeader>
 
               <TableBody>
+                {userList.map((user) => (
                   <TableRow key={user._id}>
                     {/* User Info */}
                     <TableCell className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
+                      <div className="w-9 h-9 rounded-full bg-primary dark:text-black text-white flex items-center justify-center font-semibold">
                         {user.firstName?.charAt(0)}
                       </div>
 
@@ -80,11 +83,12 @@ const Userlists = () => {
                       {new Date(user.createdAt).toLocaleDateString()}
                     </TableCell>
                   </TableRow>
+                ))}
               </TableBody>
             </Table>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
     </>
   );
 };
