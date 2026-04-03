@@ -132,7 +132,7 @@ const Signup = () => {
 
             <Button
               onClick={handleRegistration}
-              className="w-full mt-2 cursor-pointer">
+              className="w-full mt-2 cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]">
               Sign Up
             </Button>
 
@@ -160,7 +160,7 @@ const Signup = () => {
                   className={"text-center"}
                 />
 
-                <Button onClick={handleVerifyOtp} className="w-full cursor-pointer">
+                <Button onClick={handleVerifyOtp} className="w-full cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]">
                   Verify OTP
                 </Button>
               </div>

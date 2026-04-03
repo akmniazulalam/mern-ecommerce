@@ -11,26 +11,29 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [loginInput, setLoginInput] = useState({
     email: "",
-    password: ""
-  })
-  const navigate = useNavigate()
+    password: "",
+  });
+  const navigate = useNavigate();
   const handleInputChange = (e) => {
     setLoginInput({
       ...loginInput,
-      [e.target.name] : e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
   const handleLoginBtn = async () => {
     try {
-      await axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login", loginInput)
-      toast.success("Login done")
+      await axios.post(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login",
+        loginInput,
+      );
+      toast.success("Login successfully done");
       setTimeout(() => {
-        navigate("/")
+        navigate("/");
       }, 2000);
     } catch (error) {
-      toast.error(error)
+      toast.error(error);
     }
-  }
+  };
   return (
     <>
       <Helmet>
@@ -44,20 +47,40 @@ const Login = () => {
             </CardTitle>
           </CardHeader>
 
-          <CardContent>
-            <form className="space-y-4">
-              <div>
-                <Label className={"mb-2"}>Email</Label>
-                <Input type="email" placeholder="Enter your email" name="email" onChange={handleInputChange} />
-              </div>
+          <CardContent className={"space-y-4"}>
+            <div>
+              <Label className={"mb-2"}>Email</Label>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                name="email"
+                onChange={handleInputChange}
+              />
+            </div>
 
-              <div>
-                <Label className={"mb-2"}>Password</Label>
-                <Input type="password" placeholder="**********" name="password" onChange={handleInputChange} />
-              </div>
+            <div>
+              <Label className={"mb-2"}>Password</Label>
+              <Input
+                type="password"
+                placeholder="**********"
+                name="password"
+                onChange={handleInputChange}
+              />
+            </div>
 
-              <Button className="w-full mt-2 cursor-pointer text-base dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]" onClick={handleLoginBtn}>Login</Button>
-            </form>
+            <Button
+              className="w-full mt-2 cursor-pointer text-base dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]"
+              onClick={handleLoginBtn}>
+              Login
+            </Button>
+            <p className="text-sm text-center mt-2">
+              Not already an account?{" "}
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => navigate("/signup")}>
+                Signup
+              </span>
+            </p>
           </CardContent>
         </Card>
       </div>
