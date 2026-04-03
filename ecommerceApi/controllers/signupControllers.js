@@ -73,4 +73,12 @@ async function signupController(req, res) {
   
 }
 
-module.exports = signupController;
+async function getAllUsers() {
+  const getAllUsers = await userSchema.find({})
+  res.status(200).json({
+    message: "Get all users",
+    data: getAllUsers
+  })
+}
+
+module.exports = {signupController, getAllUsers};
