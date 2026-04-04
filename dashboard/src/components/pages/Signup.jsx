@@ -77,7 +77,10 @@ const Signup = () => {
 
   const handleResetOtp = async () => {
     try {
-      await axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/resendotp")
+      const response = await axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/resendotp", {
+          email: registrationInput.email,
+        })
+       toast.success(response?.data?.message || "Otp resend successfully") 
     } catch (error) {
       toast.error(error.response?.data?.message || error?.message)
     }
