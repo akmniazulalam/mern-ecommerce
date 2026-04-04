@@ -1,3 +1,4 @@
+const emailVerification = require("../helpers/emailVerification");
 const userSchema = require("../model/userSchema");
 const crypto = require("crypto");
 
@@ -54,6 +55,8 @@ async function resendOtpController(req, res) {
 
   resendOtpUser.otp = otp;
   resendOtpUser.expireOtp = expireOtp;
+
+  emailVerification(email, otp)
 
   await resendOtpUser.save();
 

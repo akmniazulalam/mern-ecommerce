@@ -37,23 +37,7 @@ const Signup = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const handleVerifyOtp = async () => {
-    try {
-      await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/otpverify",
-        {
-          email: registrationInput.email,
-          otp: otp,
-        },
-      );
-      toast.success("Otp verification done");
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    } catch (error) {
-      toast.error(error.response?.data?.message || error?.message)
-    }
-  };
+  
   const handleRegistration = () => {
     axios
       .post(
@@ -72,6 +56,32 @@ const Signup = () => {
         toast.error(error.response?.data?.message || error?.message ||"Registration failed");
       });
   };
+
+  const handleVerifyOtp = async () => {
+    try {
+      await axios.post(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/otpverify",
+        {
+          email: registrationInput.email,
+          otp: otp,
+        },
+      );
+      toast.success("Otp verification done");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      toast.error(error.response?.data?.message || error?.message)
+    }
+  };
+
+  const handleResetOtp = async () => {
+    try {
+      await axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/resendotp")
+    } catch (error) {
+      toast.error(error.response?.data?.message || error?.message)
+    }
+  }
   return (
     <>
       <Helmet>
@@ -162,6 +172,9 @@ const Signup = () => {
 
                 <Button onClick={handleVerifyOtp} className="w-full cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]">
                   Verify OTP
+                </Button>
+                <Button onClick={handleResetOtp} variant="ghost" className="w-full cursor-pointer">
+                  Resend OTP
                 </Button>
               </div>
             </DialogContent>
