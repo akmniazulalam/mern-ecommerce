@@ -51,7 +51,7 @@ const Signup = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      toast.error(error.response?.data?.message)
+      toast.error(error.response?.data?.message || error?.message)
     }
   };
   const handleRegistration = () => {
@@ -69,7 +69,7 @@ const Signup = () => {
         }, 2000);
       })
       .catch((error) => {
-        toast.error(error.response?.data?.message ||"Registration failed");
+        toast.error(error.response?.data?.message || error?.message ||"Registration failed");
       });
   };
   return (
