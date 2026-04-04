@@ -20,7 +20,7 @@ const {
   getSingleProductController,
   deleteProduct,
   deleteAllProduct
-} = require("../../controllers/productController");
+} = require("./product.controller");
 
 router.post("/createproduct", upload.single('image'), productController);
 router.get("/getproduct", getProductController);

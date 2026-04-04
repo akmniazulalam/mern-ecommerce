@@ -1,5 +1,5 @@
-const subCategorySchema = require("../model/subCategorySchema");
-const categorySchema = require("../model/categorySchema");
+const subCategorySchema = require("./subcategory.model");
+const categorySchema = require("../category/category.model");
 
 async function subCategoryController(req, res) {
   const { name, description, categoryId } = req.body;
@@ -25,8 +25,8 @@ async function subCategoryController(req, res) {
 }
 
 async function getAllSubCategory(req, res) {
-  const getCategoryList = await subCategorySchema.find({});
-  res.json({ message: "Category Paichi", data: getCategoryList });
+  const getSubCategoryList = await subCategorySchema.find({});
+  res.json({ message: "Subcategory Paichi", data: getSubCategoryList });
 }
 
 async function deleteAllSubCategory (req, res) {

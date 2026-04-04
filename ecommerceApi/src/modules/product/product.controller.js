@@ -1,6 +1,6 @@
 const cloudinary = require("cloudinary").v2;
-const uploadImage = require("../middlewares/cloudinary");
-const productSchema = require("../model/productSchema");
+const uploadImage = require("../../common/config/cloudinary");
+const productSchema = require("./product.model");
 
 async function productController(req, res) {
   const { name, description, category, price, size, color, ram, storage } =

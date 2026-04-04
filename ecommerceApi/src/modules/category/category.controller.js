@@ -1,4 +1,4 @@
-const categorySchema = require("../model/categorySchema");
+const categorySchema = require("./category.model");
 
 function categoryController(req, res) {
   const { name, description } = req.body;

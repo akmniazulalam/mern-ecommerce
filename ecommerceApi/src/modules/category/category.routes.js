@@ -7,12 +7,12 @@ const {
   deleteCategoryController,
   deleteAllCategoryController,
   singleCategoryController
-} = require("../../controllers/categoryController");
+} = require("./category.controller");
 const {
   subCategoryController,
   getAllSubCategory,
   deleteAllSubCategory
-} = require("../../controllers/subCategoryController");
+} = require("../subcategory/subcategory.controller");
 
 router.post("/createcategory", categoryController);
 router.get("/getallcategory", getAllCategory);
