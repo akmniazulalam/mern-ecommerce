@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Userlists = () => {
   const [userList, setUserList] = useState([]);
@@ -30,15 +31,22 @@ const Userlists = () => {
     axios
       .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/userlist")
       .then((res) => {
-        setUserList(res.data.data)
+        setUserList(res.data.data);
         console.log(userList);
-        
       });
   }, []);
 
-  const handleDeleteUser = () => {
-    axios.delete("")
-  }
+  const handleDeleteUser = (id) => {
+    try {
+      axios.delete(
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/auth/deleteuser/${id}`,
+      );
+      toast.success("Successfully deleted");
+      setUserList(userList.filter((item) => item._id !== id));
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
   return (
     <>
@@ -92,7 +100,11 @@ const Userlists = () => {
                       {user.isVerified ? (
                         <Badge className="bg-green-500">Verified</Badge>
                       ) : (
-                        <Badge variant="destructive" className={"dark:bg-red-700"}>Pending</Badge>
+                        <Badge
+                          variant="destructive"
+                          className={"dark:bg-red-700"}>
+                          Pending
+                        </Badge>
                       )}
                     </TableCell>
 
@@ -116,7 +128,7 @@ const Userlists = () => {
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
                               This action cannot be undone. This will
-                              permanently delete this category.
+                              permanently delete this user.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
 
