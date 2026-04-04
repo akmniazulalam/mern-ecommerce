@@ -51,7 +51,7 @@ const Signup = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      toast.error(error)
+      toast.error(error.response?.data?.message)
     }
   };
   const handleRegistration = () => {
@@ -68,8 +68,8 @@ const Signup = () => {
           setOpenOtpModal(true);
         }, 2000);
       })
-      .catch(() => {
-        toast.error("Registration failed");
+      .catch((error) => {
+        toast.error(error.response?.data?.message ||"Registration failed");
       });
   };
   return (
