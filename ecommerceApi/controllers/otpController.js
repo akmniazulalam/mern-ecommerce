@@ -46,7 +46,7 @@ async function resendOtpController(req, res) {
   const { email } = req.body;
   const resendOtpUser = await userSchema.findOne({ email });
   if (!resendOtpUser) {
-    return res.json({ error: "Email not found" });
+    return res.status(400).json({ error: "Email not found" });
   }
 
   const otp = crypto.randomInt(100000, 999999).toString();

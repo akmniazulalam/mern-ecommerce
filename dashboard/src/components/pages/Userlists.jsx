@@ -79,7 +79,7 @@ const Userlists = () => {
                     {/* User Info */}
                     <TableCell className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-full bg-primary dark:text-black text-white flex items-center justify-center font-semibold">
-                        {user.firstName?.charAt(0)}
+                        {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
                       </div>
 
                       <div>

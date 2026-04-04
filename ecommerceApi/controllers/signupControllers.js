@@ -10,28 +10,28 @@ async function signupController(req, res) {
   const { firstName, lastName, email, password } = req.body;
   const token = jwt.sign({id: email}, "niaz")
   if(!firstName || !lastName) {
-    return res.json({
+    return res.status(400).json({
         message: "Error: First name and last name are required"
     })
   }
   if(!email) {
-    return res.json({
+    return res.status(400).json({
         message: "Error: Email is required"
     })
   }
   if(!password) {
-    return res.json({
+    return res.status(400).json({
         message: "Error: Password is required"
     })
   }
   if(!emailValidation(email)) {
-    return res.json({
+    return res.status(400).json({
         message: "Error: Email format is not correct."
     })
   }
 
   if(!passVal(password)) {
-    return res.json({
+    return res.status(400).json({
       message: "Error: Password format is not correct."
     })
   }
@@ -41,7 +41,7 @@ async function signupController(req, res) {
   console.log(existingEmail.length)
 
   if(existingEmail.length > 0) {
-    return res.json({
+    return res.status(409).json({
       message: "This email already used"
     })
   }

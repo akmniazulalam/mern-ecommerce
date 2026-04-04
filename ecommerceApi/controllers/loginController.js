@@ -8,22 +8,22 @@ async function loginController(req, res) {
   const existingEmailUser = await userSchema.findOne({ email });
 
   if (!email) {
-    return res.json({
+    return res.status(400).json({
       message: "Email is required",
     });
   }
   if (!emailValidation(email)) {
-    return res.json({
+    return res.status(400).json({
       message: "Email format is not correct",
     });
   }
   if (!existingEmailUser) {
-    return res.json({
+    return res.status(400).json({
       message: "Email not found",
     });
   }
   if (!password) {
-    return res.json({
+    return res.status(400).json({
       message: "Password is required",
     });
   }
@@ -35,7 +35,7 @@ async function loginController(req, res) {
   } else {
     bcrypt.compare(password, existingEmailUser.password, (err, result) => {
       if (!result) {
-        return res.json({ message: "Password is not matched" });
+        return res.status(401).json({ message: "Password is not matched" });
       }
       req.session.isAuth = true;
       req.session.userSchema = {
@@ -66,7 +66,7 @@ function dashboardController(req, res) {
 function logoutController(req, res) {
   req.session.destroy(function (err) {
     if (err) {
-      return res.json({ message: "Wrong" });
+      return res.status(400).json({ message: "Wrong" });
     } else {
       res.clearCookie("connect.sid");
       return res.status(200).json({ message: "Logout Successful" });
