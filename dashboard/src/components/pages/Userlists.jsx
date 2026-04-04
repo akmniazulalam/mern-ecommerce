@@ -74,7 +74,7 @@ const Userlists = () => {
                       {user.isVerified ? (
                         <Badge className="bg-green-500">Verified</Badge>
                       ) : (
-                        <Badge variant="destructive">Pending</Badge>
+                        <Badge variant="destructive" className={"dark:bg-red-700"}>Pending</Badge>
                       )}
                     </TableCell>
 
