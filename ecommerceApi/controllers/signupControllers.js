@@ -81,4 +81,14 @@ async function getAllUsers(req, res) {
   })
 }
 
-module.exports = {signupController, getAllUsers};
+async function deleteUser(req, res) {
+  const {id} = req.params
+
+  const deleteUser = await userSchema.findByIdAndDelete(id)
+  res.status(200).json({
+    message: "Deleted successfully done",
+    data: deleteUser
+  })
+}
+
+module.exports = {signupController, getAllUsers, deleteUser};

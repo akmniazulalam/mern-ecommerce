@@ -8,7 +8,19 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import axios from "axios";
 
@@ -23,6 +35,11 @@ const Userlists = () => {
         
       });
   }, []);
+
+  const handleDeleteUser = () => {
+    axios.delete("")
+  }
+
   return (
     <>
       <Helmet>
@@ -44,6 +61,7 @@ const Userlists = () => {
                   <TableHead>Email</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Created</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -81,6 +99,38 @@ const Userlists = () => {
                     {/* Created */}
                     <TableCell>
                       {new Date(user.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="cursor-pointer dark:bg-red-600">
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete this category.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                            <AlertDialogAction
+                              onClick={() => handleDeleteUser(user._id)}
+                              className={"cursor-pointer"}>
+                              Confirm Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </TableCell>
                   </TableRow>
                 ))}
