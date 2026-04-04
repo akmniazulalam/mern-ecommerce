@@ -161,20 +161,6 @@ const Sidebar = () => {
                     </NavLink>
                   </div>
                 )}
-
-                <NavLink
-                  to="/settings"
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
-                      isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted",
-                    )
-                  }>
-                  <Settings className="w-5 h-5" />
-                  Settings
-                </NavLink>
                 <NavLink
                   to="/userlists"
                   className={({ isActive }) =>
@@ -187,6 +173,19 @@ const Sidebar = () => {
                   }>
                   <User className="w-5 h-5" />
                   Userlists
+                </NavLink>
+                <NavLink
+                  to="/settings"
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-muted",
+                    )
+                  }>
+                  <Settings className="w-5 h-5" />
+                  Settings
                 </NavLink>
               </nav>
             </div>
@@ -321,20 +320,6 @@ const Sidebar = () => {
               </NavLink>
             </div>
           )}
-
-          <NavLink
-            to="/settings"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted",
-              )
-            }>
-            <Settings className="w-5 h-5" />
-            Settings
-          </NavLink>
           <NavLink
             to="/userlists"
             className={({ isActive }) =>
@@ -347,6 +332,19 @@ const Sidebar = () => {
             }>
             <User className="w-5 h-5" />
             Userlists
+          </NavLink>
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              cn(
+                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted",
+              )
+            }>
+            <Settings className="w-5 h-5" />
+            Settings
           </NavLink>
         </nav>
       </aside>
