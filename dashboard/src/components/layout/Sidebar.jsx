@@ -190,7 +190,7 @@ const Sidebar = () => {
           </DialogContent>
         </Dialog>
 
-        <div className="ml-4 font-bold text-lg">Dashboard</div>
+        <div className="ml-2.5 lg:ml-4 font-bold text-base md:text-lg">Dashboard</div>
       </div>
 
       {/* Desktop Sidebar */}
