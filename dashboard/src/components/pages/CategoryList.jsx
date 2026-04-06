@@ -21,31 +21,25 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 const CategoryList = () => {
-  const categories = [
-    { id: 1, name: "Electronics", description: "Phones, Laptops, etc." },
-    { id: 2, name: "Fashion", description: "Clothes, Shoes, Bags" },
-    { id: 3, name: "Home & Kitchen", description: "Furniture & Appliances" },
-    { id: 4, name: "Sports", description: "Sports items" },
-    { id: 5, name: "Books", description: "Books & Stationery" },
-  ];
   const [finalData, setFinalData] = useState([]);
+
   useEffect(() => {
     async function final() {
       const data = await axios.get(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory"
       );
       setFinalData(data.data.data);
     }
     final();
   }, []);
 
-  const handleDeleteCategory = (id) => {
-    axios.delete(
-      `https://mern-ecommerce-91cv.onrender.com/api/v1/category/deletecategory/${id}`,
+  const handleDeleteCategory = async (id) => {
+    await axios.delete(
+      `https://mern-ecommerce-91cv.onrender.com/api/v1/category/deletecategory/${id}`
     );
     setFinalData(finalData.filter((item) => item._id !== id));
   };
@@ -55,75 +49,141 @@ const CategoryList = () => {
       <Helmet>
         <title>Category List</title>
       </Helmet>
-      <Card>
-        <CardHeader>
-          <CardTitle>Category List</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Serial</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+
+      <div className="p-4 md:p-6">
+        <Card className="shadow-xl rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-xl md:text-2xl font-semibold">
+              📂 Category List
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent>
+
+            {/* ================= DESKTOP TABLE ================= */}
+            <div className="hidden md:block overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Serial</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {finalData.map((item, index) => (
+                    <TableRow key={item._id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell className="font-medium">
+                        {item.name}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {item.description}
+                      </TableCell>
+
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Link to={`/updatecategory/${item._id}`}>
+                            <Button size="sm" variant="outline">
+                              Edit
+                            </Button>
+                          </Link>
+
+                          <DeleteDialog
+                            onConfirm={() =>
+                              handleDeleteCategory(item._id)
+                            }
+                          />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* ================= MOBILE CARD VIEW ================= */}
+            <div className="md:hidden space-y-4">
               {finalData.map((item, index) => (
-                <TableRow key={item.name}>
-                  <TableCell className={"px-6"}>{index + 1}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Link to={`/updatecategory/${item._id}`}>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className={"cursor-pointer"}>
-                          Edit
-                        </Button>
-                      </Link>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            className="cursor-pointer dark:bg-red-600">
-                            Delete
-                          </Button>
-                        </AlertDialogTrigger>
+                <div
+                  key={item._id}
+                  className="border rounded-xl p-4 shadow-sm space-y-3"
+                >
+                  {/* Top */}
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold text-base">
+                      {item.name}
+                    </h3>
+                    <span className="text-xs text-muted-foreground">
+                      #{index + 1}
+                    </span>
+                  </div>
 
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This action cannot be undone. This will
-                              permanently delete this category.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
+                  {/* Description */}
+                  <p className="text-sm text-muted-foreground">
+                    {item.description}
+                  </p>
 
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-2">
+                    <Link
+                      to={`/updatecategory/${item._id}`}
+                      className="w-full"
+                    >
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Edit
+                      </Button>
+                    </Link>
 
-                            <AlertDialogAction
-                              onClick={() => handleDeleteCategory(item._id)}
-                              className={"cursor-pointer"}>
-                              Confirm Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
+                    <DeleteDialog
+                      onConfirm={() =>
+                        handleDeleteCategory(item._id)
+                      }
+                    />
+                  </div>
+                </div>
               ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </div>
+
+          </CardContent>
+        </Card>
+      </div>
     </>
+  );
+};
+
+/* 🔥 Reusable Delete Dialog */
+const DeleteDialog = ({ onConfirm }) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm" variant="destructive" className="w-full md:w-auto">
+          Delete
+        </Button>
+      </AlertDialogTrigger>
+
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will permanently delete this category.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>
+            Confirm Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

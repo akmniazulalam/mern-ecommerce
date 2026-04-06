@@ -92,7 +92,7 @@ const UpdateProduct = () => {
       </Helmet>
 
       <h3 className="font-bold">Update Product</h3>
-      <div className="max-w-1/3 mt-4">
+      <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
             <FieldLabel>Update Product Name</FieldLabel>
