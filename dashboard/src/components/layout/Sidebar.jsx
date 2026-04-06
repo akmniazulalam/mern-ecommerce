@@ -10,6 +10,8 @@ import {
   Menu,
   ChevronDown,
   User,
+  FolderPlus,
+  PackagePlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,14 +20,6 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 const Sidebar = () => {
   const [openCategory, setOpenCategory] = useState(false);
   const [openProduct, setOpenProduct] = useState(false);
-  const navItems = [
-    { name: "Dashboard", icon: LayoutDashboard, path: "/" },
-    { name: "Category", icon: Layers, path: "/category" },
-    { name: "CategoryList", icon: List, path: "/categorylist" },
-    { name: "Orders", icon: ShoppingCart, path: "/orders" },
-    { name: "Products", icon: Package, path: "/products" },
-    { name: "Settings", icon: Settings, path: "/settings" },
-  ];
 
   return (
     <>
@@ -237,12 +231,13 @@ const Sidebar = () => {
                 to="/category"
                 className={({ isActive }) =>
                   cn(
-                    "block px-4 py-2 rounded-md text-sm transition",
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "hover:bg-muted",
                   )
                 }>
+                <FolderPlus size={16} />
                 Add Category
               </NavLink>
 
@@ -250,12 +245,13 @@ const Sidebar = () => {
                 to="/categorylist"
                 className={({ isActive }) =>
                   cn(
-                    "block px-4 py-2 rounded-md text-sm transition",
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "hover:bg-muted",
                   )
                 }>
+                <List size={16} />
                 Category List
               </NavLink>
             </div>
@@ -297,12 +293,13 @@ const Sidebar = () => {
                 to="/products"
                 className={({ isActive }) =>
                   cn(
-                    "block px-4 py-2 rounded-md text-sm transition",
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "hover:bg-muted",
                   )
                 }>
+                <PackagePlus size={16} />
                 Add Products
               </NavLink>
 
@@ -310,12 +307,13 @@ const Sidebar = () => {
                 to="/productlist"
                 className={({ isActive }) =>
                   cn(
-                    "block px-4 py-2 rounded-md text-sm transition",
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "hover:bg-muted",
                   )
                 }>
+                <Package size={16} />
                 Product List
               </NavLink>
             </div>
