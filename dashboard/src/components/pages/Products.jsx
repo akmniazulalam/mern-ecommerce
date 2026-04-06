@@ -64,7 +64,7 @@ const Products = () => {
         <title>Add Product</title>
       </Helmet>
       <h3 className="font-bold">Add Product</h3>
-      <div className="max-w-1/3 mt-4">
+      <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
             <FieldLabel>Product Name</FieldLabel>
