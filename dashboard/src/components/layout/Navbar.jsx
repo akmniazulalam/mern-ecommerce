@@ -31,26 +31,25 @@ const Navbar = () => {
   };
 
   return (
-    <header className="h-16 border-b bg-background flex items-center justify-between px-6">
-      <Input placeholder="Search..." className="max-w-sm" />
+    <header className="h-16 border-b bg-background flex items-center justify-between px-4 md:px-6">
+      <Input placeholder="Search..." className="max-w-sm mr-2.5" />
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         <Button
           variant="ghost"
-          size="icon"
           onClick={toggleDarkMode}
-          className="cursor-pointer">
+          className="cursor-pointer h-5 w-5 md:h-9 md:w-9">
           {darkMode ? (
             <Sun className="h-5 w-5 text-yellow-500" />
           ) : (
             <Moon className="h-5 w-5 text-muted-foreground" />
           )}
         </Button>
-        <Button variant="ghost" size="icon">
-          <Bell className="w-5 h-5" />
+        <Button variant="ghost" className="cursor-pointer h-5 w-5 md:h-9 md:w-9">
+          <Bell className="h-5 w-5" />
         </Button>
 
-        <div className="w-9 h-9 bg-primary rounded-full flex items-center justify-center dark:text-black text-white font-semibold">
+        <div className="h-6 w-6 md:w-9 md:h-9 bg-primary rounded-full flex items-center justify-center dark:text-black text-white font-semibold text-[12px] md:text-[18px]">
           NA
         </div>
       </div>

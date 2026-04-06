@@ -34,13 +34,14 @@ const Category = () => {
         <title>Add Category</title>
       </Helmet>
       <h3 className="font-bold">Add Category</h3>
-      <div className="max-w-1/3 mt-4">
+      <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
             <FieldLabel>Category Name</FieldLabel>
             <Input
               value={categoryName}
               placeholder="Category Name"
+              className={"placeholder:text-sm md:placeholder:text-base"}
               onChange={(e) => setCategoryName(e.target.value)}
             />
           </Field>
@@ -49,7 +50,7 @@ const Category = () => {
             <Textarea
               value={categoryDescription}
               placeholder="Type your description here..."
-              className={"resize-none"}
+              className={"resize-none placeholder:text-sm md:placeholder:text-base placeholder:leading-6 md:leading-7.5"}
               onChange={(e) => setCategoryDescription(e.target.value)}
             />
           </Field>
