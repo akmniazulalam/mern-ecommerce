@@ -72,12 +72,13 @@ const Sidebar = () => {
                       to="/category"
                       className={({ isActive }) =>
                         cn(
-                          "block px-4 py-2 rounded-md text-sm transition",
+                          "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                           isActive
                             ? "bg-primary text-primary-foreground"
                             : "hover:bg-muted",
                         )
                       }>
+                      <FolderPlus size={16} />
                       Add Category
                     </NavLink>
 
@@ -85,12 +86,13 @@ const Sidebar = () => {
                       to="/categorylist"
                       className={({ isActive }) =>
                         cn(
-                          "block px-4 py-2 rounded-md text-sm transition",
+                          "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                           isActive
                             ? "bg-primary text-primary-foreground"
                             : "hover:bg-muted",
                         )
                       }>
+                      <List size={16} />
                       Category List
                     </NavLink>
                   </div>
@@ -132,12 +134,13 @@ const Sidebar = () => {
                       to="/products"
                       className={({ isActive }) =>
                         cn(
-                          "block px-4 py-2 rounded-md text-sm transition",
+                          "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                           isActive
                             ? "bg-primary text-primary-foreground"
                             : "hover:bg-muted",
                         )
                       }>
+                      <PackagePlus size={16} />
                       Add Products
                     </NavLink>
 
@@ -145,12 +148,13 @@ const Sidebar = () => {
                       to="/productlist"
                       className={({ isActive }) =>
                         cn(
-                          "block px-4 py-2 rounded-md text-sm transition",
+                          "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
                           isActive
                             ? "bg-primary text-primary-foreground"
                             : "hover:bg-muted",
                         )
                       }>
+                      <Package size={16} />
                       Product List
                     </NavLink>
                   </div>
