@@ -56,10 +56,10 @@ const CategoryList = () => {
         <title>Category List</title>
       </Helmet>
       <Card className={"py-4 md:py-6 gap-3 md:gap-6"}>
-        <CardHeader className={"px-4 md:px-6"}>
+        <CardHeader className={"px-3 md:px-6"}>
           <CardTitle>Category List</CardTitle>
         </CardHeader>
-        <CardContent className={"px-3 md:px-6"}>
+        <CardContent className={"px-2.5 md:px-6"}>
           <div className="hidden md:block">
             <Table>
               <TableHeader>
@@ -127,7 +127,7 @@ const CategoryList = () => {
             {finalData.map((item, index) => (
               <div
                 key={item._id}
-                className="border rounded-xl p-4 shadow-sm space-y-3">
+                className="border rounded-xl p-3 shadow-sm space-y-3">
                 {/* Serial */}
                 <p className="text-sm text-muted-foreground">#{index + 1}</p>
 
