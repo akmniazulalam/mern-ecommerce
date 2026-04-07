@@ -32,7 +32,7 @@ const Sidebar = () => {
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="p-0 w-64 h-full -translate-x-[72%]">
+          <DialogContent className="p-0 w-64 h-full translate-x-[0%] left-0">
             <div className="flex flex-col h-full bg-background">
               <div className="p-6 text-xl font-bold border-b">E-Commerce</div>
               <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
