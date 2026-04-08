@@ -16,16 +16,13 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+const MobileSidebar = () => {
 
-const Sidebar = () => {
-  const [openCategory, setOpenCategory] = useState(false);
+    const [openCategory, setOpenCategory] = useState(false);
   const [openProduct, setOpenProduct] = useState(false);
 
   return (
-    <>
-      {/* Mobile Sidebar */}
-      <div className="md:hidden flex items-center p-4 border-b bg-background">
-        <Dialog>
+    <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="icon">
               <Menu className="w-5 h-5" />
@@ -50,7 +47,7 @@ const Sidebar = () => {
                   Dashboard
                 </NavLink>
 
-                {/* Category Dropdown */}
+       
                 <button
                   onClick={() => setOpenCategory(!openCategory)}
                   className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium rounded-lg hover:bg-muted transition">
@@ -97,7 +94,6 @@ const Sidebar = () => {
                     </NavLink>
                   </div>
                 )}
-                {/* Other Menu Items */}
                 <NavLink
                   to="/orders"
                   className={({ isActive }) =>
@@ -112,7 +108,6 @@ const Sidebar = () => {
                   Orders
                 </NavLink>
 
-                {/* Product Dropdown */}
                 <button
                   onClick={() => setOpenProduct(!openProduct)}
                   className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium rounded-lg hover:bg-muted transition">
@@ -189,9 +184,22 @@ const Sidebar = () => {
             </div>
           </DialogContent>
         </Dialog>
+  )
+}
 
-        <div className="ml-2.5 lg:ml-4 font-bold text-base md:text-lg">Dashboard</div>
-      </div>
+const Sidebar = () => {
+    const [openCategory, setOpenCategory] = useState(false);
+  const [openProduct, setOpenProduct] = useState(false);
+  return (
+    <>
+      {/* Mobile Sidebar */}
+      {/* <div className="md:hidden flex items-center p-4 border-b bg-background">
+        
+
+        <div className="ml-2.5 lg:ml-4 font-bold text-base md:text-lg">
+          Dashboard
+        </div>
+      </div> */}
 
       {/* Desktop Sidebar */}
       <aside className="w-64 bg-background border-r hidden md:flex flex-col">
@@ -354,4 +362,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export {Sidebar, MobileSidebar};

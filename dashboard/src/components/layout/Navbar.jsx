@@ -1,12 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import { Moon, Sun } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  Package,
+  Settings,
+  Layers,
+  List,
+  ChevronDown,
+  User,
+  FolderPlus,
+  PackagePlus,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { MobileSidebar } from "./Sidebar";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openProduct, setOpenProduct] = useState(false);
 
   // Sync darkMode with html class on mount
   useEffect(() => {
@@ -32,7 +50,25 @@ const Navbar = () => {
 
   return (
     <header className="h-16 border-b bg-background flex items-center justify-between px-4 md:px-6">
-      <Input placeholder="Search..." className="max-w-sm mr-2.5" />
+      <div className="flex items-center gap-2">
+        
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu className="w-5 h-5" />
+            </Button>
+          </DialogTrigger>
+
+          <DialogContent className="p-0 w-64 h-full translate-x-[0%] left-0">
+            <MobileSidebar/>
+          </DialogContent>
+        </Dialog>
+        </div>
+
+        <Input placeholder="Search..." className="max-w-sm" />
+      </div>
 
       <div className="flex items-center gap-2 md:gap-4">
         <Button
