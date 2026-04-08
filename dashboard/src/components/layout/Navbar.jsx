@@ -4,27 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Bell, Menu } from "lucide-react";
 import { Moon, Sun } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { NavLink } from "react-router-dom";
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Package,
-  Settings,
-  Layers,
-  List,
-  ChevronDown,
-  User,
-  FolderPlus,
-  PackagePlus,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import { MobileSidebar } from "./Sidebar";
 
 const Navbar = () => {
-  const [open, setOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [openCategory, setOpenCategory] = useState(false);
-  const [openProduct, setOpenProduct] = useState(false);
 
   // Sync darkMode with html class on mount
   useEffect(() => {
