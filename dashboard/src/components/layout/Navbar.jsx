@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Bell, Menu } from "lucide-react";
 import { Moon, Sun } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { MobileSidebar } from "./Sidebar";
 
 const Navbar = () => {
@@ -20,7 +20,7 @@ const Navbar = () => {
       const newMode = !prev;
 
       if (newMode) {
-        document.documentElement.classList.add("dark");  //document.documentElement = <html></html> tag, classList.add("dark")= <html class="dark"></html>
+        document.documentElement.classList.add("dark"); //document.documentElement = <html></html> tag, classList.add("dark")= <html class="dark"></html>
         localStorage.setItem("theme", "dark");
       } else {
         document.documentElement.classList.remove("dark");
@@ -32,22 +32,19 @@ const Navbar = () => {
   };
 
   return (
-    <header className="h-16 border-b bg-background flex items-center justify-between px-4 md:px-6">
-      <div className="flex items-center gap-2">
-        
+    <header className="h-16 border-b bg-background flex items-center justify-between px-4 md:px-6 gap-3">
+      <div className="flex items-center gap-4">
         {/* Mobile Menu Button */}
         <div className="md:hidden">
           <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="icon">
-              <Menu className="w-5 h-5" />
-            </Button>
-          </DialogTrigger>
+            <DialogTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu className="w-5 h-5" />
+              </Button>
+            </DialogTrigger>
 
-          <DialogContent className="p-0 w-64 h-full translate-x-[0%] left-0">
-            <MobileSidebar/>
-          </DialogContent>
-        </Dialog>
+            <MobileSidebar />
+          </Dialog>
         </div>
 
         <Input placeholder="Search..." className="max-w-sm" />
@@ -64,7 +61,9 @@ const Navbar = () => {
             <Moon className="h-5 w-5 text-muted-foreground" />
           )}
         </Button>
-        <Button variant="ghost" className="cursor-pointer h-5 w-5 md:h-9 md:w-9">
+        <Button
+          variant="ghost"
+          className="cursor-pointer h-5 w-5 md:h-9 md:w-9">
           <Bell className="h-5 w-5" />
         </Button>
 
