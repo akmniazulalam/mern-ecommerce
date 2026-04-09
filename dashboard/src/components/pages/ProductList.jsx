@@ -207,7 +207,7 @@ const ProductList = () => {
                       <Button
                         size="sm"
                         variant="destructive"
-                        className="w-full shrink dark:bg-red-700">
+                        className="w-1/2 md:w-full md:shrink dark:bg-red-700">
                         Delete
                       </Button>
                     </AlertDialogTrigger>
