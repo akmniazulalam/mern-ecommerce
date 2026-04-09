@@ -39,7 +39,7 @@ const Login = () => {
       <Helmet>
         <title>Login</title>
       </Helmet>
-      <div className="flex items-center justify-center min-h-screen bg-muted w-full">
+      <div className="flex items-center justify-center min-h-screen bg-muted w-full px-4">
         <Card className="w-full max-w-md shadow-xl rounded-2xl">
           <CardHeader>
             <CardTitle className="text-center text-2xl">
