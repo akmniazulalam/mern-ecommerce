@@ -59,7 +59,7 @@ const CategoryList = () => {
         <CardHeader className={"px-3 md:px-6"}>
           <CardTitle>Category List</CardTitle>
         </CardHeader>
-        <CardContent className={"px-2.5 md:px-6"}>
+        <CardContent className={"px-4 md:px-6"}>
           <div className="hidden md:block">
             <Table>
               <TableHeader>
@@ -127,20 +127,20 @@ const CategoryList = () => {
             {finalData.map((item, index) => (
               <div
                 key={item._id}
-                className="border rounded-xl p-3 shadow-sm space-y-3">
+                className="border rounded-xl p-4 shadow-sm space-y-4">
                 {/* Serial */}
                 <p className="text-sm text-muted-foreground">#{index + 1}</p>
 
                 {/* Name */}
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Name</p>
-                  <p className="font-medium text-[12px]">{item.name}</p>
+                  <p className="text-base text-muted-foreground">Name</p>
+                  <p className="font-medium text-base">{item.name}</p>
                 </div>
 
                 {/* Description */}
                 <div>
-                  <p className="text-xs text-muted-foreground mb-1">Description</p>
-                  <p className="text-[12px] leading-4.5">{item.description}</p>
+                  <p className="text-base text-muted-foreground mb-1">Description</p>
+                  <p className="text-base leading-5">{item.description}</p>
                 </div>
 
                 {/* Actions */}
@@ -156,7 +156,7 @@ const CategoryList = () => {
                       <Button
                         size="sm"
                         variant="destructive"
-                        className="w-full shrink dark:bg-red-600">
+                        className="w-1/2 shrink dark:bg-red-600">
                         Delete
                       </Button>
                     </AlertDialogTrigger>

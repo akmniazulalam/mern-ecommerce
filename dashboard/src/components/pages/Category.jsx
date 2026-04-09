@@ -41,7 +41,7 @@ const Category = () => {
             <Input
               value={categoryName}
               placeholder="Category Name"
-              className={"placeholder:text-sm md:placeholder:text-base"}
+              className={"placeholder:text-base"}
               onChange={(e) => setCategoryName(e.target.value)}
             />
           </Field>
@@ -50,7 +50,7 @@ const Category = () => {
             <Textarea
               value={categoryDescription}
               placeholder="Type your description here..."
-              className={"resize-none placeholder:text-sm md:placeholder:text-base placeholder:leading-6 md:leading-7.5"}
+              className={"resize-none placeholder:text-base leading-7.5"}
               onChange={(e) => setCategoryDescription(e.target.value)}
             />
           </Field>

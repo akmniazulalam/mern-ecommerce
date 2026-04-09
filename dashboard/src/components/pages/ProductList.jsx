@@ -52,7 +52,7 @@ const ProductList = () => {
         <CardHeader>
           <CardTitle>Product List</CardTitle>
         </CardHeader>
-        <CardContent className={"px-3 md:px-6"}>
+        <CardContent className={"px-4 md:px-6"}>
           <div className="hidden md:block">
             <Table>
               <TableHeader>
@@ -144,7 +144,7 @@ const ProductList = () => {
             {products.map((item, index) => (
               <div
                 key={item._id}
-                className="border rounded-xl p-3 shadow-sm space-y-3">
+                className="border rounded-xl p-4 shadow-sm space-y-3">
                 {/* Top section */}
                 <div className="">
                   <img
