@@ -71,6 +71,7 @@ const Products = () => {
             <Input
               value={productName}
               placeholder="Product Name"
+              className={"text-sm"}
               onChange={(e) => setProductName(e.target.value)}
             />
           </Field>
@@ -79,7 +80,7 @@ const Products = () => {
             <Textarea
               value={productDescription}
               placeholder="Type your description here..."
-              className={"resize-none"}
+              className={"resize-none text-sm"}
               onChange={(e) => setProductDescription(e.target.value)}
             />
           </Field>
@@ -103,6 +104,7 @@ const Products = () => {
             <Input
               value={price}
               placeholder="Price"
+              className={"text-sm"}
               onChange={(e) => setPrice(e.target.value)}
             />
           </Field>
@@ -111,6 +113,7 @@ const Products = () => {
             <Input
               value={size}
               placeholder="Size"
+              className={"text-sm"}
               onChange={(e) => setSize(e.target.value)}
             />
           </Field>
@@ -119,6 +122,7 @@ const Products = () => {
             <Input
               value={color}
               placeholder="Color"
+              className={"text-sm"}
               onChange={(e) => setColor(e.target.value)}
             />
           </Field>
@@ -127,6 +131,7 @@ const Products = () => {
             <Input
               value={ram}
               placeholder="Ram"
+              className={"text-sm"}
               onChange={(e) => setRam(e.target.value)}
             />
           </Field>
@@ -135,6 +140,7 @@ const Products = () => {
             <Input
               value={storage}
               placeholder="Storage"
+              className={"text-sm"}
               onChange={(e) => setStorage(e.target.value)}
             />
           </Field>
@@ -143,6 +149,7 @@ const Products = () => {
             <Input
               type={"file"}
               placeholder="Product Image"
+              className={"text-sm"}
               onChange={(e) => setImage(e.target.files[0])}
             />
           </Field>
