@@ -215,7 +215,7 @@ function dashboardController(req, res) {
 }
 
 function currentuserController(req, res) {
-  console.log("Current User: ", req.session.user);
+  console.log("Current User:", req.session.user);
   res.status(200).json({
     success: true,
     data: req.session.user
