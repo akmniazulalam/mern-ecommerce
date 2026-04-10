@@ -8,6 +8,7 @@ const {
   dashboardController,
   otpController,
   resendOtpController,
+  currentuserController,
 } = require("./auth.controller");
 const authMiddleware = require("./auth.middleware");
 const router = express.Router();
@@ -18,7 +19,7 @@ router.post("/resendotp", resendOtpController);
 router.get("/userlist", getAllUsers);
 router.delete("/deleteuser/:id", deleteUser);
 router.post("/login", loginController);
-router.get("/currentuser", loginController);
+router.get("/currentuser", currentuserController);
 router.post("/logout", logoutController);
 router.get("/dashboard", authMiddleware, dashboardController);
 
