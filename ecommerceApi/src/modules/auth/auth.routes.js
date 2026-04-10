@@ -18,6 +18,7 @@ router.post("/resendotp", resendOtpController);
 router.get("/userlist", getAllUsers);
 router.delete("/deleteuser/:id", deleteUser);
 router.post("/login", loginController);
+router.get("/currentuser", loginController);
 router.post("/logout", logoutController);
 router.get("/dashboard", authMiddleware, dashboardController);
 

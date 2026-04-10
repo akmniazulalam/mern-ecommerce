@@ -214,6 +214,11 @@ function dashboardController(req, res) {
   });
 }
 
+function currentuserController(req, res) {
+  console.log("Hello I am current user");
+  
+}
+
 function logoutController(req, res) {
   req.session.destroy(function (err) {
     if (err) {
@@ -234,4 +239,5 @@ module.exports = {
   signupController,
   getAllUsers,
   deleteUser,
+  currentuserController
 };
