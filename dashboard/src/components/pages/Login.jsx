@@ -25,6 +25,7 @@ const Login = () => {
       await axios.post(
         "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login",
         loginInput,
+        {withCredentials: true}
       );
       toast.success("Login successfully done");
       setTimeout(() => {
