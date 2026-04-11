@@ -221,6 +221,7 @@ function currentuserController(req, res) {
       message: "No user"
     })
   }
+  
   res.status(200).json({
     success: true,
     user: req.session.user
