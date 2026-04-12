@@ -3,8 +3,8 @@ const nodemailer = require("nodemailer");
 async function emailVerification(email, otp){
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  port: 587,
-  secure: false, // Use true for port 465, false for port 587
+  port: 465,
+  secure: true, // Use true for port 465, false for port 587
   auth: {
     user: "niazulalam097@gmail.com",
     pass: "bktukefpdjtjazuv",
