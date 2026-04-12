@@ -63,7 +63,12 @@ async function signupController(req, res) {
       expireOtp,
     });
     await user.save();
-    emailVerification(email, otp);
+    try {
+      await emailVerification(email, otp);
+    } catch (error) {
+      console.log("Email failed:", error.message);
+      
+    }
   });
   res.json({
     message: "Data send",
