@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 
   const info = await transporter.sendMail({
-    from: '"Otp" <${process.env.EMAIL_USER}>',
+    from: `"Otp" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Otp",
     text: "Otp Verification", // Plain-text version of the message
