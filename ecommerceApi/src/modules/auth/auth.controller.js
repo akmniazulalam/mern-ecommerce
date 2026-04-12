@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const userSchema = require("./auth.model");
+const userSchema = require('./auth.model')
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const passVal = require("../../common/utils/passVal");
@@ -63,12 +63,7 @@ async function signupController(req, res) {
       expireOtp,
     });
     await user.save();
-
-    setImmediate(() => {
-      emailVerification(email, otp).catch((err) => {
-        console.log("Email failed:", err.message);
-      });
-    });
+    await emailVerification(email, otp);
   });
   res.json({
     message: "Data send",
@@ -220,18 +215,20 @@ function dashboardController(req, res) {
 }
 
 function currentuserController(req, res) {
-  if (!req.session.user) {
+  
+  if(!req.session.user){
     return res.status(401).json({
       success: false,
-      message: "No user",
-    });
+      message: "No user"
+    })
   }
 
   res.status(200).json({
     success: true,
-    user: req.session.user,
-  });
+    user: req.session.user
+  })
 }
+
 
 function logoutController(req, res) {
   req.session.destroy(function (err) {
@@ -253,5 +250,5 @@ module.exports = {
   signupController,
   getAllUsers,
   deleteUser,
-  currentuserController,
+  currentuserController
 };
