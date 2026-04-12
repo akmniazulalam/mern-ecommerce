@@ -189,7 +189,7 @@ async function loginController(req, res) {
         return res.status(401).json({ message: "Password is not matched" });
       }
       req.session.isAuth = true;
-      req.session.userSchema = {
+      req.session.user = {
         id: existingEmailUser.id,
         email: existingEmailUser.email,
         firstName: existingEmailUser.firstName,
