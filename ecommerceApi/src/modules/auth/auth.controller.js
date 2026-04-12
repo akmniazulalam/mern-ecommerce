@@ -64,7 +64,7 @@ async function signupController(req, res) {
     });
     await user.save();
     try {
-      await emailVerification(email, otp);
+      emailVerification(email, otp);
     } catch (error) {
       console.log("Email failed:", error.message);
       
