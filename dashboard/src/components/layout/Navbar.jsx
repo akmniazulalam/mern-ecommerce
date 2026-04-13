@@ -5,15 +5,21 @@ import { Bell, Menu } from "lucide-react";
 import { Moon, Sun } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { MobileSidebar } from "./Sidebar";
+import axios from "axios";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const [currentUser, setCurrentUser] = useState([])
 
   // Sync darkMode with html class on mount
   useEffect(() => {
     const isDark = document.documentElement.classList.contains("dark");
     setDarkMode(isDark);
   }, []);
+
+  useEffect(() => {
+    axios.get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser").then((res) => setCurrentUser(res?.user))
+  }, [])
 
   const toggleDarkMode = () => {
     setDarkMode((prev) => {
@@ -68,7 +74,7 @@ const Navbar = () => {
         </Button>
 
         <div className="h-6 w-6 md:w-9 md:h-9 bg-primary rounded-full flex items-center justify-center dark:text-black text-white font-semibold text-[12px] md:text-[18px]">
-          NA
+          {currentUser.firstName.charAt(0)}
         </div>
       </div>
     </header>
