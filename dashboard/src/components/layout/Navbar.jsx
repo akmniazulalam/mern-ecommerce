@@ -19,7 +19,9 @@ const Navbar = () => {
 
   useEffect(() => {
     axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {withCredentials: true})
+      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
+        withCredentials: true,
+      })
       .then((res) => setCurrentUser(res.data.user));
   }, []);
 
@@ -76,7 +78,8 @@ const Navbar = () => {
         </Button>
 
         <div className="h-6 w-6 md:w-9 md:h-9 bg-primary rounded-full flex items-center justify-center dark:text-black text-white font-semibold text-[12px] md:text-[18px]">
-          {currentUser?.firstName?.charAt(0)} {currentUser?.lastName?.charAt(0)}
+          {currentUser?.firstName?.charAt(0)}
+          {currentUser?.lastName?.charAt(0)}
         </div>
       </div>
     </header>
