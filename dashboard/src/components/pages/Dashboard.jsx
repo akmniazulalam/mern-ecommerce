@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import StatsCard from '../StatsCard'
+import axios from 'axios';
 
 const Dashboard = () => {
+
   const [currentUser, setCurrentUser] = useState(null);
+
   useEffect(() => {
     axios
       .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
@@ -10,6 +13,7 @@ const Dashboard = () => {
       })
       .then((res) => setCurrentUser(res.data.user));
   }, []);
+
   return (
     <div className="space-y-8">
       <h2 className='text-4xl font-bold'>Welcome {currentUser?.firstName} {currentUser?.lastName}</h2>
