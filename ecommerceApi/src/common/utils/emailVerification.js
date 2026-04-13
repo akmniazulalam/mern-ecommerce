@@ -1,6 +1,8 @@
 const nodemailer = require("nodemailer");
-import { Resend } from "resend";
+const Resend = require("resend");
+
 async function emailVerification(email, otp) {
+  
   // const transporter = nodemailer.createTransport({
   //   host: "smtp.gmail.com",
   //   port: 587,
