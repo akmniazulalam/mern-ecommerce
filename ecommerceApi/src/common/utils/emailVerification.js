@@ -25,7 +25,7 @@ async function emailVerification(email, otp) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
-    from: "onboarding@resend.dev",
+    from: "Otp <onboarding@resend.dev>",
     to: email,
     subject: "Otp",
     html: `<h1>Your Otp is: ${otp}</h1>`,
