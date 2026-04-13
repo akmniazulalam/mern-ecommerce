@@ -9,7 +9,7 @@ import axios from "axios";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
-  const [currentUser, setCurrentUser] = useState([])
+  const [currentUser, setCurrentUser] = useState([]);
 
   // Sync darkMode with html class on mount
   useEffect(() => {
@@ -18,8 +18,10 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    axios.get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser").then((res) => setCurrentUser(res?.user))
-  }, [])
+    axios
+      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {withCredentials: true})
+      .then((res) => setCurrentUser(res?.user));
+  }, []);
 
   const toggleDarkMode = () => {
     setDarkMode((prev) => {
@@ -74,7 +76,7 @@ const Navbar = () => {
         </Button>
 
         <div className="h-6 w-6 md:w-9 md:h-9 bg-primary rounded-full flex items-center justify-center dark:text-black text-white font-semibold text-[12px] md:text-[18px]">
-          {currentUser.map(item => (
+          {currentUser.map((item) => (
             <h3>{item.firstName.charAt(0)}</h3>
           ))}
         </div>
