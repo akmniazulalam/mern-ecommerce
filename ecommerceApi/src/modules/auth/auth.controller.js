@@ -52,29 +52,20 @@ async function signupController(req, res) {
   const expireOtp = new Date(Date.now() + 10 * 60 * 1000);
   console.log(expireOtp);
 
-  
-
-  const hash = await bcrypt.hash(password, 10);
-
-  const user = new userSchema({
-    firstName,
-    lastName,
-    email,
-    password: hash,
-    token: jwt.sign({ id: email }, "niaz"),
-    otp,
-    expireOtp,
-  });
-
-  await user.save();
-
-  // 🔥 non-blocking email
-  setImmediate(() => {
-    emailVerification(email, otp).catch(err => {
-      console.log("Email failed:", err.message);
+  bcrypt.hash(password, 10, async (err, hash) => {
+    const user = new userSchema({
+      firstName,
+      lastName,
+      email,
+      password: hash,
+      token: token,
+      otp,
+      expireOtp,
     });
+    await user.save();
+    
+    emailVerification(email, otp);
   });
-
   res.json({
     message: "Data send",
   });
