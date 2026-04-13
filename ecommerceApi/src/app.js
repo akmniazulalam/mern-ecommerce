@@ -5,6 +5,9 @@ const path = require("path");
 const session = require("express-session");
 const routes = require("./routes");
 app.use(express.json());
+
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin: [
