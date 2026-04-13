@@ -6,8 +6,8 @@ const Dashboard = () => {
 
   const [currentUser, setCurrentUser] = useState(null);
 
-  useEffect(() => {
-    axios
+  useEffect(async () => {
+    await axios
       .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
         withCredentials: true,
       })
