@@ -7,14 +7,18 @@ const Dashboard = () => {
 
   useEffect(() => {
     const user = async () => {
-      await axios
-        .get(
+      try {
+        const res = await axios.get(
           "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser",
           {
             withCredentials: true,
           },
-        )
-        .then((res) => setCurrentUser(res.data.user));
+        );
+
+        setCurrentUser(res.data.user);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
     };
     user();
   }, []);
@@ -22,7 +26,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       <h2 className="text-4xl font-bold">
-        Welcome {currentUser?.firstName} {currentUser?.lastName}
+        Welcome {currentUser?.firstName} {currentUser?.lastName} to Dashboard
       </h2>
       <div className="grid md:grid-cols-4 gap-6">
         <StatsCard title="Total Revenue" value="$45,231" />

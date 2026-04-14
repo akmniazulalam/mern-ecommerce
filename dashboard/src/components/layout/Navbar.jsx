@@ -81,6 +81,14 @@ const Navbar = () => {
           {currentUser?.firstName?.charAt(0)}
           {currentUser?.lastName?.charAt(0)}
         </div>
+        <div className="hidden sm:block text-sm">
+            <p className="font-medium text-[10px] md:text-xs">
+              {currentUser?.firstName || "User"} {currentUser?.lastName || ""}
+            </p>
+            <p className="text-[10px] md:text-xs text-muted-foreground">
+              {currentUser?.email || ""}
+            </p>
+          </div>
       </div>
     </header>
   );
