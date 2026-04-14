@@ -77,18 +77,28 @@ const Navbar = () => {
           <Bell className="h-5 w-5" />
         </Button>
 
-        <div className="h-6 w-6 md:w-9 md:h-9 bg-primary rounded-full flex items-center justify-center dark:text-black text-white font-semibold text-[12px] md:text-[18px]">
-          {currentUser?.firstName?.charAt(0)}
-          {currentUser?.lastName?.charAt(0)}
+        <div className="h-6 w-6 md:w-9 md:h-9 bg-primary rounded-full overflow-hidden flex items-center justify-center dark:text-black text-white font-semibold text-[12px] md:text-[18px]">
+          {currentUser?.profileImage ? (
+            <img
+              src={currentUser.profileImage}
+              alt={currentUser.firstName}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <>
+              {currentUser?.firstName?.charAt(0)}
+              {currentUser?.lastName?.charAt(0)}
+            </>
+          )}
         </div>
         <div className="hidden sm:block text-sm">
-            <p className="font-medium text-[10px] md:text-xs">
-              {currentUser?.firstName || "User"} {currentUser?.lastName || ""}
-            </p>
-            <p className="text-[10px] md:text-xs text-muted-foreground">
-              {currentUser?.email || ""}
-            </p>
-          </div>
+          <p className="font-medium text-[10px] md:text-xs">
+            {currentUser?.firstName || "User"} {currentUser?.lastName || ""}
+          </p>
+          <p className="text-[10px] md:text-xs text-muted-foreground">
+            {currentUser?.email || ""}
+          </p>
+        </div>
       </div>
     </header>
   );
