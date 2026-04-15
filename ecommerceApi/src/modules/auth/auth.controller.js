@@ -217,7 +217,7 @@ function dashboardController(req, res) {
   });
 }
 
-function currentuserController(req, res) {
+async function currentuserController(req, res) {
   
   if(!req.session.user){
     return res.status(401).json({
