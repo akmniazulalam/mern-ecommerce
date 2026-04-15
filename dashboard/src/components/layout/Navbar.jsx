@@ -56,7 +56,25 @@ const Navbar = () => {
     });
   };
 
-  
+  const handleImageUpload = async (file) => {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const res = await axios.post(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/upload-avatar",
+        formData,
+        {
+          withCredentials: true,
+        },
+      );
+
+      // Update UI instantly
+      setCurrentUser(res.data.user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Logout
   const handleLogout = async () => {
