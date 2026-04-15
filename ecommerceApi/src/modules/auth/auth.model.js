@@ -33,7 +33,8 @@ const userSchema = new Schema(
       default: false,
     },
     profileImage: {
-      type: String
+      type: String,
+      default: "",
     },
     role: {
       type: String,
