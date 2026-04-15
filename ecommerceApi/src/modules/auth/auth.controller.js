@@ -226,9 +226,11 @@ function currentuserController(req, res) {
     })
   }
 
+  const user = await userSchema.findOne({email: req.session.user.email})
+
   res.status(200).json({
     success: true,
-    user: req.session.user
+    user: user
   })
 }
 
