@@ -9,6 +9,7 @@ const {
   otpController,
   resendOtpController,
   currentuserController,
+  uploadAvatarController
 } = require("./auth.controller");
 const authMiddleware = require("./auth.middleware");
 const router = express.Router();
@@ -22,6 +23,6 @@ router.post("/login", loginController);
 router.get("/currentuser", currentuserController);
 router.post("/logout", logoutController);
 router.get("/dashboard", authMiddleware, dashboardController);
-
+router.post("/upload-avatar", upload.single("image"), uploadAvatarController);
 
 module.exports = router;
