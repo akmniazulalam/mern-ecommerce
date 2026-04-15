@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-4xl font-bold">
+      <h2 className="md:text-4xl font-bold text-xl">
         Welcome {currentUser?.firstName} {currentUser?.lastName} to Dashboard
       </h2>
       <div className="grid md:grid-cols-4 gap-6">
