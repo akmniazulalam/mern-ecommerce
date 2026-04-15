@@ -56,19 +56,20 @@ const Navbar = () => {
     });
   };
 
+  
+
   // Logout
   const handleLogout = async () => {
     await axios.post(
       "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/logout",
       {},
-      { withCredentials: true }
+      { withCredentials: true },
     );
     window.location.href = "/login";
   };
 
   return (
     <header className="h-16 border-b bg-background flex items-center justify-between px-4 md:px-6">
-      
       {/* LEFT */}
       <div className="flex items-center gap-4">
         <div className="md:hidden">
@@ -87,13 +88,11 @@ const Navbar = () => {
 
       {/* RIGHT */}
       <div className="flex items-center gap-3 md:gap-4">
-        
         {/* Dark Mode */}
         <Button
           variant="ghost"
           onClick={toggleDarkMode}
-          className="h-9 w-9 cursor-pointer"
-        >
+          className="h-9 w-9 cursor-pointer">
           {darkMode ? (
             <Sun className="h-5 w-5 text-yellow-500" />
           ) : (
@@ -108,12 +107,10 @@ const Navbar = () => {
 
         {/* PROFILE */}
         <div className="relative" ref={profileRef}>
-          
           {/* Avatar */}
           <div
             onClick={() => setOpenProfile(!openProfile)}
-            className="h-9 w-9 bg-primary rounded-full overflow-hidden flex items-center justify-center dark:text-black text-white font-semibold cursor-pointer"
-          >
+            className="h-9 w-9 bg-primary rounded-full overflow-hidden flex items-center justify-center dark:text-black text-white font-semibold cursor-pointer">
             {image || currentUser?.profileImage ? (
               <img
                 src={image || currentUser?.profileImage}
@@ -131,7 +128,6 @@ const Navbar = () => {
           {/* DROPDOWN */}
           {openProfile && (
             <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-zinc-900 shadow-xl rounded-xl p-4 z-50">
-
               {/* Avatar Big */}
               <div className="flex justify-center relative">
                 <div className="h-20 w-20 rounded-full overflow-hidden bg-primary flex items-center justify-center dark:text-black text-white text-4xl font-bold">
@@ -157,7 +153,7 @@ const Navbar = () => {
                     onChange={(e) => {
                       const file = e.target.files[0];
                       if (file) {
-                        setImage(URL.createObjectURL(file));
+                        handleImageUpload(file);
                       }
                     }}
                   />
@@ -177,8 +173,7 @@ const Navbar = () => {
               {/* Logout */}
               <button
                 onClick={handleLogout}
-                className="mt-4 w-full cursor-pointer bg-red-600 text-white py-2 rounded-lg hover:bg-red-500 transition"
-              >
+                className="mt-4 w-full cursor-pointer bg-red-600 text-white py-2 rounded-lg hover:bg-red-500 transition">
                 Logout
               </button>
             </div>

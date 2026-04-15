@@ -5,6 +5,7 @@ const crypto = require("crypto");
 const passVal = require("../../common/utils/passVal");
 const emailValidation = require("../../common/utils/emailValidation");
 const emailVerification = require("../../common/utils/emailVerification");
+const uploadImage = require("../../common/config/cloudinary");
 
 async function signupController(req, res) {
   const { firstName, lastName, email, password } = req.body;
@@ -243,6 +244,35 @@ function logoutController(req, res) {
   });
 }
 
+async function uploadAvatarController(req, res) {
+  try {
+    const userEmail = req.session.user.email;
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Image required" });
+    }
+
+    const imagePath = req.file.path;
+
+    // Upload to Cloudinary
+    const result = await uploadImage(imagePath);
+
+    // Save URL in DB
+    const user = await userSchema.findOneAndUpdate(
+      { email: userEmail },
+      { profileImage: result.secure_url },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Profile image updated",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Upload failed" });
+  }
+}
+
 module.exports = {
   loginController,
   logoutController,
@@ -252,5 +282,6 @@ module.exports = {
   signupController,
   getAllUsers,
   deleteUser,
-  currentuserController
+  currentuserController,
+  uploadAvatarController
 };

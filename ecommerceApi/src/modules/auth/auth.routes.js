@@ -23,4 +23,5 @@ router.get("/currentuser", currentuserController);
 router.post("/logout", logoutController);
 router.get("/dashboard", authMiddleware, dashboardController);
 
+
 module.exports = router;
