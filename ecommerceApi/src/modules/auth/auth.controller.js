@@ -195,7 +195,8 @@ async function loginController(req, res) {
         id: existingEmailUser.id,
         email: existingEmailUser.email,
         firstName: existingEmailUser.firstName,
-        lastName: existingEmailUser.lastName
+        lastName: existingEmailUser.lastName,
+        role: existingEmailUser.role,
       };
       return res.status(200).json({ message: "Login Successful" });
     });
