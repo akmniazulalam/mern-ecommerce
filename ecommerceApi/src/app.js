@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const routes = require("./routes");
 app.use(express.json());
 
@@ -22,6 +23,7 @@ app.use(
     secret: "ecommerceApi",
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
     cookie: {
       secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
