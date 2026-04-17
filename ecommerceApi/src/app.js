@@ -18,6 +18,7 @@ app.use(
     credentials: true,
   }),
 );
+
 app.use(
   session({
     secret: "ecommerceApi",
