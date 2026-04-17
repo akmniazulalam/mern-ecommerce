@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const path = require("path");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const { MongoStore } = require("connect-mongo");
 const routes = require("./routes");
 app.use(express.json());
 
