@@ -16,14 +16,14 @@ import Login from "./components/pages/Login";
 import VerifyOtp from "./components/pages/VerifyOtp";
 import { useEffect } from "react";
 import Userlists from "./components/pages/Userlists";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
 
     if (savedTheme === "dark") {
-      document.documentElement.classList.add("dark");  //document.documentElement = <html> tag
+      document.documentElement.classList.add("dark"); //document.documentElement = <html> tag
     } else {
       document.documentElement.classList.remove("dark");
     }
@@ -36,7 +36,14 @@ function App() {
         <Route path="/otp-verify" element={<VerifyOtp />} />
       </Route>
       <Route element={<DashboardLayout />}>
-        <Route path="/" element={<Dashboard />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/products" element={<Products />} />
         <Route path="/productlist" element={<ProductList />} />
         <Route path="/updateproduct/:id" element={<UpdateProduct />} />
