@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 
@@ -9,7 +9,9 @@ const ProtectedRoute = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", { withCredentials: true })
+      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
+        withCredentials: true,
+      })
       .then((res) => {
         setUser(res.data.user);
       })
@@ -27,9 +29,11 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  if (!user) return <Navigate to="/login" />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-  return children;
+  return React.cloneElement(children, {user});
 };
 
 export default ProtectedRoute;
