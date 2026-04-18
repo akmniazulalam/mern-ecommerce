@@ -33,7 +33,7 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  return React.cloneElement(children, {user});
+  return children;
 };
 
 export default ProtectedRoute;

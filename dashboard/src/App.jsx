@@ -35,15 +35,13 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/otp-verify" element={<VerifyOtp />} />
       </Route>
-      <Route element={<DashboardLayout />}>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+      <Route
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }>
+        <Route path="/" element={<Dashboard />} />
         <Route path="/products" element={<Products />} />
         <Route path="/productlist" element={<ProductList />} />
         <Route path="/updateproduct/:id" element={<UpdateProduct />} />

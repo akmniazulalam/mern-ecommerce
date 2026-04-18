@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import StatsCard from "../StatsCard";
+import axios from "axios";
 
-const Dashboard = ({user}) => {
-  
+const Dashboard = () => {
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const user = async () => {
+      try {
+        const res = await axios.get(
+          "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser",
+          {
+            withCredentials: true,
+          },
+        );
+
+        setCurrentUser(res.data.user);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
+    user();
+  }, []);
 
   return (
     <div className="space-y-8">
       <h2 className="md:text-4xl font-bold text-xl">
-        Welcome {user?.firstName} {user?.lastName} to Dashboard
+        Welcome {currentUser?.firstName} {currentUser?.lastName} to Dashboard
       </h2>
       <div className="grid md:grid-cols-4 gap-6">
         <StatsCard title="Total Revenue" value="$45,231" />
