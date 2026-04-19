@@ -7,8 +7,12 @@ import { Helmet } from "react-helmet-async";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
+
+  const {setUser} = useAuth()
+
   const [loginInput, setLoginInput] = useState({
     email: "",
     password: "",
@@ -22,11 +26,14 @@ const Login = () => {
   };
   const handleLoginBtn = async () => {
     try {
-      await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login",
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/auth/login",
         loginInput,
         {withCredentials: true}
       );
+
+      setUser(res.data.user)
+
       toast.success("Login successfully done");
       setTimeout(() => {
         navigate("/");

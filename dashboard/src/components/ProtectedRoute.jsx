@@ -2,24 +2,11 @@ import { Navigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setUser(res.data.user);
-      })
-      .catch(() => {
-        setUser(null);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+//   const { user, loading } = useAuth();
 
   if (loading) {
     return (

@@ -5,12 +5,15 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { HelmetProvider } from "react-helmet-async";
+// import { AuthProvider } from "./context/AuthContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <HelmetProvider>
       <BrowserRouter>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
         <Toaster />
       </BrowserRouter>
     </HelmetProvider>

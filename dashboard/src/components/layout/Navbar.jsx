@@ -6,10 +6,11 @@ import { Moon, Sun } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { MobileSidebar } from "./Sidebar";
 import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  // const [currentUser, setCurrentUser] = useState(null);
   const [openProfile, setOpenProfile] = useState(false);
   const [image, setImage] = useState(null);
 
@@ -22,13 +23,15 @@ const Navbar = () => {
   }, []);
 
   // Get current user
-  useEffect(() => {
-    axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
-        withCredentials: true,
-      })
-      .then((res) => setCurrentUser(res.data.user));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
+  //       withCredentials: true,
+  //     })
+  //     .then((res) => setCurrentUser(res.data.user));
+  // }, []);
+
+  const {user, setUser} = useAuth()
 
   // Outside click close
   useEffect(() => {
@@ -62,7 +65,7 @@ const Navbar = () => {
 
     try {
       const res = await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/upload-avatar",
+        "http://localhost:3000/api/v1/auth/upload-avatar",
         formData,
         {
           withCredentials: true,
@@ -70,7 +73,8 @@ const Navbar = () => {
       );
 
       // Update UI instantly
-      setCurrentUser(res.data.user);
+      setUser(res.data.user);
+      setImage(null)
     } catch (err) {
       console.log(err);
     }
@@ -83,6 +87,7 @@ const Navbar = () => {
       {},
       { withCredentials: true },
     );
+    setUser(null)
     window.location.href = "/login";
   };
 
@@ -129,16 +134,16 @@ const Navbar = () => {
           <div
             onClick={() => setOpenProfile(!openProfile)}
             className="h-9 w-9 bg-primary rounded-full overflow-hidden flex items-center justify-center dark:text-black text-white font-semibold cursor-pointer">
-            {image || currentUser?.profileImage ? (
+            {image || user?.profileImage ? (
               <img
-                src={image || currentUser?.profileImage}
+                src={image || user?.profileImage}
                 alt="profile"
                 className="w-full h-full object-cover"
               />
             ) : (
               <>
-                {currentUser?.firstName?.charAt(0)}
-                {currentUser?.lastName?.charAt(0)}
+                {user?.firstName?.charAt(0)}
+                {user?.lastName?.charAt(0)}
               </>
             )}
           </div>
@@ -149,15 +154,15 @@ const Navbar = () => {
               {/* Avatar Big */}
               <div className="flex justify-center relative">
                 <div className="h-20 w-20 rounded-full overflow-hidden bg-primary flex items-center justify-center dark:text-black text-white text-4xl font-bold">
-                  {image || currentUser?.profileImage ? (
+                  {image || user?.profileImage ? (
                     <img
-                      src={image || currentUser?.profileImage}
+                      src={image || user?.profileImage}
                       className="w-full h-full object-cover"
                     />
                   ) : (
                     <>
-                      {currentUser?.firstName?.charAt(0)}
-                      {currentUser?.lastName?.charAt(0)}
+                      {user?.firstName?.charAt(0)}
+                      {user?.lastName?.charAt(0)}
                     </>
                   )}
                 </div>
@@ -171,6 +176,7 @@ const Navbar = () => {
                     onChange={(e) => {
                       const file = e.target.files[0];
                       if (file) {
+                        setImage(URL.createObjectURL(file))
                         handleImageUpload(file);
                       }
                     }}
@@ -181,10 +187,10 @@ const Navbar = () => {
               {/* Info */}
               <div className="text-center mt-4">
                 <p className="font-semibold">
-                  {currentUser?.firstName} {currentUser?.lastName}
+                  {user?.firstName} {user?.lastName}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {currentUser?.email}
+                  {user?.email}
                 </p>
               </div>
 

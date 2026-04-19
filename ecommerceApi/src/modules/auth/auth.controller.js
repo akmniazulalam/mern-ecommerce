@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const userSchema = require('./auth.model')
+const userSchema = require("./auth.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const passVal = require("../../common/utils/passVal");
@@ -64,7 +64,7 @@ async function signupController(req, res) {
       expireOtp,
     });
     await user.save();
-    
+
     emailVerification(email, otp);
   });
   res.json({
@@ -198,7 +198,9 @@ async function loginController(req, res) {
         lastName: existingEmailUser.lastName,
         role: existingEmailUser.role,
       };
-      return res.status(200).json({ message: "Login Successful" });
+      return res
+        .status(200)
+        .json({ message: "Login Successful", user: req.session.user });
     });
 
     // const isMatch = await bcrypt.compare(password, existingEmailUser.password)
@@ -219,22 +221,20 @@ function dashboardController(req, res) {
 }
 
 async function currentuserController(req, res) {
-  
-  if(!req.session.user){
+  if (!req.session.user) {
     return res.status(401).json({
       success: false,
-      message: "No user"
-    })
+      message: "No user",
+    });
   }
 
-  const user = await userSchema.findOne({email: req.session.user.email})
+  const user = await userSchema.findOne({ email: req.session.user.email });
 
   res.status(200).json({
     success: true,
-    user: user
-  })
+    user: user,
+  });
 }
-
 
 function logoutController(req, res) {
   req.session.destroy(function (err) {
@@ -264,7 +264,7 @@ async function uploadAvatarController(req, res) {
     const user = await userSchema.findOneAndUpdate(
       { email: userEmail },
       { profileImage: result.secure_url },
-      { new: true }
+      { new: true },
     );
 
     res.status(200).json({
@@ -286,5 +286,5 @@ module.exports = {
   getAllUsers,
   deleteUser,
   currentuserController,
-  uploadAvatarController
+  uploadAvatarController,
 };
