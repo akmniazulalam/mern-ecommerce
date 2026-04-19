@@ -1,5 +1,6 @@
-import { Routes, Route } from "react-router-dom";
 import "./App.css";
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import Dashboard from "./components/pages/Dashboard";
 import Products from "./components/pages/Products";
@@ -14,7 +15,6 @@ import AuthLayout from "./components/layout/AuthLayout";
 import Signup from "./components/pages/Signup";
 import Login from "./components/pages/Login";
 import VerifyOtp from "./components/pages/VerifyOtp";
-import { useEffect } from "react";
 import Userlists from "./components/pages/Userlists";
 import ProtectedRoute from "./components/ProtectedRoute";
 
