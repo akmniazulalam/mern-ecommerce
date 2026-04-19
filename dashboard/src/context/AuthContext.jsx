@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/v1/auth/currentuser", { withCredentials: true })
+      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", { withCredentials: true })
       .then((res) => setUser(res.data.user))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));

@@ -5,25 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 import { Helmet } from "react-helmet-async";
 
 const Dashboard = () => {
-  // const [currentUser, setCurrentUser] = useState(null);
-
-  // useEffect(() => {
-  //   const user = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser",
-  //         {
-  //           withCredentials: true,
-  //         },
-  //       );
-
-  //       setCurrentUser(res.data.user);
-  //     } catch (error) {
-  //       console.error("Error fetching current user:", error);
-  //     }
-  //   };
-  //   user();
-  // }, []);
 
   const {user} = useAuth()
 
