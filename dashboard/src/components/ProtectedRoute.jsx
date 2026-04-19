@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
 
-//   const { user, loading } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
