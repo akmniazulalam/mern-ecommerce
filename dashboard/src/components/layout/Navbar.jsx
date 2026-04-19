@@ -56,7 +56,7 @@ const Navbar = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/auth/upload-avatar",
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/upload-avatar",
         formData,
         {
           withCredentials: true,
