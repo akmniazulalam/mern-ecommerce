@@ -27,7 +27,7 @@ const Login = () => {
   const handleLoginBtn = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/v1/auth/login",
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login",
         loginInput,
         {withCredentials: true}
       );
