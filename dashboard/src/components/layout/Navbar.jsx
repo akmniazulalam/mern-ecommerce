@@ -10,7 +10,6 @@ import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
-  // const [currentUser, setCurrentUser] = useState(null);
   const [openProfile, setOpenProfile] = useState(false);
   const [image, setImage] = useState(null);
 
@@ -22,14 +21,6 @@ const Navbar = () => {
     setDarkMode(isDark);
   }, []);
 
-  // Get current user
-  // useEffect(() => {
-  //   axios
-  //     .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/currentuser", {
-  //       withCredentials: true,
-  //     })
-  //     .then((res) => setCurrentUser(res.data.user));
-  // }, []);
 
   const {user, setUser} = useAuth()
 
