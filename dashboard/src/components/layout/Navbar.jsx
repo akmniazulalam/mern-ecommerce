@@ -21,8 +21,7 @@ const Navbar = () => {
     setDarkMode(isDark);
   }, []);
 
-
-  const {user, setUser} = useAuth()
+  const { user, setUser } = useAuth();
 
   // Outside click close
   useEffect(() => {
@@ -65,7 +64,7 @@ const Navbar = () => {
 
       // Update UI instantly
       setUser(res.data.user);
-      setImage(null)
+      setImage(null);
     } catch (err) {
       console.log(err);
     }
@@ -78,7 +77,7 @@ const Navbar = () => {
       {},
       { withCredentials: true },
     );
-    setUser(null)
+    setUser(null);
     window.location.href = "/login";
   };
 
@@ -167,7 +166,7 @@ const Navbar = () => {
                     onChange={(e) => {
                       const file = e.target.files[0];
                       if (file) {
-                        setImage(URL.createObjectURL(file))
+                        setImage(URL.createObjectURL(file));
                         handleImageUpload(file);
                       }
                     }}
@@ -180,9 +179,7 @@ const Navbar = () => {
                 <p className="font-semibold">
                   {user?.firstName} {user?.lastName}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  {user?.email}
-                </p>
+                <p className="text-sm text-muted-foreground">{user?.email}</p>
               </div>
 
               {/* Logout */}
