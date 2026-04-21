@@ -158,7 +158,9 @@ const ProductList = () => {
                       #{index + 1}
                     </p>
 
-                    <h3 className="font-semibold leading-tight text-sm my-1.5">{item.name}</h3>
+                    <h3 className="font-semibold leading-tight text-sm my-1.5">
+                      {item.name}
+                    </h3>
 
                     <p className="text-sm text-muted-foreground line-clamp-2">
                       {item.description}
