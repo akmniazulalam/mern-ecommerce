@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -12,7 +13,6 @@ import {
   FolderPlus,
   PackagePlus,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { DialogContent } from "@/components/ui/dialog";
 const MobileSidebar = () => {
   const [openCategory, setOpenCategory] = useState(false);
