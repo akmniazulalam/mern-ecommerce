@@ -1,11 +1,11 @@
+import axios from "axios";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const Category = () => {
