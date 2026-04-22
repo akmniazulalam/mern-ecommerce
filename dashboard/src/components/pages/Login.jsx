@@ -1,17 +1,16 @@
+import axios from "axios";
+import toast from "react-hot-toast";
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
-import toast from "react-hot-toast";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Login = () => {
-
-  const {setUser} = useAuth()
+  const { setUser } = useAuth();
 
   const [loginInput, setLoginInput] = useState({
     email: "",
@@ -29,10 +28,10 @@ const Login = () => {
       const res = await axios.post(
         "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login",
         loginInput,
-        {withCredentials: true}
+        { withCredentials: true },
       );
 
-      setUser(res.data.user)
+      setUser(res.data.user);
 
       toast.success("Login successfully done");
       setTimeout(() => {
