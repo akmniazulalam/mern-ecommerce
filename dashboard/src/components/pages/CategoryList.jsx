@@ -25,13 +25,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 const CategoryList = () => {
-  const categories = [
-    { id: 1, name: "Electronics", description: "Phones, Laptops, etc." },
-    { id: 2, name: "Fashion", description: "Clothes, Shoes, Bags" },
-    { id: 3, name: "Home & Kitchen", description: "Furniture & Appliances" },
-    { id: 4, name: "Sports", description: "Sports items" },
-    { id: 5, name: "Books", description: "Books & Stationery" },
-  ];
+  
   const [finalData, setFinalData] = useState([]);
   useEffect(() => {
     async function final() {
