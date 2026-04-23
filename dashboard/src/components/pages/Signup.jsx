@@ -1,3 +1,5 @@
+import axios from "axios";
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 import {
   Card,
@@ -17,8 +19,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
-import axios from "axios";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
