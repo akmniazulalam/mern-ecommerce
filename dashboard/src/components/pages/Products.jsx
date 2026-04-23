@@ -1,10 +1,10 @@
+import axios from "axios";
+import toast from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
-import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 
 const Products = () => {
