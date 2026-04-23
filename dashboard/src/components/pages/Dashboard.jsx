@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import StatsCard from "../StatsCard";
 import { useAuth } from "@/context/AuthContext";
 import { Helmet } from "react-helmet-async";
