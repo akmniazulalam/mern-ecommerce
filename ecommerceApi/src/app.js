@@ -14,7 +14,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://mern-ecommerce-sigma-nine.vercel.app",
-      "https://orebi-sigma.vercel.app/",
+      "https://orebi-sigma.vercel.app",
     ],
     credentials: true,
   }),
