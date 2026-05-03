@@ -1,17 +1,17 @@
-const cartModel = require("./cart.model")
+const cartSchema = require("./cart.model");
 
 const addToCartController = async (req, res) => {
-    const {userId, product} = req.body
-    const cartItems = await cartModel.findOne({userId})
+  const { userId, product } = req.body;
+  const cartItems = await cartSchema.findOne({ userId });
 
-    if (!cart) {
-    cart = new cartModel({
+  if (!cart) {
+    cart = new cartSchema({
       userId,
       items: [{ ...product, quantity: 1 }],
     });
   } else {
     const existingItem = cart.items.find(
-      (item) => item.productId === product._id
+      (item) => item.productId === product._id,
     );
 
     if (existingItem) {
@@ -24,6 +24,6 @@ const addToCartController = async (req, res) => {
   await cart.save();
 
   res.json(cart);
-}
+};
 
-module.exports = {addToCartController}
+module.exports = { addToCartController };
