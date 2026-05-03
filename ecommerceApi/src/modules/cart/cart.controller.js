@@ -1,31 +1,27 @@
 const cartSchema = require("./cart.model");
 
 const addToCartController = async (req, res) => {
-  const { userId, product } = req.body;
+  const userId = req.session.user.id;
+  const { product } = req.body;
   const cartItems = await cartSchema.findOne({ userId });
 
-  if (!cart) {
-    cart = new cartSchema({
-      userId,
-      items: [{ ...product, quantity: 1 }],
-    });
-  } else {
-    const existingItem = cart.items.find(
-      (item) => item.productId === product._id,
-    );
+  const cart = new cartSchema({
+    userId,
+    items: [{ ...product, quantity: 1 }],
+  });
 
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.items.push({ ...product, quantity: 1 });
-    }
+  const existingItem = cartItems.items.find(
+    (item) => item.productId === product._id,
+  );
+
+  if (existingItem) {
+    existingItem.quantity += 1;
   }
 
   await cart.save();
 
-  res.json(cart);
+  res.json({ message: "Add to cart the product successfully", data: cart });
 };
 
-const getCartItems
 
 module.exports = { addToCartController };
