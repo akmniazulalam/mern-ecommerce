@@ -26,4 +26,6 @@ const addToCartController = async (req, res) => {
   res.json(cart);
 };
 
+const getCartItems
+
 module.exports = { addToCartController };
