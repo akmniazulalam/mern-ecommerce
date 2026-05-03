@@ -5,7 +5,7 @@ const addToCartController = async (req, res) => {
     const cartItems = await cartModel.findOne({userId})
 
     if (!cart) {
-    cart = new Cart({
+    cart = new cartModel({
       userId,
       items: [{ ...product, quantity: 1 }],
     });
