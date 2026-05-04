@@ -73,10 +73,10 @@ const ProductList = () => {
                 {products.map((item, index) => (
                   <TableRow key={item._id}>
                     <TableCell className={"px-6"}>{index + 1}</TableCell>
-                    <TableCell className="max-w-40 truncate">
+                    <TableCell className="max-w-30 truncate">
                       {item.name}
                     </TableCell>
-                    <TableCell className="max-w-50 truncate">
+                    <TableCell className="max-w-40 truncate">
                       {item.description}
                     </TableCell>
                     <TableCell>${item.price}</TableCell>
@@ -102,6 +102,13 @@ const ProductList = () => {
                             Edit
                           </Button>
                         </Link>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="cursor-pointer">
+                          <ShoppingCart className="w-4 h-4" />
+                          Cart
+                        </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button
@@ -198,14 +205,13 @@ const ProductList = () => {
                 {/* Actions */}
                 <div className="flex gap-2 pt-2">
                   <Link to={`/updateproduct/${item._id}`} className="flex-1">
-                    <Button size="sm" variant="outline" className="w-full">
+                    <Button size="sm" variant="outline" className="w-full cursor-pointer">
                       Edit
                     </Button>
                   </Link>
                   <Button
-                    size="icon"
-                    variant="secondary"
-                    // onClick={() => handleAddToCart(item)}
+                    size="sm"
+                    variant="outline"
                     className="cursor-pointer">
                     <ShoppingCart className="w-4 h-4" />
                     Cart
@@ -215,7 +221,7 @@ const ProductList = () => {
                       <Button
                         size="sm"
                         variant="destructive"
-                        className="w-1/2 md:w-full md:shrink dark:bg-red-700">
+                        className="w-1/2 md:w-full md:shrink dark:bg-red-700 cursor-pointer">
                         Delete
                       </Button>
                     </AlertDialogTrigger>
