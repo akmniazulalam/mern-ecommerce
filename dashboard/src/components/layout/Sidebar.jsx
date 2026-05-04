@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   ShoppingCart,
+  ShoppingBag,
   Package,
   Settings,
   Layers,
@@ -93,7 +94,7 @@ const MobileSidebar = () => {
                   : "hover:bg-muted",
               )
             }>
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingBag className="w-5 h-5" />
             Orders
           </NavLink>
 
@@ -258,7 +259,7 @@ const Sidebar = () => {
                   : "hover:bg-muted",
               )
             }>
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingBag className="w-5 h-5" />
             Orders
           </NavLink>
 
@@ -309,6 +310,19 @@ const Sidebar = () => {
               </NavLink>
             </div>
           )}
+          <NavLink
+            to="/userlists"
+            className={({ isActive }) =>
+              cn(
+                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted",
+              )
+            }>
+            <ShoppingCart className="w-5 h-5" />
+            Cart Items
+          </NavLink>
           <NavLink
             to="/userlists"
             className={({ isActive }) =>
