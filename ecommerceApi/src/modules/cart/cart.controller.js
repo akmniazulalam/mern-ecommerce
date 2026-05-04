@@ -23,5 +23,12 @@ const addToCartController = async (req, res) => {
   res.json({ message: "Add to cart the product successfully", data: cart });
 };
 
+const getAllCartItem = async (req, res) => {
+  const getAllCartItem = await cartSchema.find({})
+  res.status(200).json({
+    message: "All Cart Items",
+    data: getAllCartItem
+  })
+}
 
-module.exports = { addToCartController };
+module.exports = { addToCartController, getAllCartItem };
