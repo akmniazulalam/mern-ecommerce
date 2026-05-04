@@ -41,6 +41,10 @@ const ProductList = () => {
     setProducts(products.filter((item) => item._id !== id));
   };
 
+  const handleCartBtn = (id) => {
+    axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/cart/addtocart",{}, {withCredentials: true})
+  }
+
   return (
     <>
       <Helmet>
@@ -105,6 +109,7 @@ const ProductList = () => {
                         <Button
                           size="sm"
                           variant="outline"
+                          onClick={() => handleCartBtn(item._id)}
                           className="cursor-pointer">
                           <ShoppingCart className="w-4 h-4" />
                           Cart
@@ -212,6 +217,7 @@ const ProductList = () => {
                   <Button
                     size="sm"
                     variant="outline"
+                    onClick={() => handleCartBtn(item._id)}
                     className="cursor-pointer">
                     <ShoppingCart className="w-4 h-4" />
                     Cart
