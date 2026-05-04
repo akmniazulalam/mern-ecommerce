@@ -17,6 +17,7 @@ import Login from "./components/pages/Login";
 import VerifyOtp from "./components/pages/VerifyOtp";
 import Userlists from "./components/pages/Userlists";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Cart from "./components/pages/Cart";
 
 function App() {
   useEffect(() => {
@@ -44,6 +45,7 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/products" element={<Products />} />
         <Route path="/productlist" element={<ProductList />} />
+        <Route path="/cartitems" element={<Cart />} />
         <Route path="/updateproduct/:id" element={<UpdateProduct />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/category" element={<Category />} />
