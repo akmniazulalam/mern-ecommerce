@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShoppingCart } from "lucide-react";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -201,7 +202,13 @@ const ProductList = () => {
                       Edit
                     </Button>
                   </Link>
-
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    // onClick={() => handleAddToCart(item)}
+                    className="cursor-pointer">
+                    <ShoppingCart className="w-4 h-4" />
+                  </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
