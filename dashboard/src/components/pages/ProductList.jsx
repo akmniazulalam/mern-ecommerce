@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShoppingCart } from "lucide-react";
+import toast from "react-hot-toast";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -42,17 +43,24 @@ const ProductList = () => {
   };
 
   const handleCartBtn = async (item) => {
-    const product = {
-      productId: item._id,
-      name: item.name || item.title,
-      price: item.price,
-      image: item.image,
-    };
-    await axios.post(
-      `https://mern-ecommerce-91cv.onrender.com/api/v1/cart/addtocart/${item._id}`,
-      product,
-      { withCredentials: true },
-    );
+    console.log(item);
+
+    try {
+      const product = {
+        productId: item._id,
+        name: item.name || item.title,
+        price: item.price,
+        image: item.image,
+      };
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/cart/addtocart",
+        product,
+        { withCredentials: true },
+      );
+      toast.success("Add to cart successfully");
+    } catch (error) {
+      toast.error("Failed to add to cart ❌");
+    }
   };
 
   return (
@@ -119,7 +127,7 @@ const ProductList = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => handleCartBtn(item._id)}
+                          onClick={() => handleCartBtn(item)}
                           className="cursor-pointer">
                           <ShoppingCart className="w-4 h-4" />
                           Cart
