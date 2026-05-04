@@ -208,6 +208,7 @@ const ProductList = () => {
                     // onClick={() => handleAddToCart(item)}
                     className="cursor-pointer">
                     <ShoppingCart className="w-4 h-4" />
+                    Cart
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
