@@ -51,6 +51,7 @@ const Cart = () => {
                   <Button
                     size="icon"
                     variant="outline"
+                    className={"cursor-pointer"}
                     >
                     <Minus className="w-4 h-4" />
                   </Button>
@@ -60,6 +61,7 @@ const Cart = () => {
                   <Button
                     size="icon"
                     variant="outline"
+                    className={"cursor-pointer"}
                     >
                     <Plus className="w-4 h-4" />
                   </Button>
@@ -74,6 +76,7 @@ const Cart = () => {
                 <Button
                   size="icon"
                   variant="destructive"
+                  className={"cursor-pointer dark:bg-red-600"}
                   >
                   <Trash2 className="w-4 h-4" />
                 </Button>
