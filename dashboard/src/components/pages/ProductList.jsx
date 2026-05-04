@@ -41,9 +41,19 @@ const ProductList = () => {
     setProducts(products.filter((item) => item._id !== id));
   };
 
-  const handleCartBtn = (id) => {
-    axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/cart/addtocart",{}, {withCredentials: true})
-  }
+  const handleCartBtn = async (item) => {
+    const product = {
+      productId: item._id,
+      name: item.name || item.title,
+      price: item.price,
+      image: item.image,
+    };
+    await axios.post(
+      `https://mern-ecommerce-91cv.onrender.com/api/v1/cart/addtocart/${item._id}`,
+      product,
+      { withCredentials: true },
+    );
+  };
 
   return (
     <>
@@ -137,7 +147,7 @@ const ProductList = () => {
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                               <AlertDialogAction
-                                onClick={() => handleProductDelete(item._id)}
+                                onClick={() => handleProductDelete(item)}
                                 className={"cursor-pointer"}>
                                 Confirm Delete
                               </AlertDialogAction>
@@ -210,14 +220,17 @@ const ProductList = () => {
                 {/* Actions */}
                 <div className="flex gap-2 pt-2">
                   <Link to={`/updateproduct/${item._id}`} className="flex-1">
-                    <Button size="sm" variant="outline" className="w-full cursor-pointer">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full cursor-pointer">
                       Edit
                     </Button>
                   </Link>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleCartBtn(item._id)}
+                    onClick={() => handleCartBtn(item)}
                     className="cursor-pointer">
                     <ShoppingCart className="w-4 h-4" />
                     Cart
