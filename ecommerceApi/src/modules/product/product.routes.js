@@ -22,7 +22,7 @@ const {
   deleteAllProduct
 } = require("./product.controller");
 
-router.post("/createproduct", upload.single('image'), productController);
+router.post("/createproduct", upload.array('image'), productController);
 router.get("/getproduct", getProductController);
 router.get("/singleproduct/:id", getSingleProductController);
 router.patch("/updateproduct/:id", upload.array('image'), updateProductController);
