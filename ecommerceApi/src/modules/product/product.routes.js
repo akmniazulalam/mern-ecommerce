@@ -22,7 +22,7 @@ const {
   deleteAllProduct
 } = require("./product.controller");
 
-router.post("/createproduct", upload.array('image'), productController);
+router.post("/createproduct", upload.array('images', 10), productController); // max koyta image dite parbe
 router.get("/getproduct", getProductController);
 router.get("/singleproduct/:id", getSingleProductController);
 router.patch("/updateproduct/:id", upload.array('image'), updateProductController);
