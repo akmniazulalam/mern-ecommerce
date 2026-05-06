@@ -3,26 +3,37 @@ const uploadImage = require("../../common/config/cloudinary");
 const productSchema = require("./product.model");
 
 async function productController(req, res) {
-  const { name, description, category, variants } =
-    req.body;
+  const { name, description, category, variants } = req.body;
 
-    const imagePath = req.file.path
+  const imageUrls = [];
 
-    console.log(imagePath)
+  const parseVariants = JSON.parse(variants);
 
-    const imageUrl = await uploadImage(imagePath)
+  if (!req.files || req.files.length === 0) {
+    res.status(400).json({message: "Image is required"})
+  }
+  
+  for (let file of req.files) {
+    const uploaded = await uploadImage(file.path);
+    imageUrls.push(uploaded.secure_url);
+  }
+  
+  if (imageUrls.length !== parseVariants.length) {
+    return res.status(400).json({message: "Each variant must have one image."})
+  }
+
+  parseVariants.forEach((variant, index) => {
+    variant.images = [imageUrls[index]];
+  });
 
   const createProduct = new productSchema({
     name,
     description,
     category,
-    image: imageUrl.secure_url,
-    price,
-    size,
-    color,
-    ram,
-    storage,
+    variants: parseVariants,
   });
+
+
   await createProduct.save();
   res.json({
     message: "Product Added Successfully",
@@ -51,20 +62,19 @@ async function updateProductController(req, res) {
   updateProduct.color = color;
   updateProduct.ram = ram;
   updateProduct.storage = storage;
-  
-  if(req.file){
-    const oldImg = updateProduct.image
-    const publicId = oldImg.split("/").slice(-1)[0].split(".")[0]
 
-    await cloudinary.uploader.destroy(publicId)
+  if (req.file) {
+    const oldImg = updateProduct.image;
+    const publicId = oldImg.split("/").slice(-1)[0].split(".")[0];
 
+    await cloudinary.uploader.destroy(publicId);
 
-    const imagePath = req.file.path
-    const imageUrl = await uploadImage(imagePath)
+    const imagePath = req.file.path;
+    const imageUrl = await uploadImage(imagePath);
 
-    updateProduct.image = imageUrl.secure_url
+    updateProduct.image = imageUrl.secure_url;
   }
-  
+
   await updateProduct.save();
 
   res.json({
@@ -74,12 +84,12 @@ async function updateProductController(req, res) {
 }
 
 async function getSingleProductController(req, res) {
-  const {id} = req.params
-  const singleProduct = await productSchema.findById(id)
+  const { id } = req.params;
+  const singleProduct = await productSchema.findById(id);
 
   res.status(200).send({
     message: "Success",
-    data: singleProduct
+    data: singleProduct,
   });
 }
 
