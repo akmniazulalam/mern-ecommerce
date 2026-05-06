@@ -6,7 +6,6 @@ async function productController(req, res) {
   const { name, description, category, variants } =
     req.body;
 
-    // const imagePath = req.file.buffer
     const imagePath = req.file.path
 
     console.log(imagePath)
@@ -18,7 +17,6 @@ async function productController(req, res) {
     description,
     category,
     image: imageUrl.secure_url,
-    // image: `http://localhost:3000/uploads/${req.file.filename}`,
     price,
     size,
     color,
