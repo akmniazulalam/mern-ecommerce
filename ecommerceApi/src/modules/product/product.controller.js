@@ -3,7 +3,7 @@ const uploadImage = require("../../common/config/cloudinary");
 const productSchema = require("./product.model");
 
 async function productController(req, res) {
-  const { name, description, category, price, size, color, ram, storage } =
+  const { name, description, category, variants } =
     req.body;
 
     // const imagePath = req.file.buffer
