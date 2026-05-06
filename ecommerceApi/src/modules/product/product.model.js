@@ -20,10 +20,16 @@ const productSchema = new Schema(
     },
     variants: [
       {
-        image: {
-          type: String,
-        },
+        images: [
+          {
+            type: String,
+          },
+        ],
         price: {
+          type: Number,
+          required: true,
+        },
+        stock: {
           type: Number,
           required: true,
         },
