@@ -11,12 +11,44 @@ const Products = () => {
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [price, setPrice] = useState("");
-  const [size, setSize] = useState("");
-  const [color, setColor] = useState("");
-  const [ram, setRam] = useState("");
-  const [storage, setStorage] = useState("");
-  const [image, setImage] = useState("");
+
+  const [variants, setVariants] = useState([
+    {
+      color: "",
+      size: "",
+      ram: "",
+      storage: "",
+      stock: "",
+      price: "",
+      image: null,
+    },
+  ]);
+
+  const handleVariantChange = (index, field, value) => {
+    const updated = [...variants];
+    updated[index][field] = value;
+    setVariants(updated);
+  };
+
+  const handleRemoveVariant = (index) => {
+    const updated = [...variants];
+    updated.splice(index, 1);
+    setVariants(updated);
+  };
+  const handleAddVariant = () => {
+    setVariants([
+      ...variants,
+      {
+        color: "",
+        size: "",
+        ram: "",
+        storage: "",
+        stock: "",
+        price: "",
+        image: null,
+      },
+    ]);
+  };
 
   const handleCreateProduct = async () => {
     const formData = new FormData();
@@ -24,12 +56,22 @@ const Products = () => {
     formData.append("name", productName);
     formData.append("description", productDescription);
     formData.append("category", selectedCategory);
-    formData.append("price", price);
-    formData.append("size", size);
-    formData.append("color", color);
-    formData.append("ram", ram);
-    formData.append("storage", storage);
-    formData.append("image", image);
+
+    const variantData = variants.map((v) => ({
+      color: v.color,
+      size: v.size,
+      ram: v.ram,
+      storage: v.storage,
+      stock: v.stock,
+      price: v.price,
+    }));
+
+    formData.append("variants", JSON.stringify(variantData));
+
+    // images (order maintain করবে)
+    variants.forEach((v) => {
+      formData.append("images", v.image);
+    });
 
     try {
       await axios.post(
@@ -99,60 +141,107 @@ const Products = () => {
               ))}
             </select>
           </Field>
-          <Field>
-            <FieldLabel>Price</FieldLabel>
-            <Input
-              value={price}
-              placeholder="Price"
-              className={"text-sm"}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Size</FieldLabel>
-            <Input
-              value={size}
-              placeholder="Size"
-              className={"text-sm"}
-              onChange={(e) => setSize(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Color</FieldLabel>
-            <Input
-              value={color}
-              placeholder="Color"
-              className={"text-sm"}
-              onChange={(e) => setColor(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Ram</FieldLabel>
-            <Input
-              value={ram}
-              placeholder="Ram"
-              className={"text-sm"}
-              onChange={(e) => setRam(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Storage</FieldLabel>
-            <Input
-              value={storage}
-              placeholder="Storage"
-              className={"text-sm"}
-              onChange={(e) => setStorage(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Product Image</FieldLabel>
-            <Input
-              type={"file"}
-              placeholder="Product Image"
-              className={"text-sm"}
-              onChange={(e) => setImage(e.target.files[0])}
-            />
-          </Field>
+          <div className="mt-6">
+            <h4 className="font-semibold mb-2">Variants</h4>
+
+            {variants.map((variant, index) => (
+              <div
+                key={index}
+                className="border p-4 mb-4 rounded-md grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Field>
+                  <FieldLabel>Color</FieldLabel>
+
+                  <Input
+                    placeholder="Color"
+                    value={variant.color}
+                    onChange={(e) =>
+                      handleVariantChange(index, "color", e.target.value)
+                    }
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel>Size</FieldLabel>
+
+                  <Input
+                    placeholder="Size"
+                    value={variant.size}
+                    onChange={(e) =>
+                      handleVariantChange(index, "size", e.target.value)
+                    }
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel>RAM</FieldLabel>
+
+                  <Input
+                    placeholder="RAM"
+                    value={variant.ram}
+                    onChange={(e) =>
+                      handleVariantChange(index, "ram", e.target.value)
+                    }
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel>Storage</FieldLabel>
+
+                  <Input
+                    placeholder="Storage"
+                    value={variant.storage}
+                    onChange={(e) =>
+                      handleVariantChange(index, "storage", e.target.value)
+                    }
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel>Stock</FieldLabel>
+
+                  <Input
+                    type="number"
+                    placeholder="Stock"
+                    value={variant.stock}
+                    onChange={(e) =>
+                      handleVariantChange(index, "stock", e.target.value)
+                    }
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel>Price</FieldLabel>
+
+                  <Input
+                    placeholder="Price"
+                    value={variant.price}
+                    onChange={(e) =>
+                      handleVariantChange(index, "price", e.target.value)
+                    }
+                  />
+                </Field>
+
+                <Field>
+                  <FieldLabel>Variant Image</FieldLabel>
+
+                  <Input
+                    type="file"
+                    onChange={(e) =>
+                      handleVariantChange(index, "image", e.target.files[0])
+                    }
+                  />
+                </Field>
+
+                <Button
+                  variant="destructive"
+                  onClick={() => handleRemoveVariant(index)}>
+                  Remove
+                </Button>
+              </div>
+            ))}
+
+            <Button onClick={handleAddVariant}>+ Add Variant</Button>
+          </div>
 
           <Field orientation="horizontal">
             <Button onClick={handleCreateProduct} className={"cursor-pointer"}>
