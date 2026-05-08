@@ -77,7 +77,6 @@ const Products = () => {
 
     formData.append("variants", JSON.stringify(variantData));
 
-    // images (order maintain করবে)
     variants.forEach((v) => {
       formData.append("images", v.image);
     });
@@ -90,7 +89,7 @@ const Products = () => {
 
       toast.success("Successfully added!");
     } catch (error) {
-      toast.error("Product creation failed");
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -137,16 +136,22 @@ const Products = () => {
           </Field>
           <Field>
             <FieldLabel>Category</FieldLabel>
-            <Select onChange={(e) => setSelectedCategory(e.target.value)}>
+            <Select
+              onValueChange={(value) => {
+                setSelectedCategory(value);
+              }}>
               <SelectTrigger className="w-40 h-10 cursor-pointer">
                 <SelectValue placeholder={"Select Category"} />
               </SelectTrigger>
 
-              <SelectContent>
+              <SelectContent position="popper">
                 <SelectGroup>
                   <SelectLabel>Categories</SelectLabel>
                   {getCategory.map((item) => (
-                    <SelectItem key={item._id} value={item._id} className={"cursor-pointer"}>
+                    <SelectItem
+                      key={item._id}
+                      value={item.name}
+                      className={"cursor-pointer"}>
                       {item.name}
                     </SelectItem>
                   ))}
@@ -216,8 +221,14 @@ const Products = () => {
                     type="number"
                     placeholder="Stock"
                     value={variant.stock}
+                    min={1}
+                    className={"[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"}
                     onChange={(e) =>
-                      handleVariantChange(index, "stock", e.target.value)
+                    {
+                      if(e.target.value >= 0) {
+                        handleVariantChange(index, "stock", e.target.value)
+                      }
+                    }
                     }
                   />
                 </Field>
@@ -253,7 +264,9 @@ const Products = () => {
               </div>
             ))}
 
-            <Button onClick={handleAddVariant} className={"cursor-pointer"}>+ Add Variant</Button>
+            <Button onClick={handleAddVariant} className={"cursor-pointer"}>
+              + Add Variant
+            </Button>
           </div>
 
           <Field orientation="horizontal">

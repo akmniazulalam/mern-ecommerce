@@ -5,21 +5,69 @@ const productSchema = require("./product.model");
 async function productController(req, res) {
   const { name, description, category, variants } = req.body;
 
+  if (!name) {
+    return res.status(400).json({
+      field: "name",
+      message: "Product name is required",
+    });
+  }
+
+  if (!description) {
+    return res.status(400).json({
+      field: "description",
+      message: "Description is required",
+    });
+  }
+
+  if (!category) {
+    return res.status(400).json({
+      field: "category",
+      message: "Category is required",
+    });
+  }
+
+  if (!variants) {
+    return res.status(400).json({
+      field: "variants",
+      message: "Variants are required",
+    });
+  }
+
   const imageUrls = [];
 
   const parseVariants = JSON.parse(variants);
 
-  if (!req.files || req.files.length === 0) {
-    res.status(400).json({message: "Image is required"})
+  for (let i = 0; i < parseVariants.length; i++) {
+    const v = parseVariants[i];
+
+    if (!v.price) {
+      return res.status(400).json({
+        field: `variants[${i}].price`,
+        message: "Price is required",
+      });
+    }
+
+    if (!v.stock || v.stock < 1) {
+      return res.status(400).json({
+        field: `variants[${i}].stock`,
+        message: "Stock must be at least 1",
+      });
+    }
   }
-  
+
+  if (!req.files || req.files.length === 0) {
+    res.status(400).json({ message: "Image is required" });
+  }
+
   for (let file of req.files) {
     const uploaded = await uploadImage(file.path);
     imageUrls.push(uploaded.secure_url);
   }
-  
+
   if (imageUrls.length !== parseVariants.length) {
-    return res.status(400).json({message: "Each variant must have one image."})
+    return res
+      .status(400)
+      .json({ message: "Each variant must have one image." });
   }
 
   parseVariants.forEach((variant, index) => {
@@ -32,7 +80,6 @@ async function productController(req, res) {
     category,
     variants: parseVariants,
   });
-
 
   await createProduct.save();
   res.json({
