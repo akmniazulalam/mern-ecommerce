@@ -258,6 +258,7 @@ const Products = () => {
 
                 <Button
                   variant="destructive"
+                  className={"cursor-pointer"}
                   onClick={() => handleRemoveVariant(index)}>
                   Remove
                 </Button>

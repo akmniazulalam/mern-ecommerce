@@ -5,6 +5,12 @@ const productSchema = require("./product.model");
 async function productController(req, res) {
   const { name, description, category, variants } = req.body;
 
+  if (!name || !description || !category || !variants) {
+    return res.status(400).json({
+      message: "All fields are required",
+    });
+  }
+
   if (!name) {
     return res.status(400).json({
       field: "name",
@@ -36,6 +42,12 @@ async function productController(req, res) {
   const imageUrls = [];
 
   const parseVariants = JSON.parse(variants);
+
+  if (!parseVariants.length) {
+    return res.status(400).json({
+      message: "At least one variant is required",
+    });
+  }
 
   for (let i = 0; i < parseVariants.length; i++) {
     const v = parseVariants[i];
