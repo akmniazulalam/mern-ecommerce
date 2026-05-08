@@ -138,7 +138,7 @@ const Products = () => {
           <Field>
             <FieldLabel>Category</FieldLabel>
             <Select onChange={(e) => setSelectedCategory(e.target.value)}>
-              <SelectTrigger className="w-40 h-10">
+              <SelectTrigger className="w-40 h-10 cursor-pointer">
                 <SelectValue placeholder={"Select Category"} />
               </SelectTrigger>
 
@@ -146,7 +146,7 @@ const Products = () => {
                 <SelectGroup>
                   <SelectLabel>Categories</SelectLabel>
                   {getCategory.map((item) => (
-                    <SelectItem key={item._id} value={item._id}>
+                    <SelectItem key={item._id} value={item._id} className={"cursor-pointer"}>
                       {item.name}
                     </SelectItem>
                   ))}
@@ -253,7 +253,7 @@ const Products = () => {
               </div>
             ))}
 
-            <Button onClick={handleAddVariant}>+ Add Variant</Button>
+            <Button onClick={handleAddVariant} className={"cursor-pointer"}>+ Add Variant</Button>
           </div>
 
           <Field orientation="horizontal">
