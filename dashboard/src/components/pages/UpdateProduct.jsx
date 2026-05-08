@@ -83,7 +83,15 @@ const UpdateProduct = () => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("category", category);
-      formData.append("variants", JSON.stringify(variants));
+      formData.append(
+        "variants",
+        JSON.stringify(
+          variants.map((v, i) => ({
+            ...v,
+            index: i,
+          })),
+        ),
+      );
 
       variants.forEach((v) => {
         if (v.image) {
@@ -183,6 +191,22 @@ const UpdateProduct = () => {
               />
 
               <Input
+                placeholder="Ram"
+                value={v.ram || ""}
+                onChange={(e) =>
+                  handleVariantChange(index, "ran", e.target.value)
+                }
+              />
+
+              <Input
+                placeholder="Storage"
+                value={v.storage || ""}
+                onChange={(e) =>
+                  handleVariantChange(index, "storage", e.target.value)
+                }
+              />
+
+              <Input
                 placeholder="Price"
                 value={v.price || ""}
                 onChange={(e) =>
@@ -192,7 +216,9 @@ const UpdateProduct = () => {
 
               <Input
                 type="file"
-                onChange={(e) => handleImageChange(index, e.target.files[0])}
+                onChange={(e) => {
+                  handleImageChange(index, e.target.files[0]);
+                }}
               />
             </div>
           ))}
