@@ -5,7 +5,7 @@ const productSchema = require("./product.model");
 async function productController(req, res) {
   const { name, description, category, variants } = req.body;
 
-  if (!name || !description || !category || !variants) {
+  if (!name && !description && !category && !variants) {
     return res.status(400).json({
       message: "All fields are required",
     });

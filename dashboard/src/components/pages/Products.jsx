@@ -113,11 +113,11 @@ const Products = () => {
       <Helmet>
         <title>Add Product</title>
       </Helmet>
-      <h3 className="font-bold">Add Product</h3>
+      <h3 className="font-bold md:text-2xl">Add Product</h3>
       <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
-            <FieldLabel>Product Name</FieldLabel>
+            <FieldLabel className={"md:text-base font-semibold"}>Product Name</FieldLabel>
             <Input
               value={productName}
               placeholder="Product Name"
@@ -126,7 +126,7 @@ const Products = () => {
             />
           </Field>
           <Field>
-            <FieldLabel>Product Description</FieldLabel>
+            <FieldLabel className={"md:text-base font-semibold"}>Product Description</FieldLabel>
             <Textarea
               value={productDescription}
               placeholder="Type your description here..."
@@ -135,7 +135,7 @@ const Products = () => {
             />
           </Field>
           <Field>
-            <FieldLabel>Category</FieldLabel>
+            <FieldLabel className={"md:text-base font-semibold"}>Category</FieldLabel>
             <Select
               onValueChange={(value) => {
                 setSelectedCategory(value);
@@ -165,7 +165,8 @@ const Products = () => {
             {variants.map((variant, index) => (
               <div
                 key={index}
-                className="border p-4 mb-4 rounded-md grid grid-cols-1 md:grid-cols-2 gap-3">
+                className="border p-4 mb-4 rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Field>
                   <FieldLabel>Color</FieldLabel>
 
@@ -255,13 +256,16 @@ const Products = () => {
                     }
                   />
                 </Field>
+                </div>
 
-                <Button
+                <div className="text-end mt-3">
+                  <Button
                   variant="destructive"
                   className={"cursor-pointer"}
                   onClick={() => handleRemoveVariant(index)}>
                   Remove
                 </Button>
+                </div>
               </div>
             ))}
 
