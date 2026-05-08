@@ -1,13 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 import {
   AlertDialog,
@@ -21,59 +19,73 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShoppingCart } from "lucide-react";
-import toast from "react-hot-toast";
+import { ShoppingCart, Pencil, Trash2 } from "lucide-react";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
 
+  // =========================
+  // GET PRODUCTS
+  // =========================
   useEffect(() => {
     axios
       .get(
         "https://mern-ecommerce-91cv.onrender.com/api/v1/product/getproduct",
       )
-      .then((res) => setProducts(res.data.data))
-      .catch((err) => console.log(err));
+      .then((res) => {
+        setProducts(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
+  // =========================
+  // DELETE PRODUCT
+  // =========================
   const handleProductDelete = async (id) => {
     try {
       await axios.delete(
         `https://mern-ecommerce-91cv.onrender.com/api/v1/product/deleteproduct/${id}`,
       );
 
-      setProducts(products.filter((item) => item._id !== id));
+      setProducts((prev) =>
+        prev.filter((item) => item._id !== id),
+      );
 
       toast.success("Product deleted successfully");
     } catch (error) {
-      toast.error("Delete failed");
+      toast.error("Delete failed ❌");
     }
   };
 
-  const handleCartBtn = async (item, variant) => {
+  // =========================
+  // ADD TO CART
+  // =========================
+  const handleCartBtn = async (product, variant) => {
     try {
-      const product = {
-        productId: item._id,
-        name: item.name,
-        price: variant.price,
-        image: variant.images[0],
+      const cartProduct = {
+        productId: product._id,
+        name: product.name,
+        image: variant.images?.[0],
         color: variant.color,
         size: variant.size,
+        ram: variant.ram,
+        storage: variant.storage,
+        price: variant.price,
       };
 
       await axios.post(
         "http://localhost:3000/api/v1/cart/addtocart",
-        product,
-        { withCredentials: true },
+        cartProduct,
+        {
+          withCredentials: true,
+        },
       );
 
-      toast.success("Add to cart successfully");
+      toast.success("Added to cart successfully");
     } catch (error) {
-      toast.error("Failed to add to cart ❌");
+      toast.error("Failed to add cart ❌");
     }
   };
 
@@ -83,250 +95,72 @@ const ProductList = () => {
         <title>Product List</title>
       </Helmet>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Product List</CardTitle>
-        </CardHeader>
+      <div className="space-y-6">
+        {/* PAGE TITLE */}
+        <div>
+          <h2 className="text-2xl font-bold">
+            Product List
+          </h2>
 
-        <CardContent className="px-4 md:px-6">
-          {/* Desktop */}
-          <div className="hidden md:block overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Serial</TableHead>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Variant</TableHead>
-                  <TableHead>Image</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead>Action</TableHead>
-                </TableRow>
-              </TableHeader>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage all your products and variants
+          </p>
+        </div>
 
-              <TableBody>
-                {products.map((item, productIndex) =>
-                  item.variants.map((variant, variantIndex) => (
-                    <TableRow
-                      key={`${item._id}-${variantIndex}`}>
-                      <TableCell>
-                        {productIndex + 1}.{variantIndex + 1}
-                      </TableCell>
-
-                      <TableCell>
-                        <div>
-                          <h3 className="font-medium">
-                            {item.name}
-                          </h3>
-
-                          <p className="text-xs text-muted-foreground line-clamp-2 max-w-52">
-                            {item.description}
-                          </p>
-                        </div>
-                      </TableCell>
-
-                      <TableCell>
-                        <div className="space-y-1 text-sm">
-                          <p>
-                            <span className="font-medium">
-                              Color:
-                            </span>{" "}
-                            {variant.color || "N/A"}
-                          </p>
-
-                          <p>
-                            <span className="font-medium">
-                              Size:
-                            </span>{" "}
-                            {variant.size || "N/A"}
-                          </p>
-
-                          <p>
-                            <span className="font-medium">
-                              RAM:
-                            </span>{" "}
-                            {variant.ram || "N/A"}
-                          </p>
-
-                          <p>
-                            <span className="font-medium">
-                              Storage:
-                            </span>{" "}
-                            {variant.storage || "N/A"}
-                          </p>
-                        </div>
-                      </TableCell>
-
-                      <TableCell>
-                        <img
-                          src={variant.images?.[0]}
-                          alt={item.name}
-                          className="h-16 w-16 object-cover rounded-md border"
-                        />
-                      </TableCell>
-
-                      <TableCell>
-                        ${variant.price}
-                      </TableCell>
-
-                      <TableCell>
-                        {variant.stock}
-                      </TableCell>
-
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              handleCartBtn(item, variant)
-                            }
-                            className="cursor-pointer">
-                            <ShoppingCart className="w-4 h-4" />
-                            Cart
-                          </Button>
-
-                          <Link
-                            to={`/updateproduct/${item._id}`}>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="cursor-pointer">
-                              Edit
-                            </Button>
-                          </Link>
-
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                className="cursor-pointer dark:bg-red-600">
-                                Delete
-                              </Button>
-                            </AlertDialogTrigger>
-
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you sure?
-                                </AlertDialogTitle>
-
-                                <AlertDialogDescription>
-                                  This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>
-                                  Cancel
-                                </AlertDialogCancel>
-
-                                <AlertDialogAction
-                                  onClick={() =>
-                                    handleProductDelete(item._id)
-                                  }
-                                  className="cursor-pointer">
-                                  Confirm Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )),
-                )}
-              </TableBody>
-            </Table>
-          </div>
-
-          {/* Mobile */}
-          <div className="md:hidden space-y-4">
-            {products.map((item) =>
-              item.variants.map((variant, index) => (
-                <div
-                  key={`${item._id}-${index}`}
-                  className="border rounded-xl p-4 shadow-sm space-y-4">
-                  <img
-                    src={variant.images?.[0]}
-                    alt={item.name}
-                    className="w-full h-52 object-cover rounded-lg"
-                  />
-
-                  <div>
-                    <h3 className="font-semibold text-base">
-                      {item.name}
-                    </h3>
-
-                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                      {item.description}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <p>
-                      <span className="font-medium">
-                        Color:
-                      </span>{" "}
-                      {variant.color || "N/A"}
-                    </p>
-
-                    <p>
-                      <span className="font-medium">
-                        Size:
-                      </span>{" "}
-                      {variant.size || "N/A"}
-                    </p>
-
-                    <p>
-                      <span className="font-medium">
-                        RAM:
-                      </span>{" "}
-                      {variant.ram || "N/A"}
-                    </p>
-
-                    <p>
-                      <span className="font-medium">
-                        Storage:
-                      </span>{" "}
-                      {variant.storage || "N/A"}
-                    </p>
-
-                    <p>
-                      <span className="font-medium">
-                        Price:
-                      </span>{" "}
-                      ${variant.price}
-                    </p>
-
-                    <p>
-                      <span className="font-medium">
-                        Stock:
-                      </span>{" "}
-                      {variant.stock}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-2 pt-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() =>
-                        handleCartBtn(item, variant)
+        {/* PRODUCTS */}
+        {products.map((product) => (
+          <Card
+            key={product._id}
+            className="overflow-hidden border shadow-sm">
+            <CardContent className="p-0">
+              {/* TOP PRODUCT INFO */}
+              <div className="border-b p-5">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                  {/* LEFT */}
+                  <div className="flex gap-4">
+                    {/* MAIN IMAGE */}
+                    <img
+                      src={
+                        product.variants?.[0]?.images?.[0]
                       }
-                      className="flex-1 cursor-pointer">
-                      <ShoppingCart className="w-4 h-4" />
-                      Cart
-                    </Button>
+                      alt={product.name}
+                      className="w-24 h-24 md:w-28 md:h-28 object-cover rounded-xl border"
+                    />
 
+                    {/* PRODUCT INFO */}
+                    <div>
+                      <h3 className="text-lg md:text-xl font-semibold">
+                        {product.name}
+                      </h3>
+
+                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2 max-w-2xl">
+                        {product.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        <span className="text-xs bg-muted px-3 py-1 rounded-full">
+                          {product.category}
+                        </span>
+
+                        <span className="text-xs bg-muted px-3 py-1 rounded-full">
+                          {
+                            product.variants.length
+                          }{" "}
+                          Variants
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ACTION BUTTONS */}
+                  <div className="flex gap-2">
                     <Link
-                      to={`/updateproduct/${item._id}`}
-                      className="flex-1">
+                      to={`/updateproduct/${product._id}`}>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="w-full cursor-pointer">
+                        className="cursor-pointer">
+                        <Pencil className="w-4 h-4 mr-1" />
                         Edit
                       </Button>
                     </Link>
@@ -336,7 +170,8 @@ const ProductList = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          className="flex-1 dark:bg-red-700 cursor-pointer">
+                          className="cursor-pointer">
+                          <Trash2 className="w-4 h-4 mr-1" />
                           Delete
                         </Button>
                       </AlertDialogTrigger>
@@ -349,6 +184,8 @@ const ProductList = () => {
 
                           <AlertDialogDescription>
                             This action cannot be undone.
+                            This will permanently delete
+                            the product.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
 
@@ -359,7 +196,9 @@ const ProductList = () => {
 
                           <AlertDialogAction
                             onClick={() =>
-                              handleProductDelete(item._id)
+                              handleProductDelete(
+                                product._id,
+                              )
                             }>
                             Confirm Delete
                           </AlertDialogAction>
@@ -368,11 +207,135 @@ const ProductList = () => {
                     </AlertDialog>
                   </div>
                 </div>
-              )),
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              </div>
+
+              {/* VARIANTS */}
+              <div className="p-5">
+                <h4 className="font-semibold mb-4 text-sm md:text-base">
+                  Product Variants
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {product.variants.map(
+                    (variant, index) => (
+                      <div
+                        key={index}
+                        className="border rounded-2xl p-4 hover:shadow-md transition-all duration-200">
+                        {/* VARIANT IMAGE */}
+                        <img
+                          src={
+                            variant.images?.[0]
+                          }
+                          alt={product.name}
+                          className="w-full h-52 object-cover rounded-xl border"
+                        />
+
+                        {/* VARIANT INFO */}
+                        <div className="mt-4 space-y-2">
+                          {/* TOP */}
+                          <div className="flex items-center justify-between">
+                            <h5 className="font-semibold">
+                              Variant{" "}
+                              {index + 1}
+                            </h5>
+
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                variant.stock > 0
+                                  ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                                  : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
+                              }`}>
+                              {variant.stock > 0
+                                ? "In Stock"
+                                : "Out of Stock"}
+                            </span>
+                          </div>
+
+                          {/* ATTRIBUTES */}
+                          <div className="grid grid-cols-2 gap-2 text-sm">
+                            <p>
+                              <span className="text-muted-foreground">
+                                Color:
+                              </span>{" "}
+                              {variant.color ||
+                                "N/A"}
+                            </p>
+
+                            <p>
+                              <span className="text-muted-foreground">
+                                Size:
+                              </span>{" "}
+                              {variant.size ||
+                                "N/A"}
+                            </p>
+
+                            <p>
+                              <span className="text-muted-foreground">
+                                RAM:
+                              </span>{" "}
+                              {variant.ram ||
+                                "N/A"}
+                            </p>
+
+                            <p>
+                              <span className="text-muted-foreground">
+                                Storage:
+                              </span>{" "}
+                              {variant.storage ||
+                                "N/A"}
+                            </p>
+                          </div>
+
+                          {/* PRICE + STOCK */}
+                          <div className="flex items-center justify-between pt-2">
+                            <div>
+                              <p className="text-xs text-muted-foreground">
+                                Price
+                              </p>
+
+                              <h4 className="text-lg font-bold">
+                                $
+                                {
+                                  variant.price
+                                }
+                              </h4>
+                            </div>
+
+                            <div className="text-right">
+                              <p className="text-xs text-muted-foreground">
+                                Stock
+                              </p>
+
+                              <h4 className="font-semibold">
+                                {
+                                  variant.stock
+                                }
+                              </h4>
+                            </div>
+                          </div>
+
+                          {/* BUTTON */}
+                          <Button
+                            onClick={() =>
+                              handleCartBtn(
+                                product,
+                                variant,
+                              )
+                            }
+                            className="w-full mt-3 cursor-pointer">
+                            <ShoppingCart className="w-4 h-4 mr-2" />
+                            Add To Cart
+                          </Button>
+                        </div>
+                      </div>
+                    ),
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </>
   );
 };
