@@ -109,37 +109,61 @@ async function getProductController(req, res) {
 }
 
 async function updateProductController(req, res) {
-  const { id } = req.params;
-  const { name, description, category, price, size, color, ram, storage } =
-    req.body;
-  const updateProduct = await productSchema.findById(id);
-  updateProduct.name = name;
-  updateProduct.description = description;
-  updateProduct.category = category;
-  updateProduct.price = price;
-  updateProduct.size = size;
-  updateProduct.color = color;
-  updateProduct.ram = ram;
-  updateProduct.storage = storage;
+  try {
+    const { id } = req.params;
+    const { name, description, category, variants } = req.body;
 
-  if (req.file) {
-    const oldImg = updateProduct.image;
-    const publicId = oldImg.split("/").slice(-1)[0].split(".")[0];
+    const product = await productSchema.findById(id);
 
-    await cloudinary.uploader.destroy(publicId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
 
-    const imagePath = req.file.path;
-    const imageUrl = await uploadImage(imagePath);
+    // =========================
+    // BASIC FIELDS
+    // =========================
+    product.name = name;
+    product.description = description;
+    product.category = category;
 
-    updateProduct.image = imageUrl.secure_url;
+    // =========================
+    // VARIANTS PARSE
+    // =========================
+    let parsedVariants = JSON.parse(variants);
+
+    // =========================
+    // IMAGE HANDLING (MULTI)
+    // =========================
+    if (req.files && req.files.length > 0) {
+      const imageUrls = [];
+
+      for (let file of req.files) {
+        const uploaded = await uploadImage(file.path);
+        imageUrls.push(uploaded.secure_url);
+      }
+
+      parsedVariants.forEach((variant, index) => {
+        variant.images = imageUrls[index] ? [imageUrls[index]] : [];
+      });
+    }
+
+    // =========================
+    // ASSIGN VARIANTS
+    // =========================
+    product.variants = parsedVariants;
+
+    await product.save();
+
+    res.json({
+      message: "Product updated successfully",
+      data: product,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Server error",
+    });
   }
-
-  await updateProduct.save();
-
-  res.json({
-    message: "Success",
-    data: updateProduct,
-  });
 }
 
 async function getSingleProductController(req, res) {

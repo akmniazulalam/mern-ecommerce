@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -121,7 +119,7 @@ const ProductList = () => {
                     <img
                       src={product.variants?.[0]?.images?.[0]}
                       alt={product.name}
-                      className="w-16 h-16 rounded-lg object-cover border shrink-0"
+                      className="w-16 rounded-md object-cover border shrink-0"
                     />
 
                     {/* INFO */}
@@ -140,7 +138,7 @@ const ProductList = () => {
                         </span>
 
                         <span className="text-[11px] bg-muted px-2 py-1 rounded-md">
-                          {product.variants.length} Variants
+                          {product.variants.length} { product.variants.length > 1 ? "Variants" : "Variant" }
                         </span>
                       </div>
                     </div>

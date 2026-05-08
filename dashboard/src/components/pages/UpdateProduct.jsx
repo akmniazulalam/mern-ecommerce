@@ -7,39 +7,45 @@ import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const UpdateProduct = () => {
   const { id } = useParams();
-  const [updateName, setUpdateName] = useState("");
-  const [updateDes, setUpdateDes] = useState("");
-  const [updateCategory, setUpdateCategory] = useState("");
-  const [updatePrice, setUpdatePrice] = useState("");
-  const [updateSize, setUpdateSize] = useState("");
-  const [updateColor, setUpdateColor] = useState("");
-  const [updateRam, setUpdateRam] = useState("");
-  const [updateStorage, setUpdateStorage] = useState("");
-  const [updateImage, setUpdateImage] = useState("");
-  const [prevImage, setPrevImage] = useState("");
   const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+
+  const [getCategory, setGetCategory] = useState([]);
+
+  const [variants, setVariants] = useState([]);
+
+  // =========================
+  // LOAD PRODUCT
+  // =========================
   useEffect(() => {
     axios
       .get(
         `https://mern-ecommerce-91cv.onrender.com/api/v1/product/singleproduct/${id}`,
       )
       .then((res) => {
-        setUpdateName(res.data.data.name);
-        setUpdateDes(res.data.data.description);
-        setUpdateCategory(res.data.data.category);
-        setUpdatePrice(res.data.data.price);
-        setUpdateSize(res.data.data.size);
-        setUpdateColor(res.data.data.color);
-        setUpdateRam(res.data.data.ram);
-        setUpdateStorage(res.data.data.storage);
-        setPrevImage(res.data.data.image);
-      });
-  }, []);
+        const data = res.data.data;
 
-  const [getCategory, setGetCategory] = useState([]);
+        setName(data.name);
+        setDescription(data.description);
+        setCategory(data.category);
+        setVariants(data.variants || []);
+      });
+  }, [id]);
 
   useEffect(() => {
     axios
@@ -49,40 +55,51 @@ const UpdateProduct = () => {
       .then((res) => setGetCategory(res.data.data));
   }, []);
 
-  const handleUpdateProduct = async () => {
+  // =========================
+  // HANDLE VARIANT CHANGE
+  // =========================
+  const handleVariantChange = (index, field, value) => {
+    const updated = [...variants];
+    updated[index][field] = value;
+    setVariants(updated);
+  };
+
+  // =========================
+  // IMAGE CHANGE
+  // =========================
+  const handleImageChange = (index, file) => {
+    const updated = [...variants];
+    updated[index].image = file;
+    setVariants(updated);
+  };
+
+  // =========================
+  // SUBMIT UPDATE
+  // =========================
+  const handleUpdate = async () => {
     try {
       const formData = new FormData();
-      formData.append("name", updateName);
-      formData.append("description", updateDes);
-      formData.append("category", updateCategory);
-      formData.append("price", updatePrice);
-      formData.append("size", updateSize);
-      formData.append("color", updateColor);
-      formData.append("ram", updateRam);
-      formData.append("storage", updateStorage);
-      if (updateImage) {
-        formData.append("image", updateImage);
-      }
+
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("variants", JSON.stringify(variants));
+
+      variants.forEach((v) => {
+        if (v.image) {
+          formData.append("images", v.image);
+        }
+      });
+
       await axios.patch(
         `https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`,
         formData,
       );
-      toast.success("Successfully Updated");
-      setUpdateName("");
-      setUpdateDes("");
-      setUpdateCategory("");
-      setUpdatePrice("");
-      setUpdateSize("");
-      setUpdateColor("");
-      setUpdateRam("");
-      setUpdateStorage("");
-      setPrevImage("");
-      setUpdateImage("");
-      setTimeout(() => {
-        navigate("/productlist");
-      }, 1000);
+
+      toast.success("Product updated");
+      navigate("/productlist");
     } catch (error) {
-      toast.error("update failed");
+      toast.error("Update failed ❌");
     }
   };
   return (
@@ -91,87 +108,99 @@ const UpdateProduct = () => {
         <title>Update Product</title>
       </Helmet>
 
-      <h3 className="font-bold">Update Product</h3>
-      <div className="md:max-w-1/3 mt-4">
+      <div className="max-w-xl space-y-4">
+        <h2 className="font-bold text-2xl">Update Product</h2>
+
         <FieldGroup>
           <Field>
-            <FieldLabel>Update Product Name</FieldLabel>
-            <Input
-              value={updateName}
-              onChange={(e) => setUpdateName(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Update Product Description</FieldLabel>
-            <Textarea
-              value={updateDes}
-              className={"resize-none"}
-              onChange={(e) => setUpdateDes(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Update Product Category</FieldLabel>
-            <select
-              value={updateCategory}
-              className="border border-gray-200 rounded-sm p-2"
-              onChange={(e) => setUpdateCategory(e.target.value)}>
-              {getCategory.map((item) => (
-                <option className={"dark:bg-blue-900"}>{item.name}</option>
-              ))}
-            </select>
+            <FieldLabel className="font-semibold text-sm md:text-base">
+              Name
+            </FieldLabel>
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
           </Field>
 
           <Field>
-            <FieldLabel>Update Product Price</FieldLabel>
-            <Input
-              value={updatePrice}
-              onChange={(e) => setUpdatePrice(e.target.value)}
+            <FieldLabel className="font-semibold text-sm md:text-base">
+              Description
+            </FieldLabel>
+            <Textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </Field>
+
           <Field>
-            <FieldLabel>Update Product Size</FieldLabel>
-            <Input
-              value={updateSize}
-              onChange={(e) => setUpdateSize(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Update Product Color</FieldLabel>
-            <Input
-              value={updateColor}
-              onChange={(e) => setUpdateColor(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Update Product Ram</FieldLabel>
-            <Input
-              value={updateRam}
-              onChange={(e) => setUpdateRam(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Update Product Storage</FieldLabel>
-            <Input
-              value={updateStorage}
-              onChange={(e) => setUpdateStorage(e.target.value)}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Update Product Image</FieldLabel>
-            {prevImage && (
-              <img src={prevImage} alt="product" className="mb-3 rounded" />
-            )}
-            <input
-              type={"file"}
-              onChange={(e) => setUpdateImage(e.target.files[0])}
-            />
-          </Field>
-          <Field orientation="horizontal">
-            <Button onClick={handleUpdateProduct} className={"cursor-pointer"}>
-              Update Product
-            </Button>
+            <FieldLabel className="font-semibold text-sm md:text-base">
+              Category
+            </FieldLabel>
+            <Select
+              onValueChange={(value) => {
+                setCategory(value);
+              }}>
+              <SelectTrigger className="w-40 h-10 cursor-pointer">
+                <SelectValue placeholder={category} />
+              </SelectTrigger>
+
+              <SelectContent position="popper">
+                <SelectGroup>
+                  <SelectLabel>Categories</SelectLabel>
+                  {getCategory.map((item) => (
+                    <SelectItem
+                      key={item._id}
+                      value={item.name}
+                      className={"cursor-pointer"}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </Field>
         </FieldGroup>
+
+        {/* ========================= */}
+        {/* VARIANTS */}
+        {/* ========================= */}
+        <div className="space-y-4">
+          <h3 className="font-semibold">Variants</h3>
+
+          {variants.map((v, index) => (
+            <div key={index} className="border p-3 rounded space-y-2">
+              <Input
+                placeholder="Color"
+                value={v.color || ""}
+                onChange={(e) =>
+                  handleVariantChange(index, "color", e.target.value)
+                }
+              />
+
+              <Input
+                placeholder="Size"
+                value={v.size || ""}
+                onChange={(e) =>
+                  handleVariantChange(index, "size", e.target.value)
+                }
+              />
+
+              <Input
+                placeholder="Price"
+                value={v.price || ""}
+                onChange={(e) =>
+                  handleVariantChange(index, "price", e.target.value)
+                }
+              />
+
+              <Input
+                type="file"
+                onChange={(e) => handleImageChange(index, e.target.files[0])}
+              />
+            </div>
+          ))}
+        </div>
+
+        <Button onClick={handleUpdate} className="w-full cursor-pointer">
+          Update Product
+        </Button>
       </div>
     </>
   );
