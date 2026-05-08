@@ -25,7 +25,7 @@ const {
 router.post("/createproduct", upload.array('images', 10), productController); // max koyta image dite parbe. ar ekhane jodi array dewa hoy tokhon req.files hoye jay. single thakle tokhon req.file hoy
 router.get("/getproduct", getProductController);
 router.get("/singleproduct/:id", getSingleProductController);
-router.patch("/updateproduct/:id", upload.single('image'), updateProductController);
+router.patch("/updateproduct/:id", upload.array('images', 10), updateProductController);
 router.delete("/deleteproduct/:id", deleteProduct);
 router.delete("/deleteallproduct", deleteAllProduct);
 
