@@ -154,7 +154,7 @@ const Products = () => {
               </SelectContent>
             </Select>
           </Field>
-          <div className="mt-6">
+          <div>
             <h4 className="font-semibold mb-2">Variants</h4>
 
             {variants.map((variant, index) => (
