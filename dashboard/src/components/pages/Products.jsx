@@ -6,6 +6,15 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Helmet } from "react-helmet-async";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Products = () => {
   const [productName, setProductName] = useState("");
@@ -128,18 +137,22 @@ const Products = () => {
           </Field>
           <Field>
             <FieldLabel>Category</FieldLabel>
-            <select
-              className="border border-gray-200 rounded-sm p-2"
-              onChange={(e) => setSelectedCategory(e.target.value)}>
-              {getCategory.map((item) => (
-                <option
-                  className={"dark:bg-blue-900"}
-                  key={item._id}
-                  value={item._id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            <Select onChange={(e) => setSelectedCategory(e.target.value)}>
+              <SelectTrigger className="w-40 h-10">
+                <SelectValue placeholder={"Select Category"} />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Categories</SelectLabel>
+                  {getCategory.map((item) => (
+                    <SelectItem key={item._id} value={item._id}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </Field>
           <div className="mt-6">
             <h4 className="font-semibold mb-2">Variants</h4>
