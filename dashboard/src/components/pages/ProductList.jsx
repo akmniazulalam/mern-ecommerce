@@ -19,7 +19,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-import { ShoppingCart, Pencil, Trash2 } from "lucide-react";
+import {
+  ShoppingCart,
+  Pencil,
+  Trash2,
+  Package2,
+} from "lucide-react";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -53,7 +58,7 @@ const ProductList = () => {
         prev.filter((item) => item._id !== id),
       );
 
-      toast.success("Product deleted successfully");
+      toast.success("Product deleted");
     } catch (error) {
       toast.error("Delete failed ❌");
     }
@@ -62,7 +67,10 @@ const ProductList = () => {
   // =========================
   // ADD TO CART
   // =========================
-  const handleCartBtn = async (product, variant) => {
+  const handleCartBtn = async (
+    product,
+    variant,
+  ) => {
     try {
       const cartProduct = {
         productId: product._id,
@@ -83,9 +91,9 @@ const ProductList = () => {
         },
       );
 
-      toast.success("Added to cart successfully");
+      toast.success("Added to cart");
     } catch (error) {
-      toast.error("Failed to add cart ❌");
+      toast.error("Cart failed ❌");
     }
   };
 
@@ -95,56 +103,71 @@ const ProductList = () => {
         <title>Product List</title>
       </Helmet>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* PAGE TITLE */}
-        <div>
-          <h2 className="text-2xl font-bold">
-            Product List
-          </h2>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold">
+              Products
+            </h2>
 
-          <p className="text-sm text-muted-foreground mt-1">
-            Manage all your products and variants
-          </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Manage all products &
+              variants
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs bg-muted px-3 py-2 rounded-lg">
+            <Package2 className="w-4 h-4" />
+
+            {products.length} Products
+          </div>
         </div>
 
         {/* PRODUCTS */}
-        {products.map((product) => (
-          <Card
-            key={product._id}
-            className="overflow-hidden border shadow-sm">
-            <CardContent className="p-0">
-              {/* TOP PRODUCT INFO */}
-              <div className="border-b p-5">
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div className="space-y-3">
+          {products.map((product) => (
+            <Card
+              key={product._id}
+              className="shadow-sm">
+              <CardContent className="p-4">
+                {/* PRODUCT TOP */}
+                <div className="flex items-start justify-between gap-3">
                   {/* LEFT */}
-                  <div className="flex gap-4">
-                    {/* MAIN IMAGE */}
+                  <div className="flex gap-3">
+                    {/* PRODUCT IMAGE */}
                     <img
                       src={
-                        product.variants?.[0]?.images?.[0]
+                        product.variants?.[0]
+                          ?.images?.[0]
                       }
                       alt={product.name}
-                      className="w-24 h-24 md:w-28 md:h-28 object-cover rounded-xl border"
+                      className="w-16 h-16 rounded-lg object-cover border shrink-0"
                     />
 
-                    {/* PRODUCT INFO */}
+                    {/* INFO */}
                     <div>
-                      <h3 className="text-lg md:text-xl font-semibold">
+                      <h3 className="font-semibold text-sm md:text-base">
                         {product.name}
                       </h3>
 
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2 max-w-2xl">
-                        {product.description}
+                      <p className="text-xs text-muted-foreground line-clamp-1 mt-1 max-w-md">
+                        {
+                          product.description
+                        }
                       </p>
 
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        <span className="text-xs bg-muted px-3 py-1 rounded-full">
-                          {product.category}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <span className="text-[11px] bg-muted px-2 py-1 rounded-md">
+                          {
+                            product.category
+                          }
                         </span>
 
-                        <span className="text-xs bg-muted px-3 py-1 rounded-full">
+                        <span className="text-[11px] bg-muted px-2 py-1 rounded-md">
                           {
-                            product.variants.length
+                            product.variants
+                              .length
                           }{" "}
                           Variants
                         </span>
@@ -152,15 +175,15 @@ const ProductList = () => {
                     </div>
                   </div>
 
-                  {/* ACTION BUTTONS */}
-                  <div className="flex gap-2">
+                  {/* ACTIONS */}
+                  <div className="flex gap-2 shrink-0">
                     <Link
                       to={`/updateproduct/${product._id}`}>
                       <Button
                         size="sm"
                         variant="outline"
-                        className="cursor-pointer">
-                        <Pencil className="w-4 h-4 mr-1" />
+                        className="h-8 text-xs cursor-pointer">
+                        <Pencil className="w-3 h-3 mr-1" />
                         Edit
                       </Button>
                     </Link>
@@ -170,8 +193,8 @@ const ProductList = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          className="cursor-pointer">
-                          <Trash2 className="w-4 h-4 mr-1" />
+                          className="h-8 text-xs cursor-pointer">
+                          <Trash2 className="w-3 h-3 mr-1" />
                           Delete
                         </Button>
                       </AlertDialogTrigger>
@@ -179,13 +202,12 @@ const ProductList = () => {
                       <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>
-                            Are you sure?
+                            Delete Product?
                           </AlertDialogTitle>
 
                           <AlertDialogDescription>
-                            This action cannot be undone.
-                            This will permanently delete
-                            the product.
+                            This action cannot
+                            be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
 
@@ -200,141 +222,125 @@ const ProductList = () => {
                                 product._id,
                               )
                             }>
-                            Confirm Delete
+                            Confirm
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>
                 </div>
-              </div>
 
-              {/* VARIANTS */}
-              <div className="p-5">
-                <h4 className="font-semibold mb-4 text-sm md:text-base">
-                  Product Variants
-                </h4>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {/* VARIANTS */}
+                <div className="mt-4 space-y-2">
                   {product.variants.map(
                     (variant, index) => (
                       <div
                         key={index}
-                        className="border rounded-2xl p-4 hover:shadow-md transition-all duration-200">
-                        {/* VARIANT IMAGE */}
-                        <img
-                          src={
-                            variant.images?.[0]
-                          }
-                          alt={product.name}
-                          className="w-full h-52 object-cover rounded-xl border"
-                        />
-
-                        {/* VARIANT INFO */}
-                        <div className="mt-4 space-y-2">
-                          {/* TOP */}
-                          <div className="flex items-center justify-between">
-                            <h5 className="font-semibold">
-                              Variant{" "}
-                              {index + 1}
-                            </h5>
-
-                            <span
-                              className={`text-xs px-2 py-1 rounded-full ${
-                                variant.stock > 0
-                                  ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-                                  : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300"
-                              }`}>
-                              {variant.stock > 0
-                                ? "In Stock"
-                                : "Out of Stock"}
-                            </span>
-                          </div>
-
-                          {/* ATTRIBUTES */}
-                          <div className="grid grid-cols-2 gap-2 text-sm">
-                            <p>
-                              <span className="text-muted-foreground">
-                                Color:
-                              </span>{" "}
-                              {variant.color ||
-                                "N/A"}
-                            </p>
-
-                            <p>
-                              <span className="text-muted-foreground">
-                                Size:
-                              </span>{" "}
-                              {variant.size ||
-                                "N/A"}
-                            </p>
-
-                            <p>
-                              <span className="text-muted-foreground">
-                                RAM:
-                              </span>{" "}
-                              {variant.ram ||
-                                "N/A"}
-                            </p>
-
-                            <p>
-                              <span className="text-muted-foreground">
-                                Storage:
-                              </span>{" "}
-                              {variant.storage ||
-                                "N/A"}
-                            </p>
-                          </div>
-
-                          {/* PRICE + STOCK */}
-                          <div className="flex items-center justify-between pt-2">
-                            <div>
-                              <p className="text-xs text-muted-foreground">
-                                Price
-                              </p>
-
-                              <h4 className="text-lg font-bold">
-                                $
-                                {
-                                  variant.price
-                                }
-                              </h4>
-                            </div>
-
-                            <div className="text-right">
-                              <p className="text-xs text-muted-foreground">
-                                Stock
-                              </p>
-
-                              <h4 className="font-semibold">
-                                {
-                                  variant.stock
-                                }
-                              </h4>
-                            </div>
-                          </div>
-
-                          {/* BUTTON */}
-                          <Button
-                            onClick={() =>
-                              handleCartBtn(
-                                product,
-                                variant,
-                              )
+                        className="border rounded-lg p-2.5 flex items-center justify-between gap-3">
+                        {/* LEFT */}
+                        <div className="flex items-center gap-3 min-w-0">
+                          {/* VARIANT IMAGE */}
+                          <img
+                            src={
+                              variant
+                                .images?.[0]
                             }
-                            className="w-full mt-3 cursor-pointer">
-                            <ShoppingCart className="w-4 h-4 mr-2" />
-                            Add To Cart
-                          </Button>
+                            alt={
+                              product.name
+                            }
+                            className="w-12 h-12 rounded-md object-cover border shrink-0"
+                          />
+
+                          {/* INFO */}
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 text-xs">
+                              {variant.color && (
+                                <span className="bg-muted px-2 py-1 rounded">
+                                  {
+                                    variant.color
+                                  }
+                                </span>
+                              )}
+
+                              {variant.size && (
+                                <span className="bg-muted px-2 py-1 rounded">
+                                  {
+                                    variant.size
+                                  }
+                                </span>
+                              )}
+
+                              {variant.ram && (
+                                <span className="bg-muted px-2 py-1 rounded">
+                                  {
+                                    variant.ram
+                                  }
+                                </span>
+                              )}
+
+                              {variant.storage && (
+                                <span className="bg-muted px-2 py-1 rounded">
+                                  {
+                                    variant.storage
+                                  }
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-4 mt-2 text-xs">
+                              <p>
+                                <span className="text-muted-foreground">
+                                  Price:
+                                </span>{" "}
+                                <span className="font-semibold">
+                                  $
+                                  {
+                                    variant.price
+                                  }
+                                </span>
+                              </p>
+
+                              <p>
+                                <span className="text-muted-foreground">
+                                  Stock:
+                                </span>{" "}
+                                <span
+                                  className={`font-semibold ${
+                                    variant.stock >
+                                    0
+                                      ? "text-green-600"
+                                      : "text-red-600"
+                                  }`}>
+                                  {
+                                    variant.stock
+                                  }
+                                </span>
+                              </p>
+                            </div>
+                          </div>
                         </div>
+
+                        {/* CART BUTTON */}
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            handleCartBtn(
+                              product,
+                              variant,
+                            )
+                          }
+                          className="h-8 text-xs shrink-0 cursor-pointer">
+                          <ShoppingCart className="w-3 h-3 mr-1" />
+                          Cart
+                        </Button>
                       </div>
                     ),
                   )}
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     </>
   );
