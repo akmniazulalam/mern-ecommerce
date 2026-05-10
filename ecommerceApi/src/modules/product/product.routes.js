@@ -9,7 +9,6 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split(".")[1])
   }
 })
-// const storage = multer.memoryStorage()
 
 const upload = multer({ storage: storage })
 const router = express.Router();
