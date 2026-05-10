@@ -248,10 +248,27 @@ const UpdateProduct = () => {
                 }
               />
 
-              <img
-                src={v.images?.[0]}
-                className="w-20 h-20 object-cover rounded"
+              <Input
+                type="number"
+                placeholder="Stock"
+                value={v.stock || ""}
+                min={1}
+                className={
+                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                }
+                onChange={(e) => {
+                  if (e.target.value >= 0) {
+                    handleVariantChange(index, "stock", e.target.value);
+                  }
+                }}
               />
+
+              {v.images?.[0] && (
+                <img
+                  src={v.images[0]}
+                  className="w-20 h-20 object-cover rounded"
+                />
+              )}
 
               <Input
                 type="file"
@@ -260,12 +277,14 @@ const UpdateProduct = () => {
                 }}
               />
 
-              <Button
-                variant="destructive"
-                className="cursor-pointer"
-                onClick={() => handleRemoveVariant(index)}>
-                Remove Variant
-              </Button>
+              <div className="text-end">
+                <Button
+                  variant="destructive"
+                  className="cursor-pointer mt-4"
+                  onClick={() => handleRemoveVariant(index)}>
+                  Remove Variant
+                </Button>
+              </div>
             </div>
           ))}
         </div>
