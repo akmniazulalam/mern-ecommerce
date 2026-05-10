@@ -194,7 +194,7 @@ const UpdateProduct = () => {
                 placeholder="Ram"
                 value={v.ram || ""}
                 onChange={(e) =>
-                  handleVariantChange(index, "ran", e.target.value)
+                  handleVariantChange(index, "ram", e.target.value)
                 }
               />
 
