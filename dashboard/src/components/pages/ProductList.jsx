@@ -67,6 +67,7 @@ const ProductList = () => {
         ram: variant.ram,
         storage: variant.storage,
         price: variant.price,
+        badge: variant.badge,
       };
 
       await axios.post(
@@ -229,6 +230,12 @@ const ProductList = () => {
                             {variant.storage && (
                               <span className="bg-muted px-2 py-1 rounded">
                                 {variant.storage}
+                              </span>
+                            )}
+
+                            {variant.badge && (
+                              <span className="bg-muted px-2 py-1 rounded">
+                                {variant.badge}
                               </span>
                             )}
                           </div>

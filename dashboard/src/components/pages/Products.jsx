@@ -29,6 +29,7 @@ const Products = () => {
       storage: "",
       stock: "",
       price: "",
+      badge: "",
       image: null,
     },
   ]);
@@ -54,6 +55,7 @@ const Products = () => {
         storage: "",
         stock: "",
         price: "",
+        badge: "",
         image: null,
       },
     ]);
@@ -73,6 +75,7 @@ const Products = () => {
       storage: v.storage,
       stock: v.stock,
       price: v.price,
+      badge: v.badge,
     }));
 
     formData.append("variants", JSON.stringify(variantData));
@@ -242,6 +245,18 @@ const Products = () => {
                     value={variant.price}
                     onChange={(e) =>
                       handleVariantChange(index, "price", e.target.value)
+                    }
+                  />
+                </Field>
+                
+                <Field>
+                  <FieldLabel>Badge</FieldLabel>
+
+                  <Input
+                    placeholder="Badge"
+                    value={variant.badge}
+                    onChange={(e) =>
+                      handleVariantChange(index, "badge", e.target.value)
                     }
                   />
                 </Field>

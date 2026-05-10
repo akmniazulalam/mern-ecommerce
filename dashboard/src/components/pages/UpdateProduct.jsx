@@ -89,6 +89,7 @@ const UpdateProduct = () => {
         storage: "",
         stock: "",
         price: "",
+        badge: "",
         images: [],
         image: null,
       },
@@ -245,6 +246,14 @@ const UpdateProduct = () => {
                 value={v.price || ""}
                 onChange={(e) =>
                   handleVariantChange(index, "price", e.target.value)
+                }
+              />
+
+              <Input
+                placeholder="Badge"
+                value={v.badge || ""}
+                onChange={(e) =>
+                  handleVariantChange(index, "badge", e.target.value)
                 }
               />
 

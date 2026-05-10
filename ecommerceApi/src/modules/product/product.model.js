@@ -50,6 +50,10 @@ const productSchema = new Schema(
           type: String,
           trim: true,
         },
+        badge: {
+          type: String,
+          trim: true,
+        },
       },
     ],
   },
