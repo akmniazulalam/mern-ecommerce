@@ -280,7 +280,7 @@ const UpdateProduct = () => {
               <div className="text-end">
                 <Button
                   variant="destructive"
-                  className="cursor-pointer mt-4"
+                  className="cursor-pointer mt-4 dark:bg-red-600"
                   onClick={() => handleRemoveVariant(index)}>
                   Remove Variant
                 </Button>

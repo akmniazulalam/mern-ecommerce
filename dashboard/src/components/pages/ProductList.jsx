@@ -161,7 +161,7 @@ const ProductList = () => {
                         <Button
                           size="sm"
                           variant="destructive"
-                          className="h-8 text-xs cursor-pointer">
+                          className="h-8 text-xs cursor-pointer dark:bg-red-600">
                           <Trash2 className="w-3 h-3 mr-1" />
                           Delete
                         </Button>

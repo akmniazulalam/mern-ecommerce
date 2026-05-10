@@ -261,7 +261,7 @@ const Products = () => {
                 <div className="text-end mt-3">
                   <Button
                   variant="destructive"
-                  className={"cursor-pointer"}
+                  className={"cursor-pointer dark:bg-red-600"}
                   onClick={() => handleRemoveVariant(index)}>
                   Remove
                 </Button>
