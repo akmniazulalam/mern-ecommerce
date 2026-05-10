@@ -145,7 +145,7 @@ const UpdateProduct = () => {
               onValueChange={(value) => {
                 setCategory(value);
               }}>
-              <SelectTrigger className="w-40 h-10 cursor-pointer">
+              <SelectTrigger className="w-40 h-10 cursor-pointer text-white!">
                 <SelectValue placeholder={category} />
               </SelectTrigger>
 
