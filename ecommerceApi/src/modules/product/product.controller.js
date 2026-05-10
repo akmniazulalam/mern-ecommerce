@@ -113,6 +113,10 @@ async function updateProductController(req, res) {
     const { id } = req.params;
     const { name, description, category, variants } = req.body;
 
+    const imageIndexes = req.body.imageIndexes;
+
+    const indexes = Array.isArray(imageIndexes) ? imageIndexes : [imageIndexes];
+
     const product = await productSchema.findById(id);
 
     if (!product) {
@@ -135,16 +139,15 @@ async function updateProductController(req, res) {
     // IMAGE HANDLING (MULTI)
     // =========================
     if (req.files && req.files.length > 0) {
-      const imageUrls = [];
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
 
-      for (let file of req.files) {
         const uploaded = await uploadImage(file.path);
-        imageUrls.push(uploaded.secure_url);
-      }
 
-      parsedVariants.forEach((variant, index) => {
-        variant.images = imageUrls[index] ? [imageUrls[index]] : [];
-      });
+        const variantIndex = indexes[i];
+
+        parsedVariants[variantIndex].images = [uploaded.secure_url];
+      }
     }
 
     // =========================

@@ -69,7 +69,10 @@ const UpdateProduct = () => {
   // =========================
   const handleImageChange = (index, file) => {
     const updated = [...variants];
+
     updated[index].image = file;
+    updated[index].imageUpdated = true;
+
     setVariants(updated);
   };
 
@@ -93,9 +96,10 @@ const UpdateProduct = () => {
         ),
       );
 
-      variants.forEach((v) => {
-        if (v.image) {
+      variants.forEach((v, i) => {
+        if (v.image instanceof File) {
           formData.append("images", v.image);
+          formData.append("imageIndexes", i);
         }
       });
 
