@@ -77,6 +77,36 @@ const UpdateProduct = () => {
   };
 
   // =========================
+  // Add Variant
+  // =========================
+  const handleAddVariant = () => {
+    setVariants([
+      ...variants,
+      {
+        color: "",
+        size: "",
+        ram: "",
+        storage: "",
+        stock: "",
+        price: "",
+        images: [],
+        image: null,
+      },
+    ]);
+  };
+
+  // =========================
+  // Remove Variant
+  // =========================
+  const handleRemoveVariant = (index) => {
+    const updated = [...variants];
+
+    updated.splice(index, 1);
+
+    setVariants(updated);
+  };
+
+  // =========================
   // SUBMIT UPDATE
   // =========================
   const handleUpdate = async () => {
@@ -218,15 +248,31 @@ const UpdateProduct = () => {
                 }
               />
 
+              <img
+                src={v.images?.[0]}
+                className="w-20 h-20 object-cover rounded"
+              />
+
               <Input
                 type="file"
                 onChange={(e) => {
                   handleImageChange(index, e.target.files[0]);
                 }}
               />
+
+              <Button
+                variant="destructive"
+                className="cursor-pointer"
+                onClick={() => handleRemoveVariant(index)}>
+                Remove Variant
+              </Button>
             </div>
           ))}
         </div>
+
+        <Button onClick={handleAddVariant} className="cursor-pointer">
+          + Add Variant
+        </Button>
 
         <Button onClick={handleUpdate} className="w-full cursor-pointer">
           Update Product

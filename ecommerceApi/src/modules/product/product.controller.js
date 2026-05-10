@@ -115,12 +115,18 @@ async function updateProductController(req, res) {
 
     const imageIndexes = req.body.imageIndexes;
 
-    const indexes = Array.isArray(imageIndexes) ? imageIndexes : [imageIndexes];
+    const indexes = Array.isArray(imageIndexes)
+      ? imageIndexes
+      : imageIndexes
+        ? [imageIndexes]
+        : [];
 
     const product = await productSchema.findById(id);
 
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({
+        message: "Product not found",
+      });
     }
 
     // =========================
@@ -131,12 +137,12 @@ async function updateProductController(req, res) {
     product.category = category;
 
     // =========================
-    // VARIANTS PARSE
+    // PARSE VARIANTS
     // =========================
     let parsedVariants = JSON.parse(variants);
 
     // =========================
-    // IMAGE HANDLING (MULTI)
+    // IMAGE UPDATE
     // =========================
     if (req.files && req.files.length > 0) {
       for (let i = 0; i < req.files.length; i++) {
@@ -144,9 +150,14 @@ async function updateProductController(req, res) {
 
         const uploaded = await uploadImage(file.path);
 
-        const variantIndex = indexes[i];
+        const variantIndex = Number(indexes[i]);
 
-        parsedVariants[variantIndex].images = [uploaded.secure_url];
+        // ensure images array exists
+        if (!parsedVariants[variantIndex].images) {
+          parsedVariants[variantIndex].images = [];
+        }
+
+        parsedVariants[variantIndex].images[0] = uploaded.secure_url;
       }
     }
 
@@ -163,6 +174,7 @@ async function updateProductController(req, res) {
     });
   } catch (error) {
     console.log(error);
+
     res.status(500).json({
       message: "Server error",
     });
