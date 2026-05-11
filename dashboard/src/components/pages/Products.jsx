@@ -276,7 +276,7 @@ const Products = () => {
                 <div className="text-end mt-3">
                   <Button
                   variant="destructive"
-                  className={"cursor-pointer dark:bg-red-600"}
+                  className={"cursor-pointer dark:bg-red-600 mt-2"}
                   onClick={() => handleRemoveVariant(index)}>
                   Remove
                 </Button>
@@ -284,7 +284,7 @@ const Products = () => {
               </div>
             ))}
 
-            <Button onClick={handleAddVariant} className={"cursor-pointer"}>
+            <Button onClick={handleAddVariant} className={"cursor-pointer mt-3"}>
               + Add Variant
             </Button>
           </div>
