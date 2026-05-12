@@ -60,4 +60,10 @@ const applyCouponController = async (req, res) => {
   }
 };
 
-module.exports = applyCouponController;
+
+async function getCoupons(req, res) {
+    const couponList = await couponSchema.find({})
+    res.status(200).json({message: "All coupons", data: couponList})
+}
+
+module.exports = {applyCouponController, getCoupons};
