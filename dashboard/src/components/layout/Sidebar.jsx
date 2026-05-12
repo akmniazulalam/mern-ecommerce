@@ -13,12 +13,14 @@ import {
   User,
   FolderPlus,
   PackagePlus,
+  Ticket,
 } from "lucide-react";
 import { DialogContent } from "@/components/ui/dialog";
 import { BiSolidCoupon } from "react-icons/bi";
 const MobileSidebar = () => {
   const [openCategory, setOpenCategory] = useState(false);
   const [openProduct, setOpenProduct] = useState(false);
+  const [openCoupon, setOpenCoupon] = useState(false);
 
   return (
     <DialogContent className="p-0 w-64 h-full translate-x-[0%] left-0">
@@ -145,19 +147,56 @@ const MobileSidebar = () => {
               </NavLink>
             </div>
           )}
-          <NavLink
-            to="/coupon"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted",
-              )
-            }>
-            <BiSolidCoupon className="w-5 h-5" />
-            Add Coupon
-          </NavLink>
+          {/* Coupon Dropdown */}
+          <button
+            onClick={() => setOpenCoupon(!openCoupon)}
+            className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium rounded-lg hover:bg-muted transition">
+            <div className="flex items-center gap-3">
+              <BiSolidCoupon className="w-5 h-5" />
+              Coupons
+            </div>
+
+            <ChevronDown
+              className={cn(
+                "w-4 h-4 transition-transform",
+                openCoupon && "rotate-180",
+              )}
+            />
+          </button>
+
+          {openCoupon && (
+            <div className="ml-8 space-y-1">
+              {/* Add Coupon */}
+              <NavLink
+                to="/coupon"
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted",
+                  )
+                }>
+                <BiSolidCoupon size={16} />
+                Add Coupon
+              </NavLink>
+
+              {/* Coupon List */}
+              <NavLink
+                to="/couponlist"
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted",
+                  )
+                }>
+                <Ticket size={16} />
+                Coupon List
+              </NavLink>
+            </div>
+          )}
           <NavLink
             to="/cartitems"
             className={({ isActive }) =>
@@ -206,6 +245,7 @@ const MobileSidebar = () => {
 const Sidebar = () => {
   const [openCategory, setOpenCategory] = useState(false);
   const [openProduct, setOpenProduct] = useState(false);
+  const [openCoupon, setOpenCoupon] = useState(false);
   return (
     <>
       {/* Desktop Sidebar */}
@@ -337,19 +377,56 @@ const Sidebar = () => {
               </NavLink>
             </div>
           )}
-          <NavLink
-            to="/coupon"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted",
-              )
-            }>
-            <BiSolidCoupon className="w-5 h-5" />
-            Add Coupon
-          </NavLink>
+          {/* Coupon Dropdown */}
+          <button
+            onClick={() => setOpenCoupon(!openCoupon)}
+            className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium rounded-lg hover:bg-muted transition">
+            <div className="flex items-center gap-3">
+              <BiSolidCoupon className="w-5 h-5" />
+              Coupons
+            </div>
+
+            <ChevronDown
+              className={cn(
+                "w-4 h-4 transition-transform",
+                openCoupon && "rotate-180",
+              )}
+            />
+          </button>
+
+          {openCoupon && (
+            <div className="ml-8 space-y-1">
+              {/* Add Coupon */}
+              <NavLink
+                to="/coupon"
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted",
+                  )
+                }>
+                <BiSolidCoupon size={16} />
+                Add Coupon
+              </NavLink>
+
+              {/* Coupon List */}
+              <NavLink
+                to="/couponlist"
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition",
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "hover:bg-muted",
+                  )
+                }>
+                <Ticket size={16} />
+                Coupon List
+              </NavLink>
+            </div>
+          )}
           <NavLink
             to="/cartitems"
             className={({ isActive }) =>

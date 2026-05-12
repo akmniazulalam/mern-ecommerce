@@ -19,6 +19,7 @@ import Userlists from "./components/pages/Userlists";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Cart from "./components/pages/Cart";
 import Coupon from "./components/pages/Coupon";
+import CouponList from "./components/pages/CouponList";
 
 function App() {
   useEffect(() => {
@@ -48,6 +49,7 @@ function App() {
         <Route path="/productlist" element={<ProductList />} />
         <Route path="/cartitems" element={<Cart />} />
         <Route path="/coupon" element={<Coupon />} />
+        <Route path="/couponlist" element={<CouponList />} />
         <Route path="/updateproduct/:id" element={<UpdateProduct />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/category" element={<Category />} />
