@@ -16,7 +16,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 
-const AddCoupon = () => {
+const Coupon = () => {
   const navigate = useNavigate();
 
   const [code, setCode] = useState("");
@@ -159,4 +159,4 @@ const AddCoupon = () => {
   );
 };
 
-export default AddCoupon;
+export default Coupon;
