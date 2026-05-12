@@ -35,9 +35,9 @@ const CouponList = () => {
   // Get All Coupons
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/v1/coupon/all-coupons")
+      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/couponlist")
       .then((res) => {
-        setCoupons(res.data.coupons);
+        setCoupons(res.data.data);
       })
       .catch((error) => {
         toast.error(error.response?.data?.message || "Failed");
@@ -48,7 +48,7 @@ const CouponList = () => {
   const handleDeleteCoupon = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:3000/api/v1/coupon/delete-coupon/${id}`
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/delete-coupon/${id}`
       );
 
       toast.success("Coupon deleted");

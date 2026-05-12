@@ -36,7 +36,7 @@ const Coupon = () => {
   const handleCreateCoupon = async () => {
     try {
       const res = await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/apply-coupon",
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/create-coupon",
         formData
       );
 
