@@ -90,7 +90,7 @@ const Coupon = () => {
                 <SelectValue placeholder="Select Discount Type" />
               </SelectTrigger>
 
-              <SelectContent>
+              <SelectContent position="popper">
                 <SelectGroup>
                   <SelectLabel>Discount Type</SelectLabel>
 
@@ -114,7 +114,7 @@ const Coupon = () => {
               type="number"
               value={discountValue}
               placeholder="20"
-              className={"text-sm"}
+              className={"text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"}
               onChange={(e) => setDiscountValue(e.target.value)}
             />
           </Field>
@@ -127,7 +127,7 @@ const Coupon = () => {
               type="number"
               value={minPurchase}
               placeholder="100"
-              className={"text-sm"}
+              className={"text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"}
               onChange={(e) => setMinPurchase(e.target.value)}
             />
           </Field>

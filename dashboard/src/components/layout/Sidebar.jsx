@@ -15,6 +15,7 @@ import {
   PackagePlus,
 } from "lucide-react";
 import { DialogContent } from "@/components/ui/dialog";
+import { BiSolidCoupon } from "react-icons/bi";
 const MobileSidebar = () => {
   const [openCategory, setOpenCategory] = useState(false);
   const [openProduct, setOpenProduct] = useState(false);
@@ -144,6 +145,19 @@ const MobileSidebar = () => {
               </NavLink>
             </div>
           )}
+          <NavLink
+            to="/coupon"
+            className={({ isActive }) =>
+              cn(
+                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted",
+              )
+            }>
+            <BiSolidCoupon className="w-5 h-5" />
+            Add Coupon
+          </NavLink>
           <NavLink
             to="/cartitems"
             className={({ isActive }) =>
@@ -323,6 +337,19 @@ const Sidebar = () => {
               </NavLink>
             </div>
           )}
+          <NavLink
+            to="/coupon"
+            className={({ isActive }) =>
+              cn(
+                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted",
+              )
+            }>
+            <BiSolidCoupon className="w-5 h-5" />
+            Add Coupon
+          </NavLink>
           <NavLink
             to="/cartitems"
             className={({ isActive }) =>
