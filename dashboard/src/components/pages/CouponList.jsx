@@ -48,7 +48,7 @@ const CouponList = () => {
   const handleDeleteCoupon = async (id) => {
     try {
       await axios.delete(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/delete-coupon/${id}`
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/deletecoupon/${id}`
       );
 
       toast.success("Coupon deleted");
