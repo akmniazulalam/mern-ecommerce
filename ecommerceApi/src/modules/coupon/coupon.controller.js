@@ -2,13 +2,8 @@ const Coupon = require("./coupon.model");
 
 const createCouponController = async (req, res) => {
   try {
-    const {
-      code,
-      discountType,
-      discountValue,
-      minPurchase,
-      expiryDate,
-    } = req.body;
+    const { code, discountType, discountValue, minPurchase, expiryDate } =
+      req.body;
 
     // check duplicate
     const existingCoupon = await Coupon.findOne({
@@ -38,7 +33,6 @@ const createCouponController = async (req, res) => {
       message: "Coupon created successfully",
       data: newCoupon,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -108,7 +102,6 @@ const applyCouponController = async (req, res) => {
       total,
       coupon,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -127,7 +120,6 @@ const getCoupons = async (req, res) => {
       message: "All coupons",
       data: couponList,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -137,9 +129,14 @@ const getCoupons = async (req, res) => {
 };
 
 const deleteCoupon = async (req, res) => {
-    const {id} = req.params
-    const deleteCoupon = await Coupon.findByIdAndDelete(id)
-    res.status(200).json({message: "Coupon deleted", data: deleteCoupon})
-}
+  const { id } = req.params;
+  const deleteCoupon = await Coupon.findByIdAndDelete(id);
+  res.status(200).json({ message: "Coupon deleted", data: deleteCoupon });
+};
 
-module.exports = { createCouponController, applyCouponController, getCoupons, deleteCoupon };
+module.exports = {
+  createCouponController,
+  applyCouponController,
+  getCoupons,
+  deleteCoupon,
+};
