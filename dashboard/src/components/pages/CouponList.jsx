@@ -48,13 +48,12 @@ const CouponList = () => {
   const handleDeleteCoupon = async (id) => {
     try {
       await axios.delete(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/deletecoupon/${id}`
+        `https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/deletecoupon/${id}`,
       );
 
       toast.success("Coupon deleted");
 
       setCoupons(coupons.filter((item) => item._id !== id));
-
     } catch (error) {
       toast.error(error.response?.data?.message || "Delete failed");
     }
@@ -96,16 +95,11 @@ const CouponList = () => {
             <TableBody>
               {coupons.map((coupon) => (
                 <TableRow key={coupon._id}>
-
                   {/* Coupon Code */}
-                  <TableCell className="font-medium">
-                    {coupon.code}
-                  </TableCell>
+                  <TableCell className="font-medium">{coupon.code}</TableCell>
 
                   {/* Discount Type */}
-                  <TableCell>
-                    {coupon.discountType}
-                  </TableCell>
+                  <TableCell>{coupon.discountType}</TableCell>
 
                   {/* Discount Value */}
                   <TableCell>
@@ -115,9 +109,7 @@ const CouponList = () => {
                   </TableCell>
 
                   {/* Min Purchase */}
-                  <TableCell>
-                    ${coupon.minPurchase}
-                  </TableCell>
+                  <TableCell>${coupon.minPurchase}</TableCell>
 
                   {/* Expiry Date */}
                   <TableCell>
@@ -127,14 +119,9 @@ const CouponList = () => {
                   {/* Status */}
                   <TableCell>
                     {coupon.isActive ? (
-                      <Badge className="bg-green-500">
-                        Active
-                      </Badge>
+                      <Badge className="bg-green-500">Active</Badge>
                     ) : (
-                      <Badge
-                        variant="destructive"
-                        className="dark:bg-red-700"
-                      >
+                      <Badge variant="destructive" className="dark:bg-red-700">
                         Inactive
                       </Badge>
                     )}
@@ -143,51 +130,36 @@ const CouponList = () => {
                   {/* Delete */}
                   <TableCell>
                     <AlertDialog>
-
                       <AlertDialogTrigger asChild>
                         <Button
                           size="sm"
                           variant="destructive"
-                          className="cursor-pointer dark:bg-red-700"
-                        >
+                          className="cursor-pointer dark:bg-red-700">
                           Delete
                         </Button>
                       </AlertDialogTrigger>
 
                       <AlertDialogContent>
                         <AlertDialogHeader>
-
-                          <AlertDialogTitle>
-                            Are you sure?
-                          </AlertDialogTitle>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
 
                           <AlertDialogDescription>
                             This coupon will be permanently deleted.
                           </AlertDialogDescription>
-
                         </AlertDialogHeader>
 
                         <AlertDialogFooter>
-
-                          <AlertDialogCancel>
-                            Cancel
-                          </AlertDialogCancel>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
 
                           <AlertDialogAction
-                            onClick={() =>
-                              handleDeleteCoupon(coupon._id)
-                            }
-                            className="cursor-pointer"
-                          >
+                            onClick={() => handleDeleteCoupon(coupon._id)}
+                            className="cursor-pointer">
                             Confirm Delete
                           </AlertDialogAction>
-
                         </AlertDialogFooter>
                       </AlertDialogContent>
-
                     </AlertDialog>
                   </TableCell>
-
                 </TableRow>
               ))}
             </TableBody>
