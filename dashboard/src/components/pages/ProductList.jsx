@@ -139,7 +139,8 @@ const ProductList = () => {
                         </span>
 
                         <span className="text-[11px] bg-muted px-2 py-1 rounded-md">
-                          {product.variants.length} { product.variants.length > 1 ? "Variants" : "Variant" }
+                          {product.variants.length}{" "}
+                          {product.variants.length > 1 ? "Variants" : "Variant"}
                         </span>
                       </div>
                     </div>
@@ -178,7 +179,9 @@ const ProductList = () => {
                         </AlertDialogHeader>
 
                         <AlertDialogFooter>
-                          <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                          <AlertDialogCancel className="cursor-pointer">
+                            Cancel
+                          </AlertDialogCancel>
 
                           <AlertDialogAction
                             onClick={() => handleProductDelete(product._id)}

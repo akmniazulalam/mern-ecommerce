@@ -120,7 +120,9 @@ const Products = () => {
       <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
-            <FieldLabel className={"md:text-base font-semibold"}>Product Name</FieldLabel>
+            <FieldLabel className={"md:text-base font-semibold"}>
+              Product Name
+            </FieldLabel>
             <Input
               value={productName}
               placeholder="Product Name"
@@ -129,7 +131,9 @@ const Products = () => {
             />
           </Field>
           <Field>
-            <FieldLabel className={"md:text-base font-semibold"}>Product Description</FieldLabel>
+            <FieldLabel className={"md:text-base font-semibold"}>
+              Product Description
+            </FieldLabel>
             <Textarea
               value={productDescription}
               placeholder="Type your description here..."
@@ -138,7 +142,9 @@ const Products = () => {
             />
           </Field>
           <Field>
-            <FieldLabel className={"md:text-base font-semibold"}>Category</FieldLabel>
+            <FieldLabel className={"md:text-base font-semibold"}>
+              Category
+            </FieldLabel>
             <Select
               onValueChange={(value) => {
                 setSelectedCategory(value);
@@ -166,125 +172,125 @@ const Products = () => {
             <h4 className="font-semibold mb-2">Variants</h4>
 
             {variants.map((variant, index) => (
-              <div
-                key={index}
-                className="border p-4 mb-4 rounded-md">
+              <div key={index} className="border p-4 mb-4 rounded-md">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <Field>
-                  <FieldLabel>Color</FieldLabel>
+                  <Field>
+                    <FieldLabel>Color</FieldLabel>
 
-                  <Input
-                    placeholder="Color"
-                    value={variant.color}
-                    onChange={(e) =>
-                      handleVariantChange(index, "color", e.target.value)
-                    }
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel>Size</FieldLabel>
-
-                  <Input
-                    placeholder="Size"
-                    value={variant.size}
-                    onChange={(e) =>
-                      handleVariantChange(index, "size", e.target.value)
-                    }
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel>RAM</FieldLabel>
-
-                  <Input
-                    placeholder="RAM"
-                    value={variant.ram}
-                    onChange={(e) =>
-                      handleVariantChange(index, "ram", e.target.value)
-                    }
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel>Storage</FieldLabel>
-
-                  <Input
-                    placeholder="Storage"
-                    value={variant.storage}
-                    onChange={(e) =>
-                      handleVariantChange(index, "storage", e.target.value)
-                    }
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel>Stock</FieldLabel>
-
-                  <Input
-                    type="number"
-                    placeholder="Stock"
-                    value={variant.stock}
-                    min={1}
-                    className={"[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"}
-                    onChange={(e) =>
-                    {
-                      if(e.target.value >= 0) {
-                        handleVariantChange(index, "stock", e.target.value)
+                    <Input
+                      placeholder="Color"
+                      value={variant.color}
+                      onChange={(e) =>
+                        handleVariantChange(index, "color", e.target.value)
                       }
-                    }
-                    }
-                  />
-                </Field>
+                    />
+                  </Field>
 
-                <Field>
-                  <FieldLabel>Price</FieldLabel>
+                  <Field>
+                    <FieldLabel>Size</FieldLabel>
 
-                  <Input
-                    placeholder="Price"
-                    value={variant.price}
-                    onChange={(e) =>
-                      handleVariantChange(index, "price", e.target.value)
-                    }
-                  />
-                </Field>
-                
-                <Field>
-                  <FieldLabel>Badge</FieldLabel>
+                    <Input
+                      placeholder="Size"
+                      value={variant.size}
+                      onChange={(e) =>
+                        handleVariantChange(index, "size", e.target.value)
+                      }
+                    />
+                  </Field>
 
-                  <Input
-                    placeholder="Badge"
-                    value={variant.badge}
-                    onChange={(e) =>
-                      handleVariantChange(index, "badge", e.target.value)
-                    }
-                  />
-                </Field>
+                  <Field>
+                    <FieldLabel>RAM</FieldLabel>
 
-                <Field>
-                  <FieldLabel>Variant Image</FieldLabel>
+                    <Input
+                      placeholder="RAM"
+                      value={variant.ram}
+                      onChange={(e) =>
+                        handleVariantChange(index, "ram", e.target.value)
+                      }
+                    />
+                  </Field>
 
-                  <Input
-                    type="file"
-                    onChange={(e) =>
-                      handleVariantChange(index, "image", e.target.files[0])
-                    }
-                  />
-                </Field>
+                  <Field>
+                    <FieldLabel>Storage</FieldLabel>
+
+                    <Input
+                      placeholder="Storage"
+                      value={variant.storage}
+                      onChange={(e) =>
+                        handleVariantChange(index, "storage", e.target.value)
+                      }
+                    />
+                  </Field>
+
+                  <Field>
+                    <FieldLabel>Stock</FieldLabel>
+
+                    <Input
+                      type="number"
+                      placeholder="Stock"
+                      value={variant.stock}
+                      min={1}
+                      className={
+                        "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      }
+                      onChange={(e) => {
+                        if (e.target.value >= 0) {
+                          handleVariantChange(index, "stock", e.target.value);
+                        }
+                      }}
+                    />
+                  </Field>
+
+                  <Field>
+                    <FieldLabel>Price</FieldLabel>
+
+                    <Input
+                      placeholder="Price"
+                      value={variant.price}
+                      onChange={(e) =>
+                        handleVariantChange(index, "price", e.target.value)
+                      }
+                    />
+                  </Field>
+
+                  <Field>
+                    <FieldLabel>Badge</FieldLabel>
+
+                    <Input
+                      placeholder="Badge"
+                      value={variant.badge}
+                      onChange={(e) =>
+                        handleVariantChange(index, "badge", e.target.value)
+                      }
+                    />
+                  </Field>
+
+                  <Field>
+                    <FieldLabel>Variant Image</FieldLabel>
+
+                    <Input
+                      type="file"
+                      onChange={(e) =>
+                        handleVariantChange(index, "image", e.target.files[0])
+                      }
+                    />
+                  </Field>
                 </div>
 
                 <div className="text-end mt-3">
                   <Button
-                  variant="destructive"
-                  className={"cursor-pointer dark:bg-red-600 mt-2"}
-                  onClick={() => handleRemoveVariant(index)}>
-                  Remove
-                </Button>
+                    variant="destructive"
+                    className={"cursor-pointer dark:bg-red-600 mt-2"}
+                    onClick={() => handleRemoveVariant(index)}>
+                    Remove
+                  </Button>
                 </div>
               </div>
             ))}
 
-            <Button onClick={handleAddVariant} className={"cursor-pointer mt-3"}>
+            <Button
+              onClick={handleAddVariant}
+              className={"cursor-pointer mt-3"}>
               + Add Variant
             </Button>
           </div>
