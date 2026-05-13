@@ -37,7 +37,7 @@ const Coupon = () => {
     try {
       const res = await axios.post(
         "https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/create-coupon",
-        formData
+        formData,
       );
 
       if (res.data.success) {
@@ -68,7 +68,6 @@ const Coupon = () => {
 
       <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
-
           {/* Coupon Code */}
           <Field>
             <FieldLabel>Coupon Code</FieldLabel>
@@ -94,13 +93,9 @@ const Coupon = () => {
                 <SelectGroup>
                   <SelectLabel>Discount Type</SelectLabel>
 
-                  <SelectItem value="percentage">
-                    Percentage
-                  </SelectItem>
+                  <SelectItem value="percentage">Percentage</SelectItem>
 
-                  <SelectItem value="fixed">
-                    Fixed
-                  </SelectItem>
+                  <SelectItem value="fixed">Fixed</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -114,7 +109,9 @@ const Coupon = () => {
               type="number"
               value={discountValue}
               placeholder="20"
-              className={"text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"}
+              className={
+                "text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              }
               onChange={(e) => setDiscountValue(e.target.value)}
             />
           </Field>
@@ -127,7 +124,9 @@ const Coupon = () => {
               type="number"
               value={minPurchase}
               placeholder="100"
-              className={"text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"}
+              className={
+                "text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              }
               onChange={(e) => setMinPurchase(e.target.value)}
             />
           </Field>
@@ -146,10 +145,7 @@ const Coupon = () => {
 
           {/* Button */}
           <Field orientation="horizontal">
-            <Button
-              onClick={handleCreateCoupon}
-              className={"cursor-pointer"}
-            >
+            <Button onClick={handleCreateCoupon} className={"cursor-pointer"}>
               Add Coupon
             </Button>
           </Field>
