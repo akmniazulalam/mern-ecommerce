@@ -136,7 +136,7 @@ const Coupon = () => {
             <FieldLabel>Expiry Date</FieldLabel>
 
             <Input
-              type="date"
+              type="datetime-local"
               value={expiryDate}
               className={"text-sm"}
               onChange={(e) => setExpiryDate(e.target.value)}
