@@ -37,7 +37,24 @@ const Signup = () => {
       [e.target.name]: e.target.value,
     });
   };
-  
+  const passwordRules = {
+    minLength: registrationInput.password.length >= 8,
+    uppercase: (registrationInput.password.match(/[A-Z]/g) || []).length >= 2,
+    lowercase: (registrationInput.password.match(/[a-z]/g) || []).length >= 3,
+    numbers: (registrationInput.password.match(/[0-9]/g) || []).length >= 2,
+    special: /[!@#$&*]/.test(registrationInput.password),
+  };
+  const isPasswordValid =
+    passwordRules.minLength &&
+    passwordRules.uppercase &&
+    passwordRules.lowercase &&
+    passwordRules.numbers &&
+    passwordRules.special;
+
+  const isFormValid =
+    isPasswordValid &&
+    registrationInput.firstName &&
+    registrationInput.lastName;
   const handleRegistration = () => {
     axios
       .post(
@@ -53,7 +70,11 @@ const Signup = () => {
         }, 2000);
       })
       .catch((error) => {
-        toast.error(error.response?.data?.message || error?.message ||"Registration failed");
+        toast.error(
+          error.response?.data?.message ||
+            error?.message ||
+            "Registration failed",
+        );
       });
   };
 
@@ -71,20 +92,23 @@ const Signup = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
-      toast.error(error.response?.data?.message || error?.message)
+      toast.error(error.response?.data?.message || error?.message);
     }
   };
 
   const handleResetOtp = async () => {
     try {
-      const response = await axios.post("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/resendotp", {
+      const response = await axios.post(
+        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/resendotp",
+        {
           email: registrationInput.email,
-        })
-       toast.success(response?.data?.message || "Otp resend successfully") 
+        },
+      );
+      toast.success(response?.data?.message || "Otp resend successfully");
     } catch (error) {
-      toast.error(error.response?.data?.message || error?.message)
+      toast.error(error.response?.data?.message || error?.message);
     }
-  }
+  };
   return (
     <>
       <Helmet>
@@ -141,17 +165,62 @@ const Signup = () => {
                 type="password"
                 placeholder="*********"
               />
+
+              <div className="mt-3 text-sm space-y-1">
+                <p
+                  className={
+                    passwordRules.minLength ? "text-green-500" : "text-red-500"
+                  }>
+                  {passwordRules.minLength ? "✅" : "❌"} Minimum 8 characters
+                </p>
+
+                <p
+                  className={
+                    passwordRules.uppercase ? "text-green-500" : "text-red-500"
+                  }>
+                  {passwordRules.uppercase ? "✅" : "❌"} At least 2 uppercase
+                  letters
+                </p>
+
+                <p
+                  className={
+                    passwordRules.lowercase ? "text-green-500" : "text-red-500"
+                  }>
+                  {passwordRules.lowercase ? "✅" : "❌"} At least 3 lowercase
+                  letters
+                </p>
+
+                <p
+                  className={
+                    passwordRules.numbers ? "text-green-500" : "text-red-500"
+                  }>
+                  {passwordRules.numbers ? "✅" : "❌"} At least 2 numbers
+                </p>
+
+                <p
+                  className={
+                    passwordRules.special ? "text-green-500" : "text-red-500"
+                  }>
+                  {passwordRules.special ? "✅" : "❌"} At least 1 special
+                  character
+                </p>
+              </div>
             </div>
 
             <Button
+              disabled={!isFormValid}
               onClick={handleRegistration}
-              className="w-full mt-2 cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]">
+              className={`w-full mt-2 cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]`}>
               Sign Up
             </Button>
 
             <p className="text-sm text-center mt-2">
               Already have an account?{" "}
-              <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>Login</span>
+              <span
+                className="text-blue-500 cursor-pointer"
+                onClick={() => navigate("/login")}>
+                Login
+              </span>
             </p>
           </CardContent>
         </Card>
@@ -173,10 +242,15 @@ const Signup = () => {
                   className={"text-center"}
                 />
 
-                <Button onClick={handleVerifyOtp} className="w-full cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]">
+                <Button
+                  onClick={handleVerifyOtp}
+                  className="w-full cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]">
                   Verify OTP
                 </Button>
-                <Button onClick={handleResetOtp} variant="ghost" className="w-full cursor-pointer">
+                <Button
+                  onClick={handleResetOtp}
+                  variant="ghost"
+                  className="w-full cursor-pointer">
                   Resend OTP
                 </Button>
               </div>
