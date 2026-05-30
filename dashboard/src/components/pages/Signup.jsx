@@ -33,12 +33,14 @@ const Signup = () => {
   const [otp, setOtp] = useState("");
   const [openOtpModal, setOpenOtpModal] = useState(false);
   const navigate = useNavigate();
+  
   const handleChange = (e) => {
     setRegistrationInput({
       ...registrationInput,
       [e.target.name]: e.target.value,
     });
   };
+
   const passwordRules = {
     minLength: registrationInput.password.length >= 8,
     uppercase: (registrationInput.password.match(/[A-Z]/g) || []).length >= 2,
@@ -46,6 +48,7 @@ const Signup = () => {
     numbers: (registrationInput.password.match(/[0-9]/g) || []).length >= 2,
     special: /[!@#$&*]/.test(registrationInput.password),
   };
+
   const isPasswordValid =
     passwordRules.minLength &&
     passwordRules.uppercase &&
@@ -57,6 +60,8 @@ const Signup = () => {
     isPasswordValid &&
     registrationInput.firstName &&
     registrationInput.lastName;
+
+
   const handleRegistration = () => {
     axios
       .post(
