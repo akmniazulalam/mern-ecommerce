@@ -20,8 +20,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [registrationInput, setRegistrationInput] = useState({
     firstName: "",
     lastName: "",
@@ -157,14 +159,27 @@ const Signup = () => {
               />
             </div>
 
-            <div>
+            <div className="relative">
               <Label className={"mb-2"}>Password</Label>
               <Input
                 onChange={handleChange}
                 name="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="*********"
               />
+
+              <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-3 top-[22%] -translate-y-1/2 cursor-pointer"
+    >
+      {showPassword ? (
+        <EyeOff className="w-5 h-5 text-gray-500" />
+      ) : (
+        <Eye className="w-5 h-5 text-gray-500" />
+      )}
+    </button>
+
 
               <div className="mt-3 text-sm space-y-1">
                 <p
