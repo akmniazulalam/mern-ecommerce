@@ -33,7 +33,7 @@ const Signup = () => {
   const [otp, setOtp] = useState("");
   const [openOtpModal, setOpenOtpModal] = useState(false);
   const navigate = useNavigate();
-  
+
   const handleChange = (e) => {
     setRegistrationInput({
       ...registrationInput,
@@ -61,7 +61,6 @@ const Signup = () => {
     registrationInput.firstName &&
     registrationInput.lastName;
 
-
   const handleRegistration = () => {
     axios
       .post(
@@ -83,6 +82,10 @@ const Signup = () => {
             "Registration failed",
         );
       });
+  };
+
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
   };
 
   const handleVerifyOtp = async () => {
@@ -132,106 +135,113 @@ const Signup = () => {
           </CardHeader>
 
           <CardContent className={"space-y-4"}>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className={"mb-2"}>First Name</Label>
-                <Input
-                  onChange={handleChange}
-                  name="firstName"
-                  type={"text"}
-                  placeholder="Enter your first name"
-                />
+            <form onSubmit={handleSignupSubmit} className={"space-y-4"}>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className={"mb-2"}>First Name</Label>
+                  <Input
+                    onChange={handleChange}
+                    name="firstName"
+                    type={"text"}
+                    placeholder="Enter your first name"
+                  />
+                </div>
+
+                <div>
+                  <Label className={"mb-2"}>Last Name</Label>
+                  <Input
+                    onChange={handleChange}
+                    name="lastName"
+                    type={"text"}
+                    placeholder="Enter your last name"
+                  />
+                </div>
               </div>
 
               <div>
-                <Label className={"mb-2"}>Last Name</Label>
+                <Label className={"mb-2"}>Email</Label>
                 <Input
                   onChange={handleChange}
-                  name="lastName"
-                  type={"text"}
-                  placeholder="Enter your last name"
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
                 />
               </div>
-            </div>
 
-            <div>
-              <Label className={"mb-2"}>Email</Label>
-              <Input
-                onChange={handleChange}
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-              />
-            </div>
+              <div className="relative">
+                <Label className={"mb-2"}>Password</Label>
+                <Input
+                  onChange={handleChange}
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="*********"
+                />
 
-            <div className="relative">
-              <Label className={"mb-2"}>Password</Label>
-              <Input
-                onChange={handleChange}
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="*********"
-              />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-[22%] -translate-y-1/2 cursor-pointer">
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5 text-gray-500" />
+                  ) : (
+                    <Eye className="w-5 h-5 text-gray-500" />
+                  )}
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[22%] -translate-y-1/2 cursor-pointer">
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5 text-gray-500" />
-                ) : (
-                  <Eye className="w-5 h-5 text-gray-500" />
-                )}
-              </button>
+                <div className="mt-3 text-sm space-y-1">
+                  <p
+                    className={
+                      passwordRules.minLength
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }>
+                    {passwordRules.minLength ? "✅" : "❌"} Minimum 8 characters
+                  </p>
 
-              <div className="mt-3 text-sm space-y-1">
-                <p
-                  className={
-                    passwordRules.minLength ? "text-green-500" : "text-red-500"
-                  }>
-                  {passwordRules.minLength ? "✅" : "❌"} Minimum 8 characters
-                </p>
+                  <p
+                    className={
+                      passwordRules.uppercase
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }>
+                    {passwordRules.uppercase ? "✅" : "❌"} At least 2 uppercase
+                    letters
+                  </p>
 
-                <p
-                  className={
-                    passwordRules.uppercase ? "text-green-500" : "text-red-500"
-                  }>
-                  {passwordRules.uppercase ? "✅" : "❌"} At least 2 uppercase
-                  letters
-                </p>
+                  <p
+                    className={
+                      passwordRules.lowercase
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }>
+                    {passwordRules.lowercase ? "✅" : "❌"} At least 3 lowercase
+                    letters
+                  </p>
 
-                <p
-                  className={
-                    passwordRules.lowercase ? "text-green-500" : "text-red-500"
-                  }>
-                  {passwordRules.lowercase ? "✅" : "❌"} At least 3 lowercase
-                  letters
-                </p>
+                  <p
+                    className={
+                      passwordRules.numbers ? "text-green-500" : "text-red-500"
+                    }>
+                    {passwordRules.numbers ? "✅" : "❌"} At least 2 numbers
+                  </p>
 
-                <p
-                  className={
-                    passwordRules.numbers ? "text-green-500" : "text-red-500"
-                  }>
-                  {passwordRules.numbers ? "✅" : "❌"} At least 2 numbers
-                </p>
-
-                <p
-                  className={
-                    passwordRules.special ? "text-green-500" : "text-red-500"
-                  }>
-                  {passwordRules.special ? "✅" : "❌"} At least 1 special
-                  character
-                </p>
+                  <p
+                    className={
+                      passwordRules.special ? "text-green-500" : "text-red-500"
+                    }>
+                    {passwordRules.special ? "✅" : "❌"} At least 1 special
+                    character
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <Button
-              disabled={!isFormValid}
-              onClick={handleRegistration}
-              className={`w-full mt-2 cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]`}>
-              Sign Up
-            </Button>
-
+              <Button
+                disabled={!isFormValid}
+                onClick={handleRegistration}
+                className={`w-full mt-2 cursor-pointer dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]`}>
+                Sign Up
+              </Button>
+            </form>
             <p className="text-sm text-center mt-2">
               Already have an account?{" "}
               <span
