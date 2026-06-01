@@ -42,6 +42,11 @@ const Login = () => {
       toast.error(error.response?.data?.message || error?.message);
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleLoginBtn();
+  };
   return (
     <>
       <Helmet>
@@ -56,41 +61,43 @@ const Login = () => {
           </CardHeader>
 
           <CardContent className={"space-y-4"}>
-            <div>
-              <Label className={"mb-2"}>Email</Label>
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                name="email"
-                onChange={handleInputChange}
-              />
-            </div>
+            <form onSubmit={handleSubmit} className={"space-y-4"}>
+              <div>
+                <Label className={"mb-2"}>Email</Label>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  name="email"
+                  onChange={handleInputChange}
+                />
+              </div>
 
-            <div className="relative">
-              <Label className={"mb-2"}>Password</Label>
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="**********"
-                name="password"
-                onChange={handleInputChange}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-[69%] -translate-y-1/2 cursor-pointer">
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5 text-gray-500" />
-                ) : (
-                  <Eye className="w-5 h-5 text-gray-500" />
-                )}
-              </button>
-            </div>
+              <div className="relative">
+                <Label className={"mb-2"}>Password</Label>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="**********"
+                  name="password"
+                  onChange={handleInputChange}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-[69%] -translate-y-1/2 cursor-pointer">
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5 text-gray-500" />
+                  ) : (
+                    <Eye className="w-5 h-5 text-gray-500" />
+                  )}
+                </button>
+              </div>
 
-            <Button
-              className="w-full mt-2 cursor-pointer text-base dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]"
-              onClick={handleLoginBtn}>
-              Login
-            </Button>
+              <Button
+                className="w-full mt-2 cursor-pointer text-base dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]"
+                onClick={handleLoginBtn}>
+                Login
+              </Button>
+            </form>
             <p className="text-sm text-center mt-2">
               Not already an account?{" "}
               <span
