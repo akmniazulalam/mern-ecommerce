@@ -1,6 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -17,13 +17,23 @@ const Login = () => {
     email: "",
     password: "",
   });
+
   const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     setLoginInput({
       ...loginInput,
       [e.target.name]: e.target.value,
     });
   };
+
+  const focusRef = useRef(null);
+
+  useEffect(() => {
+    const firstInput = focusRef.current?.querySelector("Input");
+    firstInput?.focus();
+  }, []);
+
   const handleLoginBtn = async () => {
     try {
       const res = await axios.post(
@@ -43,9 +53,8 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    await handleLoginBtn();
   };
   return (
     <>
@@ -61,7 +70,10 @@ const Login = () => {
           </CardHeader>
 
           <CardContent className={"space-y-4"}>
-            <form onSubmit={handleSubmit} className={"space-y-4"}>
+            <form
+              onSubmit={handleSubmit}
+              ref={focusRef}
+              className={"space-y-4"}>
               <div>
                 <Label className={"mb-2"}>Email</Label>
                 <Input
