@@ -1,6 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -88,6 +88,13 @@ const Signup = () => {
     e.preventDefault();
   };
 
+  const focusInputRef = useRef(null)
+
+  useEffect(() => {
+    const firstInput = focusInputRef.current?.querySelector("Input")
+    firstInput.focus()
+  }, [])
+
   const handleVerifyOtp = async () => {
     try {
       await axios.post(
@@ -135,7 +142,7 @@ const Signup = () => {
           </CardHeader>
 
           <CardContent className={"space-y-4"}>
-            <form onSubmit={handleSignupSubmit} className={"space-y-4"}>
+            <form onSubmit={handleSignupSubmit} ref={focusInputRef} className={"space-y-4"}>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className={"mb-2"}>First Name</Label>
