@@ -24,6 +24,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showEye, setShowEye] = useState(false);
   const [registrationInput, setRegistrationInput] = useState({
     firstName: "",
     lastName: "",
@@ -39,6 +40,14 @@ const Signup = () => {
       ...registrationInput,
       [e.target.name]: e.target.value,
     });
+
+    if (e.target.name === "password") {
+      if (e.target.value.length > 0) {
+        setShowEye(true);
+      } else {
+        setShowEye(false);
+      }
+    }
   };
 
   const passwordRules = {
@@ -88,12 +97,12 @@ const Signup = () => {
     e.preventDefault();
   };
 
-  const focusInputRef = useRef(null)
+  const focusInputRef = useRef(null);
 
   useEffect(() => {
-    const firstInput = focusInputRef.current?.querySelector("Input")
-    firstInput.focus()
-  }, [])
+    const firstInput = focusInputRef.current?.querySelector("Input");
+    firstInput.focus();
+  }, []);
 
   const handleVerifyOtp = async () => {
     try {
@@ -142,7 +151,10 @@ const Signup = () => {
           </CardHeader>
 
           <CardContent className={"space-y-4"}>
-            <form onSubmit={handleSignupSubmit} ref={focusInputRef} className={"space-y-4"}>
+            <form
+              onSubmit={handleSignupSubmit}
+              ref={focusInputRef}
+              className={"space-y-4"}>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className={"mb-2"}>First Name</Label>
@@ -183,17 +195,18 @@ const Signup = () => {
                   type={showPassword ? "text" : "password"}
                   placeholder="*********"
                 />
-
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[22%] -translate-y-1/2 cursor-pointer">
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5 text-gray-500" />
-                  ) : (
-                    <Eye className="w-5 h-5 text-gray-500" />
-                  )}
-                </button>
+                {showEye && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-[22%] -translate-y-1/2 cursor-pointer">
+                    {showPassword ? (
+                      <Eye className="w-5 h-5 text-black dark:text-white" />
+                    ) : (
+                      <EyeOff className="w-5 h-5 text-black dark:text-white" />
+                    )}
+                  </button>
+                )}
 
                 <div className="mt-3 text-sm space-y-1">
                   <p
