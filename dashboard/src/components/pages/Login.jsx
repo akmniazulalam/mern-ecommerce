@@ -8,10 +8,11 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const { setUser } = useAuth();
-
+  const [showPassword, setShowPassword] = useState(false);
   const [loginInput, setLoginInput] = useState({
     email: "",
     password: "",
@@ -65,14 +66,24 @@ const Login = () => {
               />
             </div>
 
-            <div>
+            <div className="relative">
               <Label className={"mb-2"}>Password</Label>
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="**********"
                 name="password"
                 onChange={handleInputChange}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-[69%] -translate-y-1/2 cursor-pointer">
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <Eye className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
             </div>
 
             <Button
