@@ -13,6 +13,7 @@ import { Eye, EyeOff } from "lucide-react";
 const Login = () => {
   const { setUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [eyeOn, setEyeOn] = useState(false);
   const [loginInput, setLoginInput] = useState({
     email: "",
     password: "",
@@ -25,6 +26,14 @@ const Login = () => {
       ...loginInput,
       [e.target.name]: e.target.value,
     });
+
+    if (e.target.name === "password") {
+      if (e.target.value.length > 0) {
+        setEyeOn(true);
+      } else {
+        setEyeOn(false);
+      }
+    }
   };
 
   const focusRef = useRef(null);
@@ -92,16 +101,18 @@ const Login = () => {
                   name="password"
                   onChange={handleInputChange}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-[69%] -translate-y-1/2 cursor-pointer">
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5 text-gray-500" />
-                  ) : (
-                    <Eye className="w-5 h-5 text-gray-500" />
-                  )}
-                </button>
+                {eyeOn && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-[69%] -translate-y-1/2 cursor-pointer">
+                    {showPassword ? (
+                      <Eye className="w-5 h-5 text-black dark:text-white" />
+                    ) : (
+                      <EyeOff className="w-5 h-5 text-black dark:text-white" />
+                    )}
+                  </button>
+                )}
               </div>
 
               <Button
