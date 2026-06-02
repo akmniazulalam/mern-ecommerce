@@ -1,31 +1,47 @@
 const express = require("express");
-const multer = require("multer");
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split(".")[1])
-  }
-})
-
-const upload = multer({ storage: storage })
-const router = express.Router();
+const { withVariantImagesUpload } = require("./product.upload");
+const { validateProductIdParam } = require("./product.middleware");
 const {
   productController,
   updateProductController,
   getProductController,
   getSingleProductController,
+  getProductVariantsController,
   deleteProduct,
-  deleteAllProduct
+  deleteAllProduct,
 } = require("./product.controller");
 
-router.post("/createproduct", upload.array('images', 10), productController); // max koyta image dite parbe. ar ekhane jodi array dewa hoy tokhon req.files hoye jay. single thakle tokhon req.file hoy
+const router = express.Router();
+
+const writeWithVariantImages = [withVariantImagesUpload];
+const withProductId = [validateProductIdParam];
+
+/**
+ * Legacy endpoints (unchanged paths for dashboard / storefront).
+ */
+router.post("/createproduct", ...writeWithVariantImages, productController);
 router.get("/getproduct", getProductController);
-router.get("/singleproduct/:id", getSingleProductController);
-router.patch("/updateproduct/:id", upload.array('images', 10), updateProductController);
-router.delete("/deleteproduct/:id", deleteProduct);
+router.get("/singleproduct/:id", ...withProductId, getSingleProductController);
+router.patch(
+  "/updateproduct/:id",
+  ...withProductId,
+  ...writeWithVariantImages,
+  updateProductController,
+);
+router.delete("/deleteproduct/:id", ...withProductId, deleteProduct);
 router.delete("/deleteallproduct", deleteAllProduct);
+
+/**
+ * RESTful aliases (same handlers, same request/response contracts).
+ * Base path: /api/v1/product
+ */
+router.get("/", getProductController);
+router.post("/", ...writeWithVariantImages, productController);
+router.delete("/all", deleteAllProduct);
+
+router.get("/:id/variants", ...withProductId, getProductVariantsController);
+router.get("/:id", ...withProductId, getSingleProductController);
+router.patch("/:id", ...withProductId, ...writeWithVariantImages, updateProductController);
+router.delete("/:id", ...withProductId, deleteProduct);
 
 module.exports = router;

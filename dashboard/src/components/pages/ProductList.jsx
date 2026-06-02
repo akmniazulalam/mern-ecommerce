@@ -1,10 +1,10 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,71 +16,79 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-import { ShoppingCart, Pencil, Trash2, Package2 } from "lucide-react";
+import VariantListPreview from "@/components/product/VariantListPreview";
+import { getApiErrorMessage } from "@/lib/apiErrors";
+import {
+  getProductPriceRange,
+  getTotalStock,
+} from "@/lib/productVariants";
+import {
+  addVariantToCart,
+  deleteProduct,
+  fetchProducts,
+} from "@/services/productService";
+import {
+  AlertCircle,
+  Loader2,
+  Package2,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [cartLoadingKey, setCartLoadingKey] = useState(null);
 
-  // =========================
-  // GET PRODUCTS
-  // =========================
-  useEffect(() => {
-    axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/product/getproduct")
-      .then((res) => {
-        setProducts(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const loadProducts = useCallback(async () => {
+    setIsLoading(true);
+    setLoadError(null);
+
+    try {
+      const data = await fetchProducts();
+      setProducts(data);
+    } catch (error) {
+      setLoadError(getApiErrorMessage(error, "Failed to load products"));
+      setProducts([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  // =========================
-  // DELETE PRODUCT
-  // =========================
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
+
   const handleProductDelete = async (id) => {
+    setDeletingId(id);
+
     try {
-      await axios.delete(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/product/deleteproduct/${id}`,
-      );
-
+      await deleteProduct(id);
       setProducts((prev) => prev.filter((item) => item._id !== id));
-
       toast.success("Product deleted");
     } catch (error) {
-      toast.error("Delete failed ❌");
+      toast.error(getApiErrorMessage(error, "Failed to delete product"));
+    } finally {
+      setDeletingId(null);
     }
   };
 
-  // =========================
-  // ADD TO CART
-  // =========================
   const handleCartBtn = async (product, variant) => {
+    const key =
+      variant._id || `${product._id}-${variant.sku}-${variant.size}-${variant.color}`;
+    setCartLoadingKey(key);
+
     try {
-      const cartProduct = {
-        productId: product._id,
-        name: product.name,
-        image: variant.images?.[0],
-        color: variant.color,
-        size: variant.size,
-        ram: variant.ram,
-        storage: variant.storage,
-        price: variant.price,
-        badge: variant.badge,
-      };
-
-      await axios.post(
-        "http://localhost:3000/api/v1/cart/addtocart",
-        cartProduct,
-        {
-          withCredentials: true,
-        },
-      );
-
+      await addVariantToCart(product, variant);
       toast.success("Added to cart");
     } catch (error) {
-      toast.error("Cart failed ❌");
+      toast.error(getApiErrorMessage(error, "Failed to add to cart"));
+    } finally {
+      setCartLoadingKey(null);
     }
   };
 
@@ -90,201 +98,201 @@ const ProductList = () => {
         <title>Product List</title>
       </Helmet>
 
-      <div className="space-y-4">
-        {/* PAGE TITLE */}
-        <div className="flex items-center justify-between">
+      <div className="space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-xl font-bold">Products</h2>
-
-            <p className="text-xs text-muted-foreground mt-1">
-              Manage all products & variants
+            <h2 className="text-xl font-bold tracking-tight">Products</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Manage catalog items and their variants.
             </p>
           </div>
 
-          <div className="flex items-center gap-2 text-xs bg-muted px-3 py-2 rounded-lg">
-            <Package2 className="w-4 h-4" />
-            {products.length} {products.length > 1 ? "Products" : "Product"}
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 cursor-pointer"
+              disabled={isLoading}
+              onClick={loadProducts}>
+              <RefreshCw className={`h-3.5 w-3.5 mr-1 ${isLoading ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+            <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 h-8">
+              <Package2 className="h-3.5 w-3.5" />
+              {products.length} {products.length === 1 ? "product" : "products"}
+            </Badge>
+            <Button asChild className="cursor-pointer h-8">
+              <Link to="/products">
+                <Plus className="h-3.5 w-3.5 mr-1" />
+                Add product
+              </Link>
+            </Button>
           </div>
         </div>
 
-        {/* PRODUCTS */}
-        <div className="space-y-3">
-          {products.map((product) => (
-            <Card key={product._id} className="shadow-sm">
-              <CardContent className="p-4">
-                {/* PRODUCT TOP */}
-                <div className="flex items-start justify-between gap-3">
-                  {/* LEFT */}
-                  <div className="flex gap-3">
-                    {/* PRODUCT IMAGE */}
-                    <img
-                      src={product.variants?.[0]?.images?.[0]}
-                      alt={product.name}
-                      className="w-16 rounded-md object-cover border shrink-0"
-                    />
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16 text-muted-foreground">
+            <Loader2 className="h-6 w-6 animate-spin mr-2" />
+            Loading products...
+          </div>
+        ) : null}
 
-                    {/* INFO */}
-                    <div>
-                      <h3 className="font-semibold text-sm md:text-base">
-                        {product.name}
-                      </h3>
+        {!isLoading && loadError ? (
+          <Card className="py-10">
+            <CardContent className="flex flex-col items-center text-center gap-3">
+              <AlertCircle className="h-10 w-10 text-destructive" />
+              <p className="font-medium">Could not load products</p>
+              <p className="text-sm text-muted-foreground max-w-md">{loadError}</p>
+              <Button className="cursor-pointer" onClick={loadProducts}>
+                Try again
+              </Button>
+            </CardContent>
+          </Card>
+        ) : null}
 
-                      <p className="text-xs text-muted-foreground line-clamp-1 mt-1 max-w-md">
-                        {product.description}
-                      </p>
+        {!isLoading && !loadError && products.length === 0 ? (
+          <Card className="py-12">
+            <CardContent className="flex flex-col items-center justify-center text-center">
+              <Package2 className="h-10 w-10 text-muted-foreground mb-3" />
+              <p className="font-medium">No products yet</p>
+              <p className="text-sm text-muted-foreground mt-1 mb-4">
+                Add your first product with variants to get started.
+              </p>
+              <Button asChild className="cursor-pointer">
+                <Link to="/products">Add product</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : null}
 
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        <span className="text-[11px] bg-muted px-2 py-1 rounded-md">
-                          {product.category}
-                        </span>
+        {!isLoading && !loadError && products.length > 0 ? (
+          <div className="space-y-4">
+            {products.map((product) => {
+              const variants = product.variants ?? [];
+              const variantCount = variants.length;
+              const priceLabel = getProductPriceRange(variants);
+              const totalStock = getTotalStock(variants);
+              const isDeleting = deletingId === product._id;
 
-                        <span className="text-[11px] bg-muted px-2 py-1 rounded-md">
-                          {product.variants.length}{" "}
-                          {product.variants.length > 1 ? "Variants" : "Variant"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* ACTIONS */}
-                  <div className="flex gap-2 shrink-0">
-                    <Link to={`/updateproduct/${product._id}`}>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 text-xs cursor-pointer">
-                        <Pencil className="w-3 h-3 mr-1" />
-                        Edit
-                      </Button>
-                    </Link>
-
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          className="h-8 text-xs cursor-pointer dark:bg-red-600">
-                          <Trash2 className="w-3 h-3 mr-1" />
-                          Delete
-                        </Button>
-                      </AlertDialogTrigger>
-
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Product?</AlertDialogTitle>
-
-                          <AlertDialogDescription>
-                            This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-
-                        <AlertDialogFooter>
-                          <AlertDialogCancel className="cursor-pointer">
-                            Cancel
-                          </AlertDialogCancel>
-
-                          <AlertDialogAction
-                            onClick={() => handleProductDelete(product._id)}
-                            className="cursor-pointer">
-                            Confirm
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </div>
-
-                {/* VARIANTS */}
-                <div className="mt-4 space-y-2">
-                  {product.variants.map((variant, index) => (
-                    <div
-                      key={index}
-                      className="border rounded-lg p-2.5 flex items-center justify-between gap-3">
-                      {/* LEFT */}
-                      <div className="flex items-center gap-3 min-w-0">
-                        {/* VARIANT IMAGE */}
+              return (
+                <Card
+                  key={product._id}
+                  className={`shadow-sm py-0 gap-0 overflow-hidden transition-opacity ${isDeleting ? "opacity-60" : ""}`}>
+                  <CardContent className="p-4 md:p-5">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                      <div className="flex gap-3 min-w-0">
                         <img
-                          src={variant.images?.[0]}
+                          src={variants[0]?.images?.[0]}
                           alt={product.name}
-                          className="w-12 h-12 rounded-md object-cover border shrink-0"
+                          className="h-16 w-16 shrink-0 rounded-lg border object-cover bg-muted"
                         />
 
-                        {/* INFO */}
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2 text-xs">
-                            {variant.color && (
-                              <span className="bg-muted px-2 py-1 rounded">
-                                {variant.color}
-                              </span>
-                            )}
-
-                            {variant.size && (
-                              <span className="bg-muted px-2 py-1 rounded">
-                                {variant.size}
-                              </span>
-                            )}
-
-                            {variant.ram && (
-                              <span className="bg-muted px-2 py-1 rounded">
-                                {variant.ram}
-                              </span>
-                            )}
-
-                            {variant.storage && (
-                              <span className="bg-muted px-2 py-1 rounded">
-                                {variant.storage}
-                              </span>
-                            )}
-
-                            {variant.badge && (
-                              <span className="bg-muted px-2 py-1 rounded">
-                                {variant.badge}
-                              </span>
-                            )}
+                        <div className="min-w-0 space-y-2">
+                          <div>
+                            <h3 className="font-semibold text-base leading-tight">
+                              {product.name}
+                            </h3>
+                            <p className="text-xs text-muted-foreground line-clamp-2 mt-1 max-w-xl">
+                              {product.description}
+                            </p>
                           </div>
 
-                          <div className="flex items-center gap-4 mt-2 text-xs">
-                            <p>
-                              <span className="text-muted-foreground">
-                                Price:
-                              </span>{" "}
-                              <span className="font-semibold">
-                                ${variant.price}
-                              </span>
-                            </p>
-
-                            <p>
-                              <span className="text-muted-foreground">
-                                Stock:
-                              </span>{" "}
+                          <div className="flex flex-wrap items-center gap-2">
+                            {product.category ? (
+                              <Badge variant="outline" className="text-[11px]">
+                                {product.category}
+                              </Badge>
+                            ) : null}
+                            <Badge variant="secondary" className="text-[11px]">
+                              {variantCount}{" "}
+                              {variantCount === 1 ? "variant" : "variants"}
+                            </Badge>
+                            {priceLabel ? (
+                              <Badge variant="outline" className="text-[11px] font-semibold">
+                                {priceLabel}
+                              </Badge>
+                            ) : null}
+                            <span className="text-[11px] text-muted-foreground">
+                              Total stock:{" "}
                               <span
-                                className={`font-semibold ${
-                                  variant.stock > 0
-                                    ? "text-green-600"
-                                    : "text-red-600"
-                                }`}>
-                                {variant.stock}
+                                className={
+                                  totalStock > 0
+                                    ? "font-medium text-emerald-600 dark:text-emerald-400"
+                                    : "font-medium text-destructive"
+                                }>
+                                {totalStock}
                               </span>
-                            </p>
+                            </span>
                           </div>
                         </div>
                       </div>
 
-                      {/* CART BUTTON */}
-                      <Button
-                        size="sm"
-                        onClick={() => handleCartBtn(product, variant)}
-                        className="h-8 text-xs shrink-0 cursor-pointer">
-                        <ShoppingCart className="w-3 h-3 mr-1" />
-                        Cart
-                      </Button>
+                      <div className="flex gap-2 shrink-0 sm:self-start">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          disabled={isDeleting}
+                          className="h-8 text-xs cursor-pointer">
+                          <Link to={`/updateproduct/${product._id}`}>
+                            <Pencil className="h-3 w-3 mr-1" />
+                            Edit
+                          </Link>
+                        </Button>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              disabled={isDeleting}
+                              className="h-8 text-xs cursor-pointer dark:bg-red-600">
+                              {isDeleting ? (
+                                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                              ) : (
+                                <Trash2 className="h-3 w-3 mr-1" />
+                              )}
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete product?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will remove &quot;{product.name}&quot; and all{" "}
+                                {variantCount} variant{variantCount === 1 ? "" : "s"}.
+                                This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="cursor-pointer">
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                className="cursor-pointer"
+                                onClick={() => handleProductDelete(product._id)}>
+                                Confirm delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+
+                    <VariantListPreview
+                      product={product}
+                      cartLoadingKey={cartLoadingKey}
+                      onAddToCart={handleCartBtn}
+                    />
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
     </>
   );

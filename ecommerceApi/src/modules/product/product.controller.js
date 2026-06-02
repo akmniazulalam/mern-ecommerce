@@ -1,111 +1,100 @@
-const cloudinary = require("cloudinary").v2;
-const uploadImage = require("../../common/config/cloudinary");
-const productSchema = require("./product.model");
+const Product = require("./product.model");
+const { sendError, handleMongoError } = require("./product.errors");
+const {
+  parseVariantsJson,
+  validateProductBasics,
+  validateVariants,
+  validateCreateImages,
+  validateUpdateImages,
+  toTrimmedString,
+} = require("./product.validators");
+const {
+  normalizeVariantsForSave,
+  attachImagesToVariants,
+  uploadFiles,
+  applyVariantImageUpdates,
+  formatProductResponse,
+  formatProductsResponse,
+} = require("./product.variant.utils");
 
 async function productController(req, res) {
-  const { name, description, category, variants } = req.body;
+  try {
+    const { name, description, category, variants } = req.body;
 
-  if (!name && !description && !category && !variants) {
-    return res.status(400).json({
-      message: "All fields are required",
-    });
-  }
-
-  if (!name) {
-    return res.status(400).json({
-      field: "name",
-      message: "Product name is required",
-    });
-  }
-
-  if (!description) {
-    return res.status(400).json({
-      field: "description",
-      message: "Description is required",
-    });
-  }
-
-  if (!category) {
-    return res.status(400).json({
-      field: "category",
-      message: "Category is required",
-    });
-  }
-
-  if (!variants) {
-    return res.status(400).json({
-      field: "variants",
-      message: "Variants are required",
-    });
-  }
-
-  const imageUrls = [];
-
-  const parseVariants = JSON.parse(variants);
-
-  if (!parseVariants.length) {
-    return res.status(400).json({
-      message: "At least one variant is required",
-    });
-  }
-
-  for (let i = 0; i < parseVariants.length; i++) {
-    const v = parseVariants[i];
-
-    if (!v.price) {
-      return res.status(400).json({
-        field: `variants[${i}].price`,
-        message: "Price is required",
-      });
+    const basicsError = validateProductBasics({ name, description, category });
+    if (basicsError) {
+      return sendError(res, basicsError);
     }
 
-    if (!v.stock || v.stock < 1) {
-      return res.status(400).json({
-        field: `variants[${i}].stock`,
-        message: "Stock must be at least 1",
-      });
+    const parsed = parseVariantsJson(variants);
+    if (parsed.error) {
+      return sendError(res, parsed.error);
     }
+
+    const variantsError = validateVariants(parsed.data, { requireStockMinOne: true });
+    if (variantsError) {
+      return sendError(res, variantsError);
+    }
+
+    const imagesError = validateCreateImages(req.files, parsed.data.length);
+    if (imagesError) {
+      return sendError(res, imagesError);
+    }
+
+    const imageUrls = await uploadFiles(req.files);
+    const normalizedVariants = normalizeVariantsForSave(parsed.data);
+    const variantsWithImages = attachImagesToVariants(normalizedVariants, imageUrls);
+
+    const product = new Product({
+      name: toTrimmedString(name),
+      description: toTrimmedString(description),
+      category: toTrimmedString(category),
+      variants: variantsWithImages,
+    });
+
+    await product.save();
+
+    return res.json({
+      message: "Product Added Successfully",
+      data: formatProductResponse(product),
+    });
+  } catch (error) {
+    return handleMongoError(error, res);
   }
-
-  if (!req.files || req.files.length === 0) {
-    res.status(400).json({ message: "Image is required" });
-  }
-
-  for (let file of req.files) {
-    const uploaded = await uploadImage(file.path);
-    imageUrls.push(uploaded.secure_url);
-  }
-
-  if (imageUrls.length !== parseVariants.length) {
-    return res
-      .status(400)
-      .json({ message: "Each variant must have one image." });
-  }
-
-  parseVariants.forEach((variant, index) => {
-    variant.images = [imageUrls[index]];
-  });
-
-  const createProduct = new productSchema({
-    name,
-    description,
-    category,
-    variants: parseVariants,
-  });
-
-  await createProduct.save();
-  res.json({
-    message: "Product Added Successfully",
-    data: createProduct,
-  });
 }
 
 async function getProductController(req, res) {
-  const getProduct = await productSchema.find({});
-  res.json({
-    message: "Success",
-    data: getProduct,
-  });
+  try {
+    const products = await Product.find({}).sort({ createdAt: -1 });
+
+    return res.json({
+      message: "Success",
+      data: formatProductsResponse(products),
+    });
+  } catch (error) {
+    return handleMongoError(error, res);
+  }
+}
+
+async function getSingleProductController(req, res) {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return sendError(res, {
+        status: 404,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Success",
+      data: formatProductResponse(product),
+    });
+  } catch (error) {
+    return handleMongoError(error, res);
+  }
 }
 
 async function updateProductController(req, res) {
@@ -113,100 +102,118 @@ async function updateProductController(req, res) {
     const { id } = req.params;
     const { name, description, category, variants } = req.body;
 
-    const imageIndexes = req.body.imageIndexes;
-
-    const indexes = Array.isArray(imageIndexes)
-      ? imageIndexes
-      : imageIndexes
-        ? [imageIndexes]
-        : [];
-
-    const product = await productSchema.findById(id);
+    const product = await Product.findById(id);
 
     if (!product) {
-      return res.status(404).json({
+      return sendError(res, {
+        status: 404,
         message: "Product not found",
       });
     }
 
-    // =========================
-    // BASIC FIELDS
-    // =========================
-    product.name = name;
-    product.description = description;
-    product.category = category;
-
-    // =========================
-    // PARSE VARIANTS
-    // =========================
-    let parsedVariants = JSON.parse(variants);
-
-    // =========================
-    // IMAGE UPDATE
-    // =========================
-    if (req.files && req.files.length > 0) {
-      for (let i = 0; i < req.files.length; i++) {
-        const file = req.files[i];
-
-        const uploaded = await uploadImage(file.path);
-
-        const variantIndex = Number(indexes[i]);
-
-        // ensure images array exists
-        if (!parsedVariants[variantIndex].images) {
-          parsedVariants[variantIndex].images = [];
-        }
-
-        parsedVariants[variantIndex].images[0] = uploaded.secure_url;
-      }
+    const basicsError = validateProductBasics({ name, description, category });
+    if (basicsError) {
+      return sendError(res, basicsError);
     }
 
-    // =========================
-    // ASSIGN VARIANTS
-    // =========================
-    product.variants = parsedVariants;
+    const parsed = parseVariantsJson(variants);
+    if (parsed.error) {
+      return sendError(res, parsed.error);
+    }
+
+    const variantsError = validateVariants(parsed.data, { requireStockMinOne: true });
+    if (variantsError) {
+      return sendError(res, variantsError);
+    }
+
+    const updateImagesError = validateUpdateImages(req.files, req.body.imageIndexes);
+    if (updateImagesError) {
+      return sendError(res, updateImagesError);
+    }
+
+    let normalizedVariants = normalizeVariantsForSave(parsed.data);
+    normalizedVariants = await applyVariantImageUpdates(
+      normalizedVariants,
+      req.files,
+      req.body.imageIndexes,
+    );
+
+    product.name = toTrimmedString(name);
+    product.description = toTrimmedString(description);
+    product.category = toTrimmedString(category);
+    product.variants = normalizedVariants;
 
     await product.save();
 
-    res.json({
+    return res.json({
       message: "Product updated successfully",
-      data: product,
+      data: formatProductResponse(product),
     });
   } catch (error) {
-    console.log(error);
-
-    res.status(500).json({
-      message: "Server error",
-    });
+    return handleMongoError(error, res);
   }
 }
 
-async function getSingleProductController(req, res) {
-  const { id } = req.params;
-  const singleProduct = await productSchema.findById(id);
-
-  res.status(200).send({
-    message: "Success",
-    data: singleProduct,
-  });
-}
-
 async function deleteProduct(req, res) {
-  const { id } = req.params;
-  const deleteProduct = await productSchema.findByIdAndDelete(id);
+  try {
+    const { id } = req.params;
+    const deleted = await Product.findByIdAndDelete(id);
 
-  res.json({
-    message: "Successfully deleted",
-    data: deleteProduct,
-  });
+    if (!deleted) {
+      return sendError(res, {
+        status: 404,
+        message: "Product not found",
+      });
+    }
+
+    return res.json({
+      message: "Successfully deleted",
+      data: formatProductResponse(deleted),
+    });
+  } catch (error) {
+    return handleMongoError(error, res);
+  }
 }
 
 async function deleteAllProduct(req, res) {
-  const deleteAllProduct = await productSchema.deleteMany({});
-  res.json({
-    message: "Successfully deleted",
-    data: deleteAllProduct,
-  });
+  try {
+    const result = await Product.deleteMany({});
+
+    return res.json({
+      message: "Successfully deleted",
+      data: result,
+    });
+  } catch (error) {
+    return handleMongoError(error, res);
+  }
+}
+
+async function getProductVariantsController(req, res) {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id).select("name variants");
+
+    if (!product) {
+      return sendError(res, {
+        status: 404,
+        message: "Product not found",
+      });
+    }
+
+    const formatted = formatProductResponse(product);
+
+    return res.status(200).json({
+      message: "Success",
+      data: formatted.variants,
+      meta: {
+        productId: formatted._id,
+        productName: formatted.name,
+        variantCount: formatted.variants?.length ?? 0,
+      },
+    });
+  } catch (error) {
+    return handleMongoError(error, res);
+  }
 }
 
 module.exports = {
@@ -214,6 +221,7 @@ module.exports = {
   updateProductController,
   getProductController,
   getSingleProductController,
+  getProductVariantsController,
   deleteProduct,
   deleteAllProduct,
 };

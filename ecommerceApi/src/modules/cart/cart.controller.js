@@ -1,42 +1,108 @@
 const cartSchema = require("./cart.model");
 
+function getLineKey(item) {
+  const productId = String(item.productId);
+  const variantId = item.variantId ? String(item.variantId) : "";
+  return variantId ? `${productId}:${variantId}` : productId;
+}
+
+function findExistingLine(items, payload) {
+  const key = getLineKey(payload);
+
+  return items.find((item) => getLineKey(item) === key);
+}
+
 const addToCartController = async (req, res) => {
-  const userId = req.session.user.id;
-  const { productId, name, price, image } = req.body;
-  let cartItems = await cartSchema.findOne({ userId });
+  try {
+    if (!req.session?.user?.id) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
 
-  if (!cartItems) {
-    cartItems = new cartSchema({
-      userId,
-      items: [{ productId, name, price, image, quantity: 1 }],
+    const userId = req.session.user.id;
+    const {
+      productId,
+      variantId,
+      name,
+      price,
+      image,
+      color,
+      size,
+      ram,
+      storage,
+      badge,
+      sku,
+      quantity = 1,
+    } = req.body;
+
+    if (!productId || !name || price === undefined || price === null) {
+      return res.status(400).json({
+        message: "productId, name, and price are required",
+      });
+    }
+
+    const parsedPrice = Number(price);
+    const parsedQuantity = Math.max(1, Number(quantity) || 1);
+
+    if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+      return res.status(400).json({ message: "Invalid price" });
+    }
+
+    const linePayload = {
+      productId: String(productId),
+      variantId: variantId ? String(variantId) : undefined,
+      name: String(name).trim(),
+      price: parsedPrice,
+      image,
+      color,
+      size,
+      ram,
+      storage,
+      badge,
+      sku,
+      quantity: parsedQuantity,
+    };
+
+    let cartItems = await cartSchema.findOne({ userId });
+
+    if (!cartItems) {
+      cartItems = new cartSchema({
+        userId,
+        items: [linePayload],
+      });
+    } else {
+      const existingItem = findExistingLine(cartItems.items, linePayload);
+
+      if (existingItem) {
+        existingItem.quantity += parsedQuantity;
+      } else {
+        cartItems.items.push(linePayload);
+      }
+    }
+
+    await cartItems.save();
+
+    return res.json({
+      message: "Add to cart the product successfully",
+      data: cartItems,
     });
-  } else {
-    const existingItem = cartItems.items.find(
-      (item) => item.productId === productId,
-    );
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    }
-    else{
-      cartItems.items.push({productId, name, price, image, quantity: 1})
-    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
   }
-
-  await cartItems.save();
-
-  res.json({
-    message: "Add to cart the product successfully",
-    data: cartItems,
-  });
 };
 
 const getAllCartItem = async (req, res) => {
-  const getAllCartItem = await cartSchema.find({});
-  res.status(200).json({
-    message: "All Cart Items",
-    data: getAllCartItem,
-  });
+  try {
+    const getAllCartItem = await cartSchema.find({});
+
+    return res.status(200).json({
+      message: "All Cart Items",
+      data: getAllCartItem,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
 };
 
 module.exports = { addToCartController, getAllCartItem };

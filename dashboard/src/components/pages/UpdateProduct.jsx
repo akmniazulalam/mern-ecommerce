@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 import {
@@ -16,6 +16,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ProductVariantEditor from "@/components/product/ProductVariantEditor";
+import { getApiErrorMessage, isNotFoundError } from "@/lib/apiErrors";
+import {
+  mapApiVariantsToForm,
+  validateVariantsBeforeSubmit,
+} from "@/lib/productVariants";
+import {
+  fetchCategories,
+  fetchProductById,
+  updateProduct,
+} from "@/services/productService";
 
 const UpdateProduct = () => {
   const { id } = useParams();
@@ -24,287 +35,231 @@ const UpdateProduct = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-
-  const [getCategory, setGetCategory] = useState([]);
-
+  const [categories, setCategories] = useState([]);
   const [variants, setVariants] = useState([]);
 
-  // =========================
-  // LOAD PRODUCT
-  // =========================
-  useEffect(() => {
-    axios
-      .get(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/product/singleproduct/${id}`,
-      )
-      .then((res) => {
-        const data = res.data.data;
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-        setName(data.name);
-        setDescription(data.description);
-        setCategory(data.category);
-        setVariants(data.variants || []);
-      });
+  const loadProduct = useCallback(async () => {
+    setIsLoading(true);
+    setLoadError(null);
+    setIsNotFound(false);
+
+    try {
+      const product = await fetchProductById(id);
+
+      if (!product) {
+        setIsNotFound(true);
+        return;
+      }
+
+      setName(product.name ?? "");
+      setDescription(product.description ?? "");
+      setCategory(product.category ?? "");
+      setVariants(mapApiVariantsToForm(product.variants));
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        setIsNotFound(true);
+        return;
+      }
+      setLoadError(getApiErrorMessage(error, "Failed to load product"));
+    } finally {
+      setIsLoading(false);
+    }
   }, [id]);
 
   useEffect(() => {
-    axios
-      .get(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
-      )
-      .then((res) => setGetCategory(res.data.data));
+    fetchCategories()
+      .then(setCategories)
+      .catch((error) => {
+        toast.error(getApiErrorMessage(error, "Failed to load categories"));
+      });
   }, []);
 
-  // =========================
-  // HANDLE VARIANT CHANGE
-  // =========================
-  const handleVariantChange = (index, field, value) => {
-    const updated = [...variants];
-    updated[index][field] = value;
-    setVariants(updated);
-  };
+  useEffect(() => {
+    loadProduct();
+  }, [loadProduct]);
 
-  // =========================
-  // IMAGE CHANGE
-  // =========================
-  const handleImageChange = (index, file) => {
-    const updated = [...variants];
-
-    updated[index].image = file;
-    updated[index].imageUpdated = true;
-
-    setVariants(updated);
-  };
-
-  // =========================
-  // Add Variant
-  // =========================
-  const handleAddVariant = () => {
-    setVariants([
-      ...variants,
-      {
-        color: "",
-        size: "",
-        ram: "",
-        storage: "",
-        stock: "",
-        price: "",
-        badge: "",
-        images: [],
-        image: null,
-      },
-    ]);
-  };
-
-  // =========================
-  // Remove Variant
-  // =========================
-  const handleRemoveVariant = (index) => {
-    const updated = [...variants];
-
-    updated.splice(index, 1);
-
-    setVariants(updated);
-  };
-
-  // =========================
-  // SUBMIT UPDATE
-  // =========================
   const handleUpdate = async () => {
+    const trimmedName = name.trim();
+    const trimmedDescription = description.trim();
+
+    if (!trimmedName) {
+      toast.error("Product name is required");
+      return;
+    }
+
+    if (!trimmedDescription) {
+      toast.error("Description is required");
+      return;
+    }
+
+    if (!category) {
+      toast.error("Category is required");
+      return;
+    }
+
+    const variantError = validateVariantsBeforeSubmit(variants, { isCreate: false });
+    if (variantError) {
+      toast.error(variantError);
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
-      const formData = new FormData();
-
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("category", category);
-      formData.append(
-        "variants",
-        JSON.stringify(
-          variants.map((v, i) => ({
-            ...v,
-            index: i,
-          })),
-        ),
-      );
-
-      variants.forEach((v, i) => {
-        if (v.image instanceof File) {
-          formData.append("images", v.image);
-          formData.append("imageIndexes", i);
-        }
+      await updateProduct(id, {
+        name: trimmedName,
+        description: trimmedDescription,
+        category,
+        variants,
       });
 
-      await axios.patch(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/product/updateproduct/${id}`,
-        formData,
-      );
-
-      toast.success("Product updated");
+      toast.success("Product updated successfully");
       navigate("/productlist");
     } catch (error) {
-      toast.error("Update failed ❌");
+      toast.error(getApiErrorMessage(error, "Failed to update product"));
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh] text-muted-foreground">
+        <Loader2 className="h-6 w-6 animate-spin mr-2" />
+        Loading product...
+      </div>
+    );
+  }
+
+  if (isNotFound) {
+    return (
+      <div className="max-w-lg mx-auto text-center py-16 space-y-4">
+        <AlertCircle className="h-10 w-10 text-muted-foreground mx-auto" />
+        <h2 className="text-lg font-semibold">Product not found</h2>
+        <p className="text-sm text-muted-foreground">
+          This product may have been deleted or the link is invalid.
+        </p>
+        <Button asChild className="cursor-pointer">
+          <Link to="/productlist">Back to products</Link>
+        </Button>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="max-w-lg mx-auto text-center py-16 space-y-4">
+        <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
+        <h2 className="text-lg font-semibold">Could not load product</h2>
+        <p className="text-sm text-muted-foreground">{loadError}</p>
+        <div className="flex justify-center gap-2">
+          <Button className="cursor-pointer" onClick={loadProduct}>
+            Retry
+          </Button>
+          <Button variant="outline" asChild className="cursor-pointer">
+            <Link to="/productlist">Back to list</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <Helmet>
         <title>Update Product</title>
       </Helmet>
 
-      <div className="max-w-xl space-y-4">
-        <h2 className="font-bold text-2xl">Update Product</h2>
-
-        <FieldGroup>
-          <Field>
-            <FieldLabel className="font-semibold text-sm md:text-base">
-              Name
-            </FieldLabel>
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-          </Field>
-
-          <Field>
-            <FieldLabel className="font-semibold text-sm md:text-base">
-              Description
-            </FieldLabel>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </Field>
-
-          <Field>
-            <FieldLabel className="font-semibold text-sm md:text-base">
-              Category
-            </FieldLabel>
-            <Select
-              onValueChange={(value) => {
-                setCategory(value);
-              }}>
-              <SelectTrigger className="w-40 h-10 cursor-pointer text-white!">
-                <SelectValue placeholder={category} />
-              </SelectTrigger>
-
-              <SelectContent position="popper">
-                <SelectGroup>
-                  <SelectLabel>Categories</SelectLabel>
-                  {getCategory.map((item) => (
-                    <SelectItem
-                      key={item._id}
-                      value={item.name}
-                      className={"cursor-pointer"}>
-                      {item.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </Field>
-        </FieldGroup>
-
-        {/* ========================= */}
-        {/* VARIANTS */}
-        {/* ========================= */}
-        <div className="space-y-4">
-          <h3 className="font-semibold">Variants</h3>
-
-          {variants.map((v, index) => (
-            <div key={index} className="border p-3 rounded space-y-2">
-              <Input
-                placeholder="Color"
-                value={v.color || ""}
-                onChange={(e) =>
-                  handleVariantChange(index, "color", e.target.value)
-                }
-              />
-
-              <Input
-                placeholder="Size"
-                value={v.size || ""}
-                onChange={(e) =>
-                  handleVariantChange(index, "size", e.target.value)
-                }
-              />
-
-              <Input
-                placeholder="Ram"
-                value={v.ram || ""}
-                onChange={(e) =>
-                  handleVariantChange(index, "ram", e.target.value)
-                }
-              />
-
-              <Input
-                placeholder="Storage"
-                value={v.storage || ""}
-                onChange={(e) =>
-                  handleVariantChange(index, "storage", e.target.value)
-                }
-              />
-
-              <Input
-                placeholder="Price"
-                value={v.price || ""}
-                onChange={(e) =>
-                  handleVariantChange(index, "price", e.target.value)
-                }
-              />
-
-              <Input
-                placeholder="Badge"
-                value={v.badge || ""}
-                onChange={(e) =>
-                  handleVariantChange(index, "badge", e.target.value)
-                }
-              />
-
-              <Input
-                type="number"
-                placeholder="Stock"
-                value={v.stock || ""}
-                min={1}
-                className={
-                  "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                }
-                onChange={(e) => {
-                  if (e.target.value >= 0) {
-                    handleVariantChange(index, "stock", e.target.value);
-                  }
-                }}
-              />
-
-              {v.images?.[0] && (
-                <img
-                  src={v.images[0]}
-                  className="w-20 h-20 object-cover rounded"
-                />
-              )}
-
-              <Input
-                type="file"
-                onChange={(e) => {
-                  handleImageChange(index, e.target.files[0]);
-                }}
-              />
-
-              <div className="text-end">
-                <Button
-                  variant="destructive"
-                  className="cursor-pointer mt-4 dark:bg-red-600"
-                  onClick={() => handleRemoveVariant(index)}>
-                  Remove Variant
-                </Button>
-              </div>
-            </div>
-          ))}
+      <div className="max-w-3xl space-y-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">Edit product</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Update details and manage variants.
+            </p>
+          </div>
+          <Button variant="outline" asChild className="cursor-pointer">
+            <Link to="/productlist">Back to list</Link>
+          </Button>
         </div>
 
-        <Button onClick={handleAddVariant} className="cursor-pointer">
-          + Add Variant
-        </Button>
+        <FieldGroup className="space-y-6">
+          <div className="rounded-xl border bg-card p-4 md:p-5 space-y-4 shadow-sm">
+            <h3 className="text-sm font-semibold">Basic information</h3>
 
-        <Button onClick={handleUpdate} className="w-full cursor-pointer">
-          Update Product
-        </Button>
+            <Field>
+              <FieldLabel className="font-semibold">Product name</FieldLabel>
+              <Input
+                value={name}
+                disabled={isSubmitting}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel className="font-semibold">Description</FieldLabel>
+              <Textarea
+                value={description}
+                className="resize-none min-h-[100px]"
+                disabled={isSubmitting}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel className="font-semibold">Category</FieldLabel>
+              <Select
+                value={category}
+                disabled={isSubmitting}
+                onValueChange={setCategory}>
+                <SelectTrigger className="w-full max-w-xs h-10 cursor-pointer">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectGroup>
+                    <SelectLabel>Categories</SelectLabel>
+                    {categories.map((item) => (
+                      <SelectItem
+                        key={item._id}
+                        value={item.name}
+                        className="cursor-pointer">
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </Field>
+          </div>
+
+          <div className="rounded-xl border bg-card p-4 md:p-5 shadow-sm">
+            <ProductVariantEditor
+              variants={variants}
+              onChange={setVariants}
+              mode="edit"
+            />
+          </div>
+
+          <Button
+            type="button"
+            className="w-full sm:w-auto cursor-pointer min-w-[140px]"
+            disabled={isSubmitting}
+            onClick={handleUpdate}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save changes"
+            )}
+          </Button>
+        </FieldGroup>
       </div>
     </>
   );
