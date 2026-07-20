@@ -198,19 +198,19 @@ const Orders = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <Card className="py-0">
+          <Card className="py-4">
             <CardContent className="p-4">
               <p className="text-sm text-muted-foreground">Total orders</p>
               <p className="text-2xl font-semibold mt-1">{totalOrders}</p>
             </CardContent>
           </Card>
-          <Card className="py-0">
+          <Card className="py-4">
             <CardContent className="p-4">
               <p className="text-sm text-muted-foreground">In progress</p>
               <p className="text-2xl font-semibold mt-1">{pendingCount}</p>
             </CardContent>
           </Card>
-          <Card className="py-0">
+          <Card className="py-4">
             <CardContent className="p-4">
               <p className="text-sm text-muted-foreground">Delivered</p>
               <p className="text-2xl font-semibold mt-1">{deliveredCount}</p>
@@ -218,7 +218,7 @@ const Orders = () => {
           </Card>
         </div>
 
-        <Card className="shadow-sm py-0">
+        <Card className="shadow-sm py-4">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg">Orders</CardTitle>
           </CardHeader>
@@ -340,7 +340,7 @@ const Orders = () => {
           {selectedOrder ? (
             <div className="space-y-5">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                <Card className="py-0 lg:col-span-2">
+                <Card className="py-4 lg:col-span-2">
                   <CardHeader>
                     <CardTitle className="text-base">Customer Information</CardTitle>
                   </CardHeader>
@@ -383,7 +383,7 @@ const Orders = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="py-0">
+                <Card className="py-4">
                   <CardHeader>
                     <CardTitle className="text-base">Status</CardTitle>
                   </CardHeader>
@@ -429,7 +429,7 @@ const Orders = () => {
                 </Card>
               </div>
 
-              <Card className="py-0">
+              <Card className="py-4">
                 <CardHeader>
                   <CardTitle className="text-base">Ordered Products</CardTitle>
                 </CardHeader>
@@ -488,7 +488,7 @@ const Orders = () => {
               </Card>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                <Card className="py-0">
+                <Card className="py-4">
                   <CardHeader>
                     <CardTitle className="text-base">Payment Information</CardTitle>
                   </CardHeader>
@@ -519,7 +519,7 @@ const Orders = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="py-0">
+                <Card className="py-4">
                   <CardHeader>
                     <CardTitle className="text-base">Pricing Summary</CardTitle>
                   </CardHeader>
