@@ -24,17 +24,18 @@ const {
   uploadAvatarController
 } = require("./auth.controller");
 const authMiddleware = require("./auth.middleware");
+const { adminMiddleware } = require("./auth.middleware");
 const router = express.Router();
 
 router.post("/signup", signupController);
 router.post("/otpverify", otpController);
 router.post("/resendotp", resendOtpController);
-router.get("/userlist", getAllUsers);
-router.delete("/deleteuser/:id", deleteUser);
+router.get("/userlist", authMiddleware, adminMiddleware, getAllUsers);
+router.delete("/deleteuser/:id", authMiddleware, adminMiddleware, deleteUser);
 router.post("/login", loginController);
 router.get("/currentuser", currentuserController);
 router.post("/logout", logoutController);
-router.get("/dashboard", authMiddleware, dashboardController);
+router.get("/dashboard", authMiddleware, adminMiddleware, dashboardController);
 router.post("/upload-avatar", authMiddleware, upload.single("image"), uploadAvatarController);
 
 module.exports = router;

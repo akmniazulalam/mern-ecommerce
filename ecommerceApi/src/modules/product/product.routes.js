@@ -1,6 +1,7 @@
 const express = require("express");
 const { withVariantImagesUpload } = require("./product.upload");
 const { validateProductIdParam } = require("./product.middleware");
+const { authMiddleware, adminMiddleware } = require("../auth/auth.middleware");
 const {
   productController,
   updateProductController,
@@ -13,35 +14,37 @@ const {
 
 const router = express.Router();
 
+const adminOnly = [authMiddleware, adminMiddleware];
 const writeWithVariantImages = [withVariantImagesUpload];
 const withProductId = [validateProductIdParam];
 
 /**
  * Legacy endpoints (unchanged paths for dashboard / storefront).
  */
-router.post("/createproduct", ...writeWithVariantImages, productController);
+router.post("/createproduct", ...adminOnly, ...writeWithVariantImages, productController);
 router.get("/getproduct", getProductController);
 router.get("/singleproduct/:id", ...withProductId, getSingleProductController);
 router.patch(
   "/updateproduct/:id",
+  ...adminOnly,
   ...withProductId,
   ...writeWithVariantImages,
   updateProductController,
 );
-router.delete("/deleteproduct/:id", ...withProductId, deleteProduct);
-router.delete("/deleteallproduct", deleteAllProduct);
+router.delete("/deleteproduct/:id", ...adminOnly, ...withProductId, deleteProduct);
+router.delete("/deleteallproduct", ...adminOnly, deleteAllProduct);
 
 /**
  * RESTful aliases (same handlers, same request/response contracts).
  * Base path: /api/v1/product
  */
 router.get("/", getProductController);
-router.post("/", ...writeWithVariantImages, productController);
-router.delete("/all", deleteAllProduct);
+router.post("/", ...adminOnly, ...writeWithVariantImages, productController);
+router.delete("/all", ...adminOnly, deleteAllProduct);
 
 router.get("/:id/variants", ...withProductId, getProductVariantsController);
 router.get("/:id", ...withProductId, getSingleProductController);
-router.patch("/:id", ...withProductId, ...writeWithVariantImages, updateProductController);
-router.delete("/:id", ...withProductId, deleteProduct);
+router.patch("/:id", ...adminOnly, ...withProductId, ...writeWithVariantImages, updateProductController);
+router.delete("/:id", ...adminOnly, ...withProductId, deleteProduct);
 
 module.exports = router;
