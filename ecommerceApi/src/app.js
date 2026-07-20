@@ -5,12 +5,13 @@ const path = require("path");
 const session = require("express-session");
 const { MongoStore } = require("connect-mongo");
 const routes = require("./routes");
+const { getEnv } = require("./common/config/env");
 app.use(express.json());
 
 app.set("trust proxy", 1);
 
 const isProduction = process.env.NODE_ENV === "production";
-const sessionSecret = process.env.SESSION_SECRET || "ecommerceApi";
+const sessionSecret = getEnv("SESSION_SECRET");
 
 app.use(
   cors({
@@ -30,7 +31,7 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
+    store: MongoStore.create({ mongoUrl: getEnv("DB_URL") }),
     cookie: {
       secure: isProduction,
       maxAge: 1000 * 60 * 60 * 24 * 7,

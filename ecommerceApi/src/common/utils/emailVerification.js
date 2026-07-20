@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 const { Resend } = require("resend");
+const { getEnv } = require("../config/env");
 
 async function emailVerification(email, otp) {
 
@@ -22,7 +23,7 @@ async function emailVerification(email, otp) {
   //     html: `<h1>Your Otp is: ${otp}</h1>`, // HTML version of the message
   //   });
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const resend = new Resend(getEnv("RESEND_API_KEY"));
 
   await resend.emails.send({
     from: "Otp <onboarding@resend.dev>",

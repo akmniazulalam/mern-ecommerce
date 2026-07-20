@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
+const { getEnv } = require("./env");
 
 function db() {
-  mongoose.connect(`${process.env.DB_URL}`).then(() => console.log("DB Connected"));
+  mongoose.connect(getEnv("DB_URL")).then(() => console.log("DB Connected"));
 }
 
 module.exports = db;

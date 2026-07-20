@@ -7,6 +7,7 @@ const emailValidation = require("../../common/utils/emailValidation");
 const emailVerification = require("../../common/utils/emailVerification");
 const uploadImage = require("../../common/config/cloudinary");
 const { normalizeRole } = require("./auth.middleware");
+const { getEnv } = require("../../common/config/env");
 
 const isProduction = process.env.NODE_ENV === "production";
 const sessionCookieOptions = {
@@ -17,7 +18,7 @@ const sessionCookieOptions = {
 
 async function signupController(req, res) {
   const { firstName, lastName, email, password } = req.body;
-  const token = jwt.sign({ id: email }, "niaz");
+  const token = jwt.sign({ id: email }, getEnv("JWT_SECRET"));
   if (!firstName || !lastName) {
     return res.status(400).json({
       message: "Error: First name and last name are required",
