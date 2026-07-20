@@ -9,6 +9,7 @@ const {
 
 const Product = require("../product/product.model");
 const Cart = require("../cart/cart.model");
+const { normalizeRole } = require("../auth/auth.middleware");
 
 function generateOrderNumber() {
   const d = new Date();
@@ -255,7 +256,7 @@ async function createOrderController(req, res) {
 
 async function getAllOrdersController(req, res) {
   try {
-    const role = req?.session?.user?.role;
+    const role = normalizeRole(req?.session?.user?.role);
     if (role !== "admin") {
       return sendError(res, { status: 403, message: "Forbidden" });
     }
@@ -306,7 +307,7 @@ async function getMyOrdersController(req, res) {
 async function getOrderByIdController(req, res) {
   try {
     const userId = req?.session?.user?.id;
-    const role = req?.session?.user?.role;
+    const role = normalizeRole(req?.session?.user?.role);
     if (!userId) {
       return sendError(res, { status: 401, message: "Authentication required" });
     }
@@ -335,7 +336,7 @@ async function getOrderByIdController(req, res) {
 async function updateOrderStatusController(req, res) {
   try {
     const userId = req?.session?.user?.id;
-    const role = req?.session?.user?.role;
+    const role = normalizeRole(req?.session?.user?.role);
     if (!userId) {
       return sendError(res, { status: 401, message: "Authentication required" });
     }

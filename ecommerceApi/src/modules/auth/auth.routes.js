@@ -35,6 +35,6 @@ router.post("/login", loginController);
 router.get("/currentuser", currentuserController);
 router.post("/logout", logoutController);
 router.get("/dashboard", authMiddleware, dashboardController);
-router.post("/upload-avatar", upload.single("image"), uploadAvatarController);
+router.post("/upload-avatar", authMiddleware, upload.single("image"), uploadAvatarController);
 
 module.exports = router;

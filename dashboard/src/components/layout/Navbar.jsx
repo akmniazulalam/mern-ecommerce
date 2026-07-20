@@ -5,8 +5,8 @@ import { Bell, Menu, Camera } from "lucide-react";
 import { Moon, Sun } from "lucide-react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { MobileSidebar } from "./Sidebar";
-import axios from "axios";
 import { useAuth } from "@/context/AuthContext";
+import apiClient from "@/lib/apiClient";
 
 const Navbar = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -54,13 +54,7 @@ const Navbar = () => {
     formData.append("image", file);
 
     try {
-      const res = await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/upload-avatar",
-        formData,
-        {
-          withCredentials: true,
-        },
-      );
+      const res = await apiClient.post("/auth/upload-avatar", formData);
 
       // Update UI instantly
       setUser(res.data.user);
@@ -72,11 +66,7 @@ const Navbar = () => {
 
   // Logout
   const handleLogout = async () => {
-    await axios.post(
-      "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/logout",
-      {},
-      { withCredentials: true },
-    );
+    await apiClient.post("/auth/logout", {});
     setUser(null);
     window.location.href = "/login";
   };

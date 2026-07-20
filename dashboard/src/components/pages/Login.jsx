@@ -1,4 +1,3 @@
-import axios from "axios";
 import toast from "react-hot-toast";
 import React, { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff } from "lucide-react";
+import apiClient from "@/lib/apiClient";
 
 const Login = () => {
   const { setUser } = useAuth();
@@ -45,11 +45,14 @@ const Login = () => {
 
   const handleLoginBtn = async () => {
     try {
-      const res = await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/login",
-        loginInput,
-        { withCredentials: true },
-      );
+      const res = await apiClient.post("/auth/login", loginInput);
+
+      if (res.data.user?.role !== "admin") {
+        await apiClient.post("/auth/logout", {}).catch(() => {});
+        setUser(null);
+        toast.error("Only admin accounts can access the dashboard");
+        return;
+      }
 
       setUser(res.data.user);
 

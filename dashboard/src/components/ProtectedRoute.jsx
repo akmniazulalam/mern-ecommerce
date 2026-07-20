@@ -1,6 +1,5 @@
 import { Navigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
@@ -17,6 +16,10 @@ const ProtectedRoute = ({ children }) => {
   }
 
   if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role !== "admin") {
     return <Navigate to="/login" replace />;
   }
 

@@ -1,5 +1,6 @@
 const express = require("express");
 const authMiddleware = require("../auth/auth.middleware");
+const { adminMiddleware } = require("../auth/auth.middleware");
 
 const {
   createOrderController,
@@ -17,7 +18,7 @@ router.post("/create", createOrderController);
 // User order history
 router.get("/mine", authMiddleware, getMyOrdersController);
 // Admin order listing (fulfillment dashboard)
-router.get("/admin", authMiddleware, getAllOrdersController);
+router.get("/admin", authMiddleware, adminMiddleware, getAllOrdersController);
 router.get("/:id", authMiddleware, getOrderByIdController);
 
 // Admin fulfillment updates (or cancellation by the order owner)

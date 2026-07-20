@@ -9,6 +9,9 @@ app.use(express.json());
 
 app.set("trust proxy", 1);
 
+const isProduction = process.env.NODE_ENV === "production";
+const sessionSecret = process.env.SESSION_SECRET || "ecommerceApi";
+
 app.use(
   cors({
     origin: [
@@ -23,14 +26,15 @@ app.use(
 
 app.use(
   session({
-    secret: "ecommerceApi",
+    name: "ecommerce.sid",
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.DB_URL }),
     cookie: {
-      secure: true,
+      secure: isProduction,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      sameSite: "none",
+      sameSite: isProduction ? "none" : "lax",
       httpOnly: true,
     },
   }),

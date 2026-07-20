@@ -6,6 +6,14 @@ const passVal = require("../../common/utils/passVal");
 const emailValidation = require("../../common/utils/emailValidation");
 const emailVerification = require("../../common/utils/emailVerification");
 const uploadImage = require("../../common/config/cloudinary");
+const { normalizeRole } = require("./auth.middleware");
+
+const isProduction = process.env.NODE_ENV === "production";
+const sessionCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+};
 
 async function signupController(req, res) {
   const { firstName, lastName, email, password } = req.body;
@@ -187,20 +195,32 @@ async function loginController(req, res) {
     });
   } else {
     bcrypt.compare(password, existingEmailUser.password, (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: "Login failed" });
+      }
       if (!result) {
         return res.status(401).json({ message: "Password is not matched" });
       }
-      req.session.isAuth = true;
-      req.session.user = {
+      const sessionUser = {
         id: existingEmailUser.id,
         email: existingEmailUser.email,
         firstName: existingEmailUser.firstName,
         lastName: existingEmailUser.lastName,
-        role: existingEmailUser.role,
+        role: normalizeRole(existingEmailUser.role),
+        profileImage: existingEmailUser.profileImage || "",
       };
-      return res
-        .status(200)
-        .json({ message: "Login Successful", user: req.session.user });
+
+      req.session.isAuth = true;
+      req.session.user = sessionUser;
+      req.session.save((saveErr) => {
+        if (saveErr) {
+          return res.status(500).json({ message: "Login failed" });
+        }
+
+        return res
+          .status(200)
+          .json({ message: "Login Successful", user: sessionUser });
+      });
     });
 
     // const isMatch = await bcrypt.compare(password, existingEmailUser.password)
@@ -228,11 +248,32 @@ async function currentuserController(req, res) {
     });
   }
 
-  const user = await userSchema.findOne({ email: req.session.user.email });
+  const user = await userSchema
+    .findOne({ email: req.session.user.email })
+    .select("-password -otp -expireOtp -token");
+
+  if (!user) {
+    req.session.destroy(() => {});
+    return res.status(401).json({
+      success: false,
+      message: "No user",
+    });
+  }
+
+  const sessionUser = {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    role: normalizeRole(user.role),
+    profileImage: user.profileImage || "",
+  };
+
+  req.session.user = sessionUser;
 
   res.status(200).json({
     success: true,
-    user: user,
+    user: sessionUser,
   });
 }
 
@@ -241,7 +282,8 @@ function logoutController(req, res) {
     if (err) {
       return res.status(400).json({ message: "Wrong" });
     } else {
-      res.clearCookie("connect.sid");
+      res.clearCookie("ecommerce.sid", sessionCookieOptions);
+      res.clearCookie("connect.sid", sessionCookieOptions);
       return res.status(200).json({ message: "Logout Successful" });
     }
   });
