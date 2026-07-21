@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus, Minus } from "lucide-react";
-import axios from "axios";
 import { Helmet } from "react-helmet-async";
+import apiClient from "@/lib/apiClient";
+import { cartPaths } from "@/lib/productApi";
 
 const Cart = () => {
   const [cart, setCart] = useState([]);
   useEffect(() => {
-    axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/cart/allcart")
+    apiClient
+      .get(cartPaths.all)
       .then((res) => setCart(res.data.data[0].items));
   }, []);
   return (

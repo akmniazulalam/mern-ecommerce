@@ -22,14 +22,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
-import axios from "axios";
 import toast from "react-hot-toast";
+import apiClient from "@/lib/apiClient";
+import { authPaths } from "@/lib/productApi";
 
 const Userlists = () => {
   const [userList, setUserList] = useState([]);
   useEffect(() => {
-    axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/auth/userlist")
+    apiClient
+      .get(authPaths.userList)
       .then((res) => {
         setUserList(res.data.data);
         console.log(userList);
@@ -38,9 +39,7 @@ const Userlists = () => {
 
   const handleDeleteUser = (id) => {
     try {
-      axios.delete(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/auth/deleteuser/${id}`,
-      );
+      apiClient.delete(authPaths.deleteUser(id));
       toast.success("Successfully deleted");
       setUserList(userList.filter((item) => item._id !== id));
     } catch (error) {

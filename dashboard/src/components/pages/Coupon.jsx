@@ -1,4 +1,3 @@
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -15,6 +14,8 @@ import {
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import apiClient from "@/lib/apiClient";
+import { couponPaths } from "@/lib/productApi";
 
 const Coupon = () => {
   const navigate = useNavigate();
@@ -35,10 +36,7 @@ const Coupon = () => {
 
   const handleCreateCoupon = async () => {
     try {
-      const res = await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/create-coupon",
-        formData,
-      );
+      const res = await apiClient.post(couponPaths.create, formData);
 
       if (res.data.success) {
         toast.success(res.data.message);

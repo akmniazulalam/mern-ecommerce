@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import {
   Table,
   TableBody,
@@ -23,24 +22,22 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import apiClient from "@/lib/apiClient";
+import { categoryPaths } from "@/lib/productApi";
 
 const CategoryList = () => {
 
   const [finalData, setFinalData] = useState([]);
   useEffect(() => {
     async function final() {
-      const data = await axios.get(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/category/getallcategory",
-      );
+      const data = await apiClient.get(categoryPaths.list);
       setFinalData(data.data.data);
     }
     final();
   }, []);
 
   const handleDeleteCategory = (id) => {
-    axios.delete(
-      `https://mern-ecommerce-91cv.onrender.com/api/v1/category/deletecategory/${id}`,
-    );
+    apiClient.delete(categoryPaths.delete(id));
     setFinalData(finalData.filter((item) => item._id !== id));
   };
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
+import apiClient from "@/lib/apiClient";
+import { couponPaths } from "@/lib/productApi";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -34,8 +35,8 @@ const CouponList = () => {
 
   // Get All Coupons
   useEffect(() => {
-    axios
-      .get("https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/couponlist")
+    apiClient
+      .get(couponPaths.list)
       .then((res) => {
         setCoupons(res.data.data);
       })
@@ -47,9 +48,7 @@ const CouponList = () => {
   // Delete Coupon
   const handleDeleteCoupon = async (id) => {
     try {
-      await axios.delete(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/coupon/deletecoupon/${id}`,
-      );
+      await apiClient.delete(couponPaths.delete(id));
 
       toast.success("Coupon deleted");
 

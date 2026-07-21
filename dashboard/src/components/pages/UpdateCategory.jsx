@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
+import apiClient from "@/lib/apiClient";
+import { categoryPaths } from "@/lib/productApi";
 
 const UpdateCategory = () => {
   const { id } = useParams();
@@ -14,10 +15,8 @@ const UpdateCategory = () => {
   const [updateDes, setUpdateDes] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
-    axios
-      .get(
-        `https://mern-ecommerce-91cv.onrender.com/api/v1/category/singlecategory/${id}`,
-      )
+    apiClient
+      .get(categoryPaths.single(id))
       .then((res) => {
         setUpdateName(res.data.data.name);
         setUpdateDes(res.data.data.description);
@@ -29,10 +28,7 @@ const UpdateCategory = () => {
       name: updateName,
       description: updateDes,
     };
-    axios.patch(
-      `https://mern-ecommerce-91cv.onrender.com/api/v1/category/updatecategory/${id}`,
-      formData,
-    );
+    apiClient.patch(categoryPaths.update(id), formData);
     toast.success("Successfully Updated");
     setUpdateName("");
     setUpdateDes("");

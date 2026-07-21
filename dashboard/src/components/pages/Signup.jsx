@@ -1,4 +1,3 @@
-import axios from "axios";
 import toast from "react-hot-toast";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -21,6 +20,8 @@ import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Info } from "lucide-react";
+import apiClient from "@/lib/apiClient";
+import { authPaths } from "@/lib/productApi";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -71,11 +72,8 @@ const Signup = () => {
     registrationInput.lastName;
 
   const handleRegistration = () => {
-    axios
-      .post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/signup",
-        registrationInput,
-      )
+    apiClient
+      .post(authPaths.signup, registrationInput)
       .then(() => {
         toast.success(
           `Registration done & send a verification otp to your email`,
@@ -106,13 +104,10 @@ const Signup = () => {
 
   const handleVerifyOtp = async () => {
     try {
-      await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/otpverify",
-        {
-          email: registrationInput.email,
-          otp: otp,
-        },
-      );
+      await apiClient.post(authPaths.otpVerify, {
+        email: registrationInput.email,
+        otp: otp,
+      });
       toast.success("Otp verification done");
       setTimeout(() => {
         navigate("/login");
@@ -124,12 +119,9 @@ const Signup = () => {
 
   const handleResetOtp = async () => {
     try {
-      const response = await axios.post(
-        "https://mern-ecommerce-91cv.onrender.com/api/v1/auth/resendotp",
-        {
-          email: registrationInput.email,
-        },
-      );
+      const response = await apiClient.post(authPaths.resendOtp, {
+        email: registrationInput.email,
+      });
       toast.success(response?.data?.message || "Otp resend successfully");
     } catch (error) {
       toast.error(error.response?.data?.message || error?.message);

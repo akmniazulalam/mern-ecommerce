@@ -1,4 +1,3 @@
-import axios from "axios";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -7,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import apiClient from "@/lib/apiClient";
+import { categoryPaths } from "@/lib/productApi";
 
 const Category = () => {
   const [categoryName, setCategoryName] = useState("");
@@ -17,10 +18,7 @@ const Category = () => {
     description: categoryDescription,
   };
   const handleCreateCategory = () => {
-    axios.post(
-      "https://mern-ecommerce-91cv.onrender.com/api/v1/category/createcategory",
-      formData,
-    );
+    apiClient.post(categoryPaths.create, formData);
     toast.success("Successfully added!");
     setCategoryName("");
     setCategoryDescription("");

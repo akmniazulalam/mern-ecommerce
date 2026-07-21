@@ -1,7 +1,11 @@
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "https://mern-ecommerce-91cv.onrender.com/api/v1";
+const apiBaseUrl = import.meta.env.VITE_API_URL;
 
-/** Legacy paths (dashboard contract) — matches backend routes */
+if (!apiBaseUrl) {
+  throw new Error("Missing required environment variable: VITE_API_URL");
+}
+
+export const API_BASE_URL = apiBaseUrl;
+
 export const productPaths = {
   list: "/product/getproduct",
   create: "/product/createproduct",
@@ -13,14 +17,30 @@ export const productPaths = {
   addToCart: "/cart/addtocart",
 };
 
-/** @deprecated Use productPaths — kept for any remaining imports */
-export const productEndpoints = {
-  list: `${API_BASE_URL}${productPaths.list}`,
-  create: `${API_BASE_URL}${productPaths.create}`,
-  single: (id) => `${API_BASE_URL}${productPaths.single(id)}`,
-  update: (id) => `${API_BASE_URL}${productPaths.update(id)}`,
-  delete: (id) => `${API_BASE_URL}${productPaths.delete(id)}`,
-  categories: `${API_BASE_URL}${productPaths.categories}`,
+export const authPaths = {
+  signup: "/auth/signup",
+  otpVerify: "/auth/otpverify",
+  resendOtp: "/auth/resendotp",
+  userList: "/auth/userlist",
+  deleteUser: (id) => `/auth/deleteuser/${id}`,
+};
+
+export const categoryPaths = {
+  create: "/category/createcategory",
+  list: "/category/getallcategory",
+  single: (id) => `/category/singlecategory/${id}`,
+  update: (id) => `/category/updatecategory/${id}`,
+  delete: (id) => `/category/deletecategory/${id}`,
+};
+
+export const couponPaths = {
+  create: "/coupon/create-coupon",
+  list: "/coupon/couponlist",
+  delete: (id) => `/coupon/deletecoupon/${id}`,
+};
+
+export const cartPaths = {
+  all: "/cart/allcart",
 };
 
 export function unwrapApiData(response) {
