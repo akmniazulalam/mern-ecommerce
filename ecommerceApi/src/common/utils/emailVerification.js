@@ -3,23 +3,22 @@ const { Resend } = require("resend");
 const { getEnv } = require("../config/env");
 
 async function emailVerification(email, otp) {
+
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: false,
+    service: "gmail",
     auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
-  const info = await transporter.sendMail({
-    from: `"${process.env.EMAIL_NAME}" <${process.env.EMAIL_FROM}>`,
-    to: email,
-    subject: "Otp",
-    text: "Otp Verification", // Plain-text version of the message
-    html: `<h1>Your Otp is: ${otp}</h1>`, // HTML version of the message
-  });
+    const info = await transporter.sendMail({
+      from: `"Otp" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Otp",
+      text: "Otp Verification", // Plain-text version of the message
+      html: `<h1>Your Otp is: ${otp}</h1>`, // HTML version of the message
+    });
 
   // const resend = new Resend(getEnv("RESEND_API_KEY"));
 
