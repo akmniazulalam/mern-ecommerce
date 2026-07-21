@@ -279,7 +279,7 @@ const Signup = () => {
                 <DialogTitle>Verify OTP</DialogTitle>
                 <DialogDescription>
                   Enter the 6-digit OTP sent to your "{registrationInput.email}". 
-                  If you can't find it, check your Spam, Junk, Promotions, or Archive folder.
+                  Please check your Spam/Junk folder if you don't receive the email within a few minutes.
                 </DialogDescription>
               </DialogHeader>
 
