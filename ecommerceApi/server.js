@@ -4,10 +4,10 @@ const { validateEnv } = require('./src/common/config/env');
 validateEnv()
 const app = require('./src/app');
 const db = require('./src/common/config/db');
-// const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 db()
 
-app.listen(3000, () => {
-  console.log(`Server Running on port ${3000}`);
+app.listen(port, () => {
+  console.log(`Server Running on port ${port}`);
 });
