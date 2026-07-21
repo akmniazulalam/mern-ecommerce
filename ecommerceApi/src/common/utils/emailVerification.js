@@ -12,7 +12,8 @@ async function emailVerification(email, otp) {
       pass: process.env.SMTP_PASS,
     },
   });
-
+await transporter.verify();
+console.log("SMTP Connected Successfully");
   const info = await transporter.sendMail({
     from: `"${process.env.EMAIL_NAME}" <${process.env.EMAIL_FROM}>`,
     to: email,
@@ -20,7 +21,7 @@ async function emailVerification(email, otp) {
     text: "Otp Verification", // Plain-text version of the message
     html: `<h1>Your Otp is: ${otp}</h1>`, // HTML version of the message
   });
-
+console.log(info);
   // const resend = new Resend(getEnv("RESEND_API_KEY"));
 
   // await resend.emails.send({
