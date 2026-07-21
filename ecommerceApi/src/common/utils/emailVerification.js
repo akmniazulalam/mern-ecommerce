@@ -1,35 +1,50 @@
 const nodemailer = require("nodemailer");
 const { Resend } = require("resend");
 const { getEnv } = require("../config/env");
+const axios = require("axios");
 
 async function emailVerification(email, otp) {
-  const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  logger: true,
-  debug: true,
-});
-await transporter.verify();
-console.log("SMTP Connected Successfully");
-  const info = await transporter.sendMail({
-    from: `"${process.env.EMAIL_NAME}" <${process.env.EMAIL_FROM}>`,
-    to: email,
-    subject: "Otp",
-    text: "Otp Verification", // Plain-text version of the message
-    html: `<h1>Your Otp is: ${otp}</h1>`, // HTML version of the message
-  });
-console.log(info);
-console.log({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  user: process.env.SMTP_USER,
-  hasPass: !!process.env.SMTP_PASS,
-});
+  try {
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: process.env.EMAIL_NAME,
+          email: process.env.EMAIL_FROM,
+        },
+        to: [
+          {
+            email,
+          },
+        ],
+        subject: "OTP Verification",
+        htmlContent: `
+          <h2>OTP Verification</h2>
+          <p>Your OTP is:</p>
+          <h1>${otp}</h1>
+          <p>This OTP will expire in 5 minutes.</p>
+        `,
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          "api-key": process.env.BREVO_API_KEY,
+        },
+      }
+    );
+
+    console.log("Email sent:", response.data);
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Brevo Error:",
+      error.response?.data || error.message
+    );
+
+    throw error;
+  }
   // const resend = new Resend(getEnv("RESEND_API_KEY"));
 
   // await resend.emails.send({
