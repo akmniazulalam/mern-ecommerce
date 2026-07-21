@@ -4,7 +4,7 @@ const { validateEnv } = require('./src/common/config/env');
 validateEnv()
 const app = require('./src/app');
 const db = require('./src/common/config/db');
-const port = process.env.PORT || 3000;
+const port =  3000;
 
 db()
 
