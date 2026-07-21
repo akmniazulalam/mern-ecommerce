@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Info } from "lucide-react";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -185,6 +185,14 @@ const Signup = () => {
                   type="email"
                   placeholder="Enter your email"
                 />
+                <div className="mt-2 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950/30">
+  <Info className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+
+  <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
+    <span className="font-medium">Note:</span> For the best OTP delivery,
+    please use a Yahoo email address. Gmail emails may be delayed or filtered.
+  </p>
+</div>
               </div>
 
               <div className="relative">
