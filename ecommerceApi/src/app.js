@@ -6,6 +6,7 @@ const session = require("express-session");
 const { MongoStore } = require("connect-mongo");
 const routes = require("./routes");
 const { getEnv } = require("./common/config/env");
+const { errorHandler } = require("./common/middleware/errorHandler");
 app.use(express.json());
 
 app.set("trust proxy", 1);
@@ -48,5 +49,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", routes);
+app.use(errorHandler);
 
 module.exports = app;

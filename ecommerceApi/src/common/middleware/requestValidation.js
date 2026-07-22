@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { sendError } = require("./errorHandler");
 
 function toTrimmedString(value) {
   if (value === undefined || value === null) {
@@ -17,18 +18,7 @@ function isValidObjectId(value) {
 }
 
 function sendValidationError(res, errorPayload) {
-  const { status = 400, field, message, errors } = errorPayload;
-  const body = { message };
-
-  if (field) {
-    body.field = field;
-  }
-
-  if (errors) {
-    body.errors = errors;
-  }
-
-  return res.status(status).json(body);
+  return sendError(res, errorPayload);
 }
 
 function validateRequest(validator) {
