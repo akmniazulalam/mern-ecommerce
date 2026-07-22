@@ -14,16 +14,21 @@ const {
   getAllSubCategory,
   deleteAllSubCategory
 } = require("../subcategory/subcategory.controller");
+const { validateObjectIdParam } = require("../../common/middleware/requestValidation");
+const {
+  validateCategoryBody,
+  validateSubCategoryBody,
+} = require("./category.validators");
 
 const adminOnly = [authMiddleware, adminMiddleware];
 
-router.post("/createcategory", ...adminOnly, categoryController);
+router.post("/createcategory", ...adminOnly, validateCategoryBody, categoryController);
 router.get("/getallcategory", getAllCategory);
-router.post("/createsubcategory", ...adminOnly, subCategoryController);
+router.post("/createsubcategory", ...adminOnly, validateSubCategoryBody, subCategoryController);
 router.get("/getallsubcategory", getAllSubCategory);
-router.patch("/updatecategory/:id", ...adminOnly, updateCategoryController);
-router.get("/singlecategory/:id", singleCategoryController);
-router.delete("/deletecategory/:id", ...adminOnly, deleteCategoryController);
+router.patch("/updatecategory/:id", ...adminOnly, validateObjectIdParam("id", "category id"), validateCategoryBody, updateCategoryController);
+router.get("/singlecategory/:id", validateObjectIdParam("id", "category id"), singleCategoryController);
+router.delete("/deletecategory/:id", ...adminOnly, validateObjectIdParam("id", "category id"), deleteCategoryController);
 router.delete("/deleteallcategory", ...adminOnly, deleteAllCategoryController);
 router.delete("/deleteallsubcategory", ...adminOnly, deleteAllSubCategory);
 

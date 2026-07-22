@@ -1,6 +1,10 @@
 const express = require("express");
 const { withVariantImagesUpload } = require("./product.upload");
-const { validateProductIdParam } = require("./product.middleware");
+const {
+  validateProductCreateRequest,
+  validateProductIdParam,
+  validateProductUpdateRequest,
+} = require("./product.middleware");
 const { authMiddleware, adminMiddleware } = require("../auth/auth.middleware");
 const {
   productController,
@@ -21,7 +25,7 @@ const withProductId = [validateProductIdParam];
 /**
  * Legacy endpoints (unchanged paths for dashboard / storefront).
  */
-router.post("/createproduct", ...adminOnly, ...writeWithVariantImages, productController);
+router.post("/createproduct", ...adminOnly, ...writeWithVariantImages, validateProductCreateRequest, productController);
 router.get("/getproduct", getProductController);
 router.get("/singleproduct/:id", ...withProductId, getSingleProductController);
 router.patch(
@@ -29,6 +33,7 @@ router.patch(
   ...adminOnly,
   ...withProductId,
   ...writeWithVariantImages,
+  validateProductUpdateRequest,
   updateProductController,
 );
 router.delete("/deleteproduct/:id", ...adminOnly, ...withProductId, deleteProduct);
@@ -39,12 +44,12 @@ router.delete("/deleteallproduct", ...adminOnly, deleteAllProduct);
  * Base path: /api/v1/product
  */
 router.get("/", getProductController);
-router.post("/", ...adminOnly, ...writeWithVariantImages, productController);
+router.post("/", ...adminOnly, ...writeWithVariantImages, validateProductCreateRequest, productController);
 router.delete("/all", ...adminOnly, deleteAllProduct);
 
 router.get("/:id/variants", ...withProductId, getProductVariantsController);
 router.get("/:id", ...withProductId, getSingleProductController);
-router.patch("/:id", ...adminOnly, ...withProductId, ...writeWithVariantImages, updateProductController);
+router.patch("/:id", ...adminOnly, ...withProductId, ...writeWithVariantImages, validateProductUpdateRequest, updateProductController);
 router.delete("/:id", ...adminOnly, ...withProductId, deleteProduct);
 
 module.exports = router;

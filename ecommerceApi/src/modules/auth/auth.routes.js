@@ -25,17 +25,25 @@ const {
 } = require("./auth.controller");
 const authMiddleware = require("./auth.middleware");
 const { adminMiddleware } = require("./auth.middleware");
+const { validateObjectIdParam } = require("../../common/middleware/requestValidation");
+const {
+  validateAvatarUpload,
+  validateLoginRequest,
+  validateOtpRequest,
+  validateResendOtpRequest,
+  validateSignupRequest,
+} = require("./auth.validators");
 const router = express.Router();
 
-router.post("/signup", signupController);
-router.post("/otpverify", otpController);
-router.post("/resendotp", resendOtpController);
+router.post("/signup", validateSignupRequest, signupController);
+router.post("/otpverify", validateOtpRequest, otpController);
+router.post("/resendotp", validateResendOtpRequest, resendOtpController);
 router.get("/userlist", authMiddleware, adminMiddleware, getAllUsers);
-router.delete("/deleteuser/:id", authMiddleware, adminMiddleware, deleteUser);
-router.post("/login", loginController);
+router.delete("/deleteuser/:id", authMiddleware, adminMiddleware, validateObjectIdParam("id", "user id"), deleteUser);
+router.post("/login", validateLoginRequest, loginController);
 router.get("/currentuser", currentuserController);
 router.post("/logout", logoutController);
 router.get("/dashboard", authMiddleware, adminMiddleware, dashboardController);
-router.post("/upload-avatar", authMiddleware, upload.single("image"), uploadAvatarController);
+router.post("/upload-avatar", authMiddleware, upload.single("image"), validateAvatarUpload, uploadAvatarController);
 
 module.exports = router;
