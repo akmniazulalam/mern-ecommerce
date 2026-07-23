@@ -86,6 +86,8 @@ const productSchema = new Schema(
 
 productSchema.index({ "variants.sku": 1 }, { unique: true, sparse: true });
 productSchema.index({ category: 1, createdAt: -1 });
+productSchema.index({ name: 1, createdAt: -1 });
+productSchema.index({ "variants.price": 1, "variants.stock": 1 });
 
 module.exports = mongoose.model("Product", productSchema);
 module.exports.productVariantSchema = productVariantSchema;

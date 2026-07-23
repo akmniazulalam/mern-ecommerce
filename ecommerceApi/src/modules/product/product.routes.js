@@ -3,6 +3,7 @@ const { withVariantImagesUpload } = require("./product.upload");
 const {
   validateProductCreateRequest,
   validateProductIdParam,
+  validateProductListQuery,
   validateProductUpdateRequest,
 } = require("./product.middleware");
 const { authMiddleware, adminMiddleware } = require("../auth/auth.middleware");
@@ -26,7 +27,7 @@ const withProductId = [validateProductIdParam];
  * Legacy endpoints (unchanged paths for dashboard / storefront).
  */
 router.post("/createproduct", ...adminOnly, ...writeWithVariantImages, validateProductCreateRequest, productController);
-router.get("/getproduct", getProductController);
+router.get("/getproduct", validateProductListQuery, getProductController);
 router.get("/singleproduct/:id", ...withProductId, getSingleProductController);
 router.patch(
   "/updateproduct/:id",
@@ -43,7 +44,7 @@ router.delete("/deleteallproduct", ...adminOnly, deleteAllProduct);
  * RESTful aliases (same handlers, same request/response contracts).
  * Base path: /api/v1/product
  */
-router.get("/", getProductController);
+router.get("/", validateProductListQuery, getProductController);
 router.post("/", ...adminOnly, ...writeWithVariantImages, validateProductCreateRequest, productController);
 router.delete("/all", ...adminOnly, deleteAllProduct);
 
