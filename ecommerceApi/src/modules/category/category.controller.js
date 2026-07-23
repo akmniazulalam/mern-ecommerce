@@ -36,12 +36,12 @@ const updateCategoryController = asyncHandler(async (req, res) => {
 });
 
 const singleCategoryController = asyncHandler(async (req, res) => {
-  const {id} = req.params
-  const singleCategory = await categorySchema.findById(id)
+  const { id } = req.params;
+  const singleCategory = await categorySchema.findById(id);
 
   res.status(200).send({
     message: "Success",
-    data: singleCategory
+    data: singleCategory,
   });
 });
 
@@ -68,5 +68,5 @@ module.exports = {
   updateCategoryController,
   deleteCategoryController,
   deleteAllCategoryController,
-  singleCategoryController
+  singleCategoryController,
 };
