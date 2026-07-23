@@ -23,7 +23,7 @@ const UpdateCategory = () => {
         setUpdateName(res.data.data.name);
         setUpdateDes(res.data.data.description);
       });
-  }, []);
+  }, [id]);
 
   const handleUpdateCategory = async () => {
     const formData = {
