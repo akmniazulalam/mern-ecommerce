@@ -14,7 +14,6 @@ export const productPaths = {
   delete: (id) => `/product/deleteproduct/${id}`,
   variants: (id) => `/product/${id}/variants`,
   categories: "/category/getallcategory",
-  addToCart: "/cart/addtocart",
 };
 
 export const authPaths = {
@@ -37,10 +36,6 @@ export const couponPaths = {
   create: "/coupon/create-coupon",
   list: "/coupon/couponlist",
   delete: (id) => `/coupon/deletecoupon/${id}`,
-};
-
-export const cartPaths = {
-  all: "/cart/allcart",
 };
 
 export function unwrapApiData(response) {

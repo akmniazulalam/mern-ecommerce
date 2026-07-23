@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
-  ShoppingCart,
   ShoppingBag,
   Package,
   Settings,
@@ -197,19 +196,6 @@ const MobileSidebar = () => {
               </NavLink>
             </div>
           )}
-          <NavLink
-            to="/cartitems"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted",
-              )
-            }>
-            <ShoppingCart className="w-5 h-5" />
-            Cart Items
-          </NavLink>
           <NavLink
             to="/userlists"
             className={({ isActive }) =>
@@ -427,19 +413,6 @@ const Sidebar = () => {
               </NavLink>
             </div>
           )}
-          <NavLink
-            to="/cartitems"
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition",
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted",
-              )
-            }>
-            <ShoppingCart className="w-5 h-5" />
-            Cart Items
-          </NavLink>
           <NavLink
             to="/userlists"
             className={({ isActive }) =>

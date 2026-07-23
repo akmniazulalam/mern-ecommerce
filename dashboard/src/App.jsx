@@ -17,7 +17,6 @@ import Login from "./components/pages/Login";
 import VerifyOtp from "./components/pages/VerifyOtp";
 import Userlists from "./components/pages/Userlists";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Cart from "./components/pages/Cart";
 import Coupon from "./components/pages/Coupon";
 import CouponList from "./components/pages/CouponList";
 
@@ -47,7 +46,6 @@ function App() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/products" element={<Products />} />
         <Route path="/productlist" element={<ProductList />} />
-        <Route path="/cartitems" element={<Cart />} />
         <Route path="/coupon" element={<Coupon />} />
         <Route path="/couponlist" element={<CouponList />} />
         <Route path="/updateproduct/:id" element={<UpdateProduct />} />

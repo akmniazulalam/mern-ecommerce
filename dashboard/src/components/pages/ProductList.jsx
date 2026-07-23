@@ -23,7 +23,6 @@ import {
   getTotalStock,
 } from "@/lib/productVariants";
 import {
-  addVariantToCart,
   deleteProduct,
   fetchProducts,
 } from "@/services/productService";
@@ -42,7 +41,6 @@ const ProductList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
-  const [cartLoadingKey, setCartLoadingKey] = useState(null);
 
   const loadProducts = useCallback(async () => {
     setIsLoading(true);
@@ -74,21 +72,6 @@ const ProductList = () => {
       toast.error(getApiErrorMessage(error, "Failed to delete product"));
     } finally {
       setDeletingId(null);
-    }
-  };
-
-  const handleCartBtn = async (product, variant) => {
-    const key =
-      variant._id || `${product._id}-${variant.sku}-${variant.size}-${variant.color}`;
-    setCartLoadingKey(key);
-
-    try {
-      await addVariantToCart(product, variant);
-      toast.success("Added to cart");
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, "Failed to add to cart"));
-    } finally {
-      setCartLoadingKey(null);
     }
   };
 
@@ -282,11 +265,7 @@ const ProductList = () => {
                       </div>
                     </div>
 
-                    <VariantListPreview
-                      product={product}
-                      cartLoadingKey={cartLoadingKey}
-                      onAddToCart={handleCartBtn}
-                    />
+                    <VariantListPreview product={product} />
                   </CardContent>
                 </Card>
               );

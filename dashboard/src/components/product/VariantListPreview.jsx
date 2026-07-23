@@ -1,14 +1,8 @@
 import React from "react";
-import { Loader2, ShoppingCart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { getVariantSummary } from "@/lib/productVariants";
 
-export default function VariantListPreview({
-  product,
-  onAddToCart,
-  cartLoadingKey = null,
-}) {
+export default function VariantListPreview({ product }) {
   const variants = product.variants ?? [];
 
   if (!variants.length) {
@@ -26,7 +20,6 @@ export default function VariantListPreview({
       </p>
       {variants.map((variant) => {
         const rowKey = variant._id || `${product._id}-${variant.sku}-${variant.size}-${variant.color}`;
-        const isCartLoading = cartLoadingKey === rowKey;
 
         return (
         <div
@@ -83,23 +76,6 @@ export default function VariantListPreview({
             </div>
           </div>
 
-          {onAddToCart ? (
-            <Button
-              type="button"
-              size="sm"
-              disabled={!!cartLoadingKey}
-              className="h-8 shrink-0 cursor-pointer text-xs min-w-[72px]"
-              onClick={() => onAddToCart(product, variant)}>
-              {isCartLoading ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                <>
-                  <ShoppingCart className="h-3 w-3 mr-1" />
-                  Cart
-                </>
-              )}
-            </Button>
-          ) : null}
         </div>
       );
       })}
