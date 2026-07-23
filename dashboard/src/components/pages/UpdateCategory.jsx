@@ -7,12 +7,14 @@ import { Textarea } from "@/components/ui/textarea";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 import apiClient from "@/lib/apiClient";
+import { getApiErrorMessage } from "@/lib/apiErrors";
 import { categoryPaths } from "@/lib/productApi";
 
 const UpdateCategory = () => {
   const { id } = useParams();
   const [updateName, setUpdateName] = useState("");
   const [updateDes, setUpdateDes] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
     apiClient
@@ -23,18 +25,38 @@ const UpdateCategory = () => {
       });
   }, []);
 
-  const handleUpdateCategory = () => {
+  const handleUpdateCategory = async () => {
     const formData = {
       name: updateName,
       description: updateDes,
     };
-    apiClient.patch(categoryPaths.update(id), formData);
-    toast.success("Successfully Updated");
-    setUpdateName("");
-    setUpdateDes("");
-    setTimeout(() => {
-      navigate("/categorylist");
-    }, 1000);
+    const nextErrors = {};
+
+    if (!updateName.trim()) {
+      nextErrors.name = "Category name is required";
+    }
+
+    if (!updateDes.trim()) {
+      nextErrors.description = "Category description is required";
+    }
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
+    try {
+      await apiClient.patch(categoryPaths.update(id), formData);
+      toast.success("Successfully Updated");
+      setUpdateName("");
+      setUpdateDes("");
+      setTimeout(() => {
+        navigate("/categorylist");
+      }, 1000);
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Failed to update category"));
+    }
   };
 
   return (
@@ -51,8 +73,14 @@ const UpdateCategory = () => {
             <Input
               value={updateName}
               placeholder="Update Category Name"
-              onChange={(e) => setUpdateName(e.target.value)}
+              onChange={(e) => {
+                setUpdateName(e.target.value);
+                setErrors((prev) => ({ ...prev, name: undefined }));
+              }}
             />
+            {errors.name ? (
+              <p className="text-sm text-destructive">{errors.name}</p>
+            ) : null}
           </Field>
           <Field>
             <FieldLabel>Update Category Description</FieldLabel>
@@ -60,8 +88,14 @@ const UpdateCategory = () => {
               value={updateDes}
               placeholder="Type your description here..."
               className={"resize-none"}
-              onChange={(e) => setUpdateDes(e.target.value)}
+              onChange={(e) => {
+                setUpdateDes(e.target.value);
+                setErrors((prev) => ({ ...prev, description: undefined }));
+              }}
             />
+            {errors.description ? (
+              <p className="text-sm text-destructive">{errors.description}</p>
+            ) : null}
           </Field>
           <Field orientation="horizontal">
             <Button onClick={handleUpdateCategory} className={"cursor-pointer"}>

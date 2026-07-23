@@ -7,24 +7,46 @@ import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import apiClient from "@/lib/apiClient";
+import { getApiErrorMessage } from "@/lib/apiErrors";
 import { categoryPaths } from "@/lib/productApi";
 
 const Category = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const formData = {
     name: categoryName,
     description: categoryDescription,
   };
-  const handleCreateCategory = () => {
-    apiClient.post(categoryPaths.create, formData);
-    toast.success("Successfully added!");
-    setCategoryName("");
-    setCategoryDescription("");
-    setTimeout(() => {
-      navigate("/categorylist");
-    }, 1000);
+  const handleCreateCategory = async () => {
+    const nextErrors = {};
+
+    if (!categoryName.trim()) {
+      nextErrors.name = "Category name is required";
+    }
+
+    if (!categoryDescription.trim()) {
+      nextErrors.description = "Category description is required";
+    }
+
+    setErrors(nextErrors);
+
+    if (Object.keys(nextErrors).length > 0) {
+      return;
+    }
+
+    try {
+      await apiClient.post(categoryPaths.create, formData);
+      toast.success("Successfully added!");
+      setCategoryName("");
+      setCategoryDescription("");
+      setTimeout(() => {
+        navigate("/categorylist");
+      }, 1000);
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Failed to add category"));
+    }
   };
   return (
     <>
@@ -40,8 +62,14 @@ const Category = () => {
               value={categoryName}
               placeholder="Category Name"
               className={"text-sm"}
-              onChange={(e) => setCategoryName(e.target.value)}
+              onChange={(e) => {
+                setCategoryName(e.target.value);
+                setErrors((prev) => ({ ...prev, name: undefined }));
+              }}
             />
+            {errors.name ? (
+              <p className="text-sm text-destructive">{errors.name}</p>
+            ) : null}
           </Field>
           <Field>
             <FieldLabel>Category Description</FieldLabel>
@@ -49,8 +77,14 @@ const Category = () => {
               value={categoryDescription}
               placeholder="Type your description here..."
               className={"resize-none text-sm"}
-              onChange={(e) => setCategoryDescription(e.target.value)}
+              onChange={(e) => {
+                setCategoryDescription(e.target.value);
+                setErrors((prev) => ({ ...prev, description: undefined }));
+              }}
             />
+            {errors.description ? (
+              <p className="text-sm text-destructive">{errors.description}</p>
+            ) : null}
           </Field>
           <Field orientation="horizontal">
             <Button onClick={handleCreateCategory} className={"cursor-pointer"}>

@@ -5,10 +5,14 @@ const {
 } = require("../../common/middleware/requestValidation");
 
 function validateCategoryBody(req) {
-  const { name } = req.body || {};
+  const { name, description } = req.body || {};
 
   if (isMissing(name)) {
     return { field: "name", message: "Category name is required" };
+  }
+
+  if (isMissing(description)) {
+    return { field: "description", message: "Category description is required" };
   }
 
   return null;
