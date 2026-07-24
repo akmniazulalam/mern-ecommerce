@@ -34,8 +34,6 @@ async function emailVerification(email, otp) {
       }
     );
 
-    console.log("Email sent:", response.data);
-
     return response.data;
   } catch (error) {
     console.error(

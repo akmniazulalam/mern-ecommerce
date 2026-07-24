@@ -17,52 +17,47 @@ const sessionCookieOptions = {
 };
 
 async function signupController(req, res) {
-  const { firstName, lastName, email, password } = req.body;
-  const token = jwt.sign({ id: email }, getEnv("JWT_SECRET"));
-  if (!firstName || !lastName) {
-    return res.status(400).json({
-      message: "Error: First name and last name are required",
-    });
-  }
-  if (!email) {
-    return res.status(400).json({
-      message: "Error: Email is required",
-    });
-  }
-  if (!password) {
-    return res.status(400).json({
-      message: "Error: Password is required",
-    });
-  }
-  if (!emailValidation(email)) {
-    return res.status(400).json({
-      message: "Error: Email format is not correct.",
-    });
-  }
+  try {
+    const { firstName, lastName, email, password } = req.body;
+    const token = jwt.sign({ id: email }, getEnv("JWT_SECRET"));
+    if (!firstName || !lastName) {
+      return res.status(400).json({
+        message: "Error: First name and last name are required",
+      });
+    }
+    if (!email) {
+      return res.status(400).json({
+        message: "Error: Email is required",
+      });
+    }
+    if (!password) {
+      return res.status(400).json({
+        message: "Error: Password is required",
+      });
+    }
+    if (!emailValidation(email)) {
+      return res.status(400).json({
+        message: "Error: Email format is not correct.",
+      });
+    }
 
-  if (!passVal(password)) {
-    return res.status(400).json({
-      message: "Error: Password format is not correct.",
-    });
-  }
+    if (!passVal(password)) {
+      return res.status(400).json({
+        message: "Error: Password format is not correct.",
+      });
+    }
 
-  const existingEmail = await userSchema.find({ email });
+    const existingEmail = await userSchema.find({ email });
+    if (existingEmail.length > 0) {
+      return res.status(409).json({
+        message: "This email already used",
+      });
+    }
 
-  console.log(existingEmail.length);
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const expireOtp = new Date(Date.now() + 10 * 60 * 1000);
 
-  if (existingEmail.length > 0) {
-    return res.status(409).json({
-      message: "This email already used",
-    });
-  }
-
-  const otp = crypto.randomInt(100000, 999999).toString();
-  console.log(otp);
-
-  const expireOtp = new Date(Date.now() + 10 * 60 * 1000);
-  console.log(expireOtp);
-
-  bcrypt.hash(password, 10, async (err, hash) => {
+    const hash = await bcrypt.hash(password, 10);
     const user = new userSchema({
       firstName,
       lastName,
@@ -74,11 +69,21 @@ async function signupController(req, res) {
     });
     await user.save();
 
-    emailVerification(email, otp);
-  });
-  res.json({
-    message: "Data send",
-  });
+    await emailVerification(email, otp);
+
+    return res.json({
+      message: "Data send",
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "This email already used",
+      });
+    }
+    return res.status(500).json({
+      message: error.message || "Registration failed",
+    });
+  }
 }
 
 async function getAllUsers(req, res) {

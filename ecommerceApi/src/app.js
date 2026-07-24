@@ -1,12 +1,19 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const helmet = require("helmet");
 const path = require("path");
 const session = require("express-session");
 const { MongoStore } = require("connect-mongo");
 const routes = require("./routes");
 const { getEnv } = require("./common/config/env");
 const { errorHandler } = require("./common/middleware/errorHandler");
+
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  }),
+);
 app.use(express.json());
 
 app.set("trust proxy", 1);
