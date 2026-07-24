@@ -72,97 +72,99 @@ const CouponList = () => {
         </CardHeader>
 
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Code</TableHead>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Code</TableHead>
 
-                <TableHead>Type</TableHead>
+                  <TableHead>Type</TableHead>
 
-                <TableHead>Discount</TableHead>
+                  <TableHead>Discount</TableHead>
 
-                <TableHead>Min Purchase</TableHead>
+                  <TableHead>Min Purchase</TableHead>
 
-                <TableHead>Expiry Date</TableHead>
+                  <TableHead>Expiry Date</TableHead>
 
-                <TableHead>Status</TableHead>
+                  <TableHead>Status</TableHead>
 
-                <TableHead>Action</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {coupons.map((coupon) => (
-                <TableRow key={coupon._id}>
-                  {/* Coupon Code */}
-                  <TableCell className="font-medium">{coupon.code}</TableCell>
-
-                  {/* Discount Type */}
-                  <TableCell>{coupon.discountType}</TableCell>
-
-                  {/* Discount Value */}
-                  <TableCell>
-                    {coupon.discountType === "percentage"
-                      ? `${coupon.discountValue}%`
-                      : `$${coupon.discountValue}`}
-                  </TableCell>
-
-                  {/* Min Purchase */}
-                  <TableCell>${coupon.minPurchase}</TableCell>
-
-                  {/* Expiry Date */}
-                  <TableCell>
-                    {new Date(coupon.expiryDate).toLocaleDateString()}
-                  </TableCell>
-
-                  {/* Status */}
-                  <TableCell>
-                    {coupon.isActive ? (
-                      <Badge className="bg-green-500">Active</Badge>
-                    ) : (
-                      <Badge variant="destructive" className="dark:bg-red-700">
-                        Inactive
-                      </Badge>
-                    )}
-                  </TableCell>
-
-                  {/* Delete */}
-                  <TableCell>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          className="cursor-pointer dark:bg-red-700">
-                          Delete
-                        </Button>
-                      </AlertDialogTrigger>
-
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-
-                          <AlertDialogDescription>
-                            This coupon will be permanently deleted.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-
-                          <AlertDialogAction
-                            onClick={() => handleDeleteCoupon(coupon._id)}
-                            className="cursor-pointer">
-                            Confirm Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </TableCell>
+                  <TableHead>Action</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+
+              <TableBody>
+                {coupons.map((coupon) => (
+                  <TableRow key={coupon._id}>
+                    {/* Coupon Code */}
+                    <TableCell className="font-medium">{coupon.code}</TableCell>
+
+                    {/* Discount Type */}
+                    <TableCell>{coupon.discountType}</TableCell>
+
+                    {/* Discount Value */}
+                    <TableCell>
+                      {coupon.discountType === "percentage"
+                        ? `${coupon.discountValue}%`
+                        : `$${coupon.discountValue}`}
+                    </TableCell>
+
+                    {/* Min Purchase */}
+                    <TableCell>${coupon.minPurchase}</TableCell>
+
+                    {/* Expiry Date */}
+                    <TableCell>
+                      {new Date(coupon.expiryDate).toLocaleDateString()}
+                    </TableCell>
+
+                    {/* Status */}
+                    <TableCell>
+                      {coupon.isActive ? (
+                        <Badge className="bg-green-500">Active</Badge>
+                      ) : (
+                        <Badge variant="destructive" className="dark:bg-red-700">
+                          Inactive
+                        </Badge>
+                      )}
+                    </TableCell>
+
+                    {/* Delete */}
+                    <TableCell>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="cursor-pointer dark:bg-red-700">
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
+
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+
+                            <AlertDialogDescription>
+                              This coupon will be permanently deleted.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                            <AlertDialogAction
+                              onClick={() => handleDeleteCoupon(coupon._id)}
+                              className="cursor-pointer">
+                              Confirm Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </>

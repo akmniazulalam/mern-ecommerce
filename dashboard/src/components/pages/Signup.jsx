@@ -127,6 +127,7 @@ const Signup = () => {
       toast.error(error.response?.data?.message || error?.message);
     }
   };
+
   return (
     <>
       <Helmet>
@@ -137,8 +138,9 @@ const Signup = () => {
         <Card className="w-full max-w-md shadow-xl rounded-2xl">
           <CardHeader>
             <CardTitle className="text-2xl ">Create Your Account</CardTitle>
-            <CardDescription className={"max-w-80"}>
-              Enter your Name, Email & Password below to create to your account
+            {/* Removed max-w-80 — was clipping text on narrow (≤320px) screens */}
+            <CardDescription>
+              Enter your Name, Email &amp; Password below to create to your account
             </CardDescription>
           </CardHeader>
 
@@ -147,7 +149,9 @@ const Signup = () => {
               onSubmit={handleSignupSubmit}
               ref={focusInputRef}
               className={"space-y-4"}>
-              <div className="grid grid-cols-2 gap-3">
+              {/* Changed grid-cols-2 → grid-cols-1 sm:grid-cols-2 so inputs
+                  stack on mobile instead of being squished to ~148px each */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <Label className={"mb-2"}>First Name</Label>
                   <Input

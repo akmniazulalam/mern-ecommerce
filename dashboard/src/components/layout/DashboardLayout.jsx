@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom'
 
 const DashboardLayout = () => {
   return (
-    <div className="flex h-screen bg-muted/40">
+    <div className="flex h-dvh bg-muted/40">
       <Sidebar />
       <div className="flex flex-col flex-1">
         <Navbar />

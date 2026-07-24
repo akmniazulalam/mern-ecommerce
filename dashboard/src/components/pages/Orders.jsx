@@ -278,13 +278,13 @@ const Orders = () => {
                           <TableCell className="font-medium">
                             <div className="space-y-0.5">
                               <p>{order.orderNumber || "-"}</p>
-                              <p className="text-xs text-muted-foreground">{order._id}</p>
+                              <p className="text-xs text-muted-foreground break-all">{order._id}</p>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="space-y-0.5">
                               <p>{customerName || "-"}</p>
-                              <p className="text-xs text-muted-foreground">
+                              <p className="text-xs text-muted-foreground break-all">
                                 {order?.customer?.email || "-"}
                               </p>
                             </div>
