@@ -78,7 +78,7 @@ const Navbar = () => {
         <div className="md:hidden">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" aria-label="Open sidebar menu">
                 <Menu className="w-5 h-5" />
               </Button>
             </DialogTrigger>
@@ -86,7 +86,7 @@ const Navbar = () => {
           </Dialog>
         </div>
 
-        <Input placeholder="Search..." className="max-w-sm" />
+        <Input placeholder="Search..." aria-label="Search" className="max-w-sm" />
       </div>
 
       {/* RIGHT */}
@@ -95,6 +95,7 @@ const Navbar = () => {
         <Button
           variant="ghost"
           onClick={toggleDarkMode}
+          aria-label="Toggle dark mode"
           className="h-9 w-9 cursor-pointer">
           {darkMode ? (
             <Sun className="h-5 w-5 text-yellow-500" />
@@ -104,20 +105,23 @@ const Navbar = () => {
         </Button>
 
         {/* Notification */}
-        <Button variant="ghost" className="h-9 w-9">
+        <Button variant="ghost" aria-label="Notifications" className="h-9 w-9">
           <Bell className="h-5 w-5" />
         </Button>
 
         {/* PROFILE */}
         <div className="relative" ref={profileRef}>
           {/* Avatar */}
-          <div
+          <button
+            type="button"
+            aria-label="User profile menu"
+            aria-expanded={openProfile}
             onClick={() => setOpenProfile(!openProfile)}
-            className="h-9 w-9 bg-primary rounded-full overflow-hidden flex items-center justify-center dark:text-black text-white font-semibold cursor-pointer">
+            className="h-9 w-9 bg-primary rounded-full overflow-hidden flex items-center justify-center dark:text-black text-white font-semibold cursor-pointer focus:outline-none">
             {image || user?.profileImage ? (
               <img
                 src={image || user?.profileImage}
-                alt="profile"
+                alt="Profile"
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -126,7 +130,7 @@ const Navbar = () => {
                 {user?.lastName?.charAt(0)}
               </>
             )}
-          </div>
+          </button>
 
           {/* DROPDOWN */}
           {openProfile && (
@@ -137,6 +141,7 @@ const Navbar = () => {
                   {image || user?.profileImage ? (
                     <img
                       src={image || user?.profileImage}
+                      alt="Profile"
                       className="w-full h-full object-cover"
                     />
                   ) : (
