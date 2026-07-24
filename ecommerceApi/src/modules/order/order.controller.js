@@ -22,13 +22,17 @@ function generateOrderNumber() {
 function getVariantFromCartItem({ product, cartItem }) {
   // Prefer explicit variantId, otherwise try SKU fallback.
   if (cartItem.variantId) {
-    const variant = product.variants.find((v) => String(v._id) === String(cartItem.variantId));
+    const variant = product.variants.find(
+      (v) => String(v._id) === String(cartItem.variantId),
+    );
     if (variant) return variant;
   }
 
   if (cartItem.sku) {
     const sku = String(cartItem.sku).trim().toUpperCase();
-    const variant = product.variants.find((v) => String(v.sku).trim().toUpperCase() === sku);
+    const variant = product.variants.find(
+      (v) => String(v.sku).trim().toUpperCase() === sku,
+    );
     if (variant) return variant;
   }
 
@@ -64,7 +68,13 @@ async function createOrderController(req, res) {
     const sessionUserId = req?.session?.user?.id;
     const userId = sessionUserId || "guest";
 
-    const { customer, payment, shippingMethod, pricing, items: requestedItems } = req.body || {};
+    const {
+      customer,
+      payment,
+      shippingMethod,
+      pricing,
+      items: requestedItems,
+    } = req.body || {};
 
     const customerValidation = validateCustomer(customer);
     if (customerValidation.status !== 200) {
@@ -90,7 +100,10 @@ async function createOrderController(req, res) {
       // Fallback: legacy session cart
       const cart = await Cart.findOne({ userId: sessionUserId });
       if (!cart || !Array.isArray(cart.items) || cart.items.length === 0) {
-        return sendError(res, { status: 400, message: "Cart items are required" });
+        return sendError(res, {
+          status: 400,
+          message: "Cart items are required",
+        });
       }
       cartItems = cart.items;
     }
@@ -142,7 +155,11 @@ async function createOrderController(req, res) {
       }
 
       const quantity = Number(cartItem.quantity);
-      if (Number.isNaN(quantity) || quantity < 1 || !Number.isInteger(quantity)) {
+      if (
+        Number.isNaN(quantity) ||
+        quantity < 1 ||
+        !Number.isInteger(quantity)
+      ) {
         return sendError(res, {
           status: 400,
           field: `items[${idx}].quantity`,
@@ -159,7 +176,11 @@ async function createOrderController(req, res) {
       }
 
       // Validate pricing
-      if (cartItem.price !== undefined && cartItem.price !== null && isPriceMismatch(cartItem.price, variant.price)) {
+      if (
+        cartItem.price !== undefined &&
+        cartItem.price !== null &&
+        isPriceMismatch(cartItem.price, variant.price)
+      ) {
         return sendError(res, {
           status: 409,
           message: `Cart price mismatch for ${product.name}. Please review your cart.`,
@@ -172,7 +193,9 @@ async function createOrderController(req, res) {
 
       orderItems.push({
         productId: String(product._id),
-        variantId: cartItem.variantId ? String(cartItem.variantId) : String(variant._id),
+        variantId: cartItem.variantId
+          ? String(cartItem.variantId)
+          : String(variant._id),
         sku: variant.sku || cartItem.sku || "",
         name: cartItem.name ? String(cartItem.name).trim() : product.name,
         image: cartItem.image || (variant.images?.[0] ?? ""),
@@ -201,7 +224,11 @@ async function createOrderController(req, res) {
       computedPricing.shippingCost;
 
     if (!Number.isFinite(computedPricing.total) || computedPricing.total < 0) {
-      return sendError(res, { status: 400, field: "pricing", message: "Invalid computed pricing" });
+      return sendError(res, {
+        status: 400,
+        field: "pricing",
+        message: "Invalid computed pricing",
+      });
     }
 
     const paymentData = paymentValidation.data;
@@ -219,7 +246,9 @@ async function createOrderController(req, res) {
     const normalizedShippingMethod = shippingMethod
       ? String(shippingMethod).trim().toLowerCase()
       : "standard";
-    const safeShippingMethod = allowedShippingMethods.includes(normalizedShippingMethod)
+    const safeShippingMethod = allowedShippingMethods.includes(
+      normalizedShippingMethod,
+    )
       ? normalizedShippingMethod
       : "standard";
 
@@ -254,7 +283,10 @@ async function createOrderController(req, res) {
     if (stockReservationFailed) {
       for (const deductedItem of deductedItems) {
         await Product.updateOne(
-          { _id: deductedItem.productId, "variants._id": deductedItem.variantId },
+          {
+            _id: deductedItem.productId,
+            "variants._id": deductedItem.variantId,
+          },
           { $inc: { "variants.$.stock": deductedItem.quantity } },
         ).catch(() => {});
       }
@@ -327,7 +359,9 @@ async function getAllOrdersController(req, res) {
 
     const parsedLimit = Math.min(Number(limit) || 50, 100);
 
-    const orders = await Order.find(query).sort({ createdAt: -1 }).limit(parsedLimit);
+    const orders = await Order.find(query)
+      .sort({ createdAt: -1 })
+      .limit(parsedLimit);
     return res.status(200).json({
       message: "Orders fetched successfully",
       data: orders,
@@ -341,7 +375,10 @@ async function getMyOrdersController(req, res) {
   try {
     const userId = req?.session?.user?.id;
     if (!userId) {
-      return sendError(res, { status: 401, message: "Authentication required" });
+      return sendError(res, {
+        status: 401,
+        message: "Authentication required",
+      });
     }
 
     const orders = await Order.find({ userId })
@@ -362,7 +399,10 @@ async function getOrderByIdController(req, res) {
     const userId = req?.session?.user?.id;
     const role = normalizeRole(req?.session?.user?.role);
     if (!userId) {
-      return sendError(res, { status: 401, message: "Authentication required" });
+      return sendError(res, {
+        status: 401,
+        message: "Authentication required",
+      });
     }
 
     const { id } = req.params;
@@ -391,7 +431,10 @@ async function updateOrderStatusController(req, res) {
     const userId = req?.session?.user?.id;
     const role = normalizeRole(req?.session?.user?.role);
     if (!userId) {
-      return sendError(res, { status: 401, message: "Authentication required" });
+      return sendError(res, {
+        status: 401,
+        message: "Authentication required",
+      });
     }
 
     const { id } = req.params;
