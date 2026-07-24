@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
@@ -42,24 +42,33 @@ const ProductList = () => {
   const [loadError, setLoadError] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
-  const loadProducts = useCallback(async () => {
+  const loadProductsData = async (isMounted) => {
     setIsLoading(true);
     setLoadError(null);
-
     try {
       const data = await fetchProducts();
-      setProducts(data);
+      if (isMounted) {
+        setProducts(data);
+      }
     } catch (error) {
-      setLoadError(getApiErrorMessage(error, "Failed to load products"));
-      setProducts([]);
+      if (isMounted) {
+        setLoadError(getApiErrorMessage(error, "Failed to load products"));
+        setProducts([]);
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted) {
+        setIsLoading(false);
+      }
     }
-  }, []);
+  };
 
   useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+    let isMounted = true;
+    loadProductsData(isMounted);
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleProductDelete = async (id) => {
     setDeletingId(id);
@@ -95,177 +104,130 @@ const ProductList = () => {
               type="button"
               variant="outline"
               size="sm"
-              className="h-8 cursor-pointer"
+              onClick={() => loadProductsData(true)}
               disabled={isLoading}
-              onClick={loadProducts}>
-              <RefreshCw className={`h-3.5 w-3.5 mr-1 ${isLoading ? "animate-spin" : ""}`} />
+              className="cursor-pointer">
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
-            <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 h-8">
-              <Package2 className="h-3.5 w-3.5" />
-              {products.length} {products.length === 1 ? "product" : "products"}
-            </Badge>
-            <Button asChild className="cursor-pointer h-8">
+            <Button asChild size="sm" className="cursor-pointer">
               <Link to="/products">
-                <Plus className="h-3.5 w-3.5 mr-1" />
-                Add product
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
               </Link>
             </Button>
           </div>
         </div>
 
         {isLoading ? (
-          <div className="flex items-center justify-center py-16 text-muted-foreground">
-            <Loader2 className="h-6 w-6 animate-spin mr-2" />
-            Loading products...
+          <div className="flex flex-col items-center justify-center text-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-3" />
+            <p className="text-sm text-muted-foreground">Loading products...</p>
           </div>
         ) : null}
 
         {!isLoading && loadError ? (
-          <Card className="py-10">
-            <CardContent className="flex flex-col items-center text-center gap-3">
-              <AlertCircle className="h-10 w-10 text-destructive" />
-              <p className="font-medium">Could not load products</p>
-              <p className="text-sm text-muted-foreground max-w-md">{loadError}</p>
-              <Button className="cursor-pointer" onClick={loadProducts}>
-                Try again
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="border border-destructive/30 rounded-2xl p-6 text-center space-y-3 bg-destructive/5">
+            <AlertCircle className="h-8 w-8 text-destructive mx-auto" />
+            <p className="text-sm font-medium">{loadError}</p>
+            <Button type="button" variant="outline" size="sm" onClick={() => loadProductsData(true)}>
+              Try Again
+            </Button>
+          </div>
         ) : null}
 
         {!isLoading && !loadError && products.length === 0 ? (
-          <Card className="py-12">
-            <CardContent className="flex flex-col items-center justify-center text-center">
-              <Package2 className="h-10 w-10 text-muted-foreground mb-3" />
-              <p className="font-medium">No products yet</p>
-              <p className="text-sm text-muted-foreground mt-1 mb-4">
-                Add your first product with variants to get started.
-              </p>
-              <Button asChild className="cursor-pointer">
-                <Link to="/products">Add product</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="border rounded-2xl p-12 text-center space-y-3">
+            <Package2 className="h-10 w-10 text-muted-foreground mx-auto" />
+            <p className="font-medium text-base">No products found</p>
+            <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+              Start by creating your first product with color, size, or image variants.
+            </p>
+            <Button asChild size="sm" className="mt-2 cursor-pointer">
+              <Link to="/products">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Product
+              </Link>
+            </Button>
+          </div>
         ) : null}
 
         {!isLoading && !loadError && products.length > 0 ? (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
             {products.map((product) => {
-              const variants = product.variants ?? [];
-              const variantCount = variants.length;
-              const priceLabel = getProductPriceRange(variants);
-              const totalStock = getTotalStock(variants);
-              const isDeleting = deletingId === product._id;
+              const { minPrice, maxPrice } = getProductPriceRange(product.variants);
+              const totalStock = getTotalStock(product.variants);
 
               return (
-                <Card
-                  key={product._id}
-                  className={`shadow-sm py-0 gap-0 overflow-hidden transition-opacity ${isDeleting ? "opacity-60" : ""}`}>
-                  <CardContent className="p-4 md:p-5">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div className="flex gap-3 min-w-0">
-                        <img
-                          src={variants[0]?.images?.[0]}
-                          alt={product.name}
-                          className="h-16 w-16 shrink-0 rounded-lg border object-cover bg-muted"
-                        />
-
-                        <div className="min-w-0 space-y-2">
-                          <div>
-                            <h3 className="font-semibold text-base leading-tight">
-                              {product.name}
-                            </h3>
-                            <p className="text-xs text-muted-foreground line-clamp-2 mt-1 max-w-xl">
-                              {product.description}
-                            </p>
-                          </div>
-
-                          <div className="flex flex-wrap items-center gap-2">
-                            {product.category ? (
-                              <Badge variant="outline" className="text-[11px]">
-                                {product.category}
-                              </Badge>
-                            ) : null}
-                            <Badge variant="secondary" className="text-[11px]">
-                              {variantCount}{" "}
-                              {variantCount === 1 ? "variant" : "variants"}
-                            </Badge>
-                            {priceLabel ? (
-                              <Badge variant="outline" className="text-[11px] font-semibold">
-                                {priceLabel}
-                              </Badge>
-                            ) : null}
-                            <span className="text-[11px] text-muted-foreground">
-                              Total stock:{" "}
-                              <span
-                                className={
-                                  totalStock > 0
-                                    ? "font-medium text-emerald-600 dark:text-emerald-400"
-                                    : "font-medium text-destructive"
-                                }>
-                                {totalStock}
-                              </span>
-                            </span>
-                          </div>
-                        </div>
+                <Card key={product._id} className="rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                  <CardContent className="p-5 space-y-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-semibold text-base line-clamp-1">{product.name}</h3>
+                        <Badge variant="outline" className="mt-1 capitalize">
+                          {product.category || "Uncategorized"}
+                        </Badge>
                       </div>
 
-                      <div className="flex gap-2 shrink-0 sm:self-start">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          asChild
-                          disabled={isDeleting}
-                          className="h-8 text-xs cursor-pointer">
-                          <Link to={`/updateproduct/${product._id}`}>
-                            <Pencil className="h-3 w-3 mr-1" />
-                            Edit
-                          </Link>
-                        </Button>
-
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              disabled={isDeleting}
-                              className="h-8 text-xs cursor-pointer dark:bg-red-600">
-                              {isDeleting ? (
-                                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                              ) : (
-                                <Trash2 className="h-3 w-3 mr-1" />
-                              )}
-                              Delete
-                            </Button>
-                          </AlertDialogTrigger>
-
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete product?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This will remove &quot;{product.name}&quot; and all{" "}
-                                {variantCount} variant{variantCount === 1 ? "" : "s"}.
-                                This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-
-                            <AlertDialogFooter>
-                              <AlertDialogCancel className="cursor-pointer">
-                                Cancel
-                              </AlertDialogCancel>
-                              <AlertDialogAction
-                                className="cursor-pointer"
-                                onClick={() => handleProductDelete(product._id)}>
-                                Confirm delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
+                      <Badge
+                        variant={totalStock > 0 ? "secondary" : "destructive"}
+                        className="shrink-0">
+                        {totalStock > 0 ? `${totalStock} in stock` : "Out of stock"}
+                      </Badge>
                     </div>
 
-                    <VariantListPreview product={product} />
+                    <p className="text-xs text-muted-foreground line-clamp-2 min-h-8">
+                      {product.description || "No description provided."}
+                    </p>
+
+                    <div className="flex items-center justify-between text-sm pt-1 border-t">
+                      <span className="text-muted-foreground text-xs font-medium">Price</span>
+                      <span className="font-semibold">
+                        {minPrice === maxPrice
+                          ? `$${minPrice.toFixed(2)}`
+                          : `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`}
+                      </span>
+                    </div>
+
+                    <VariantListPreview variants={product.variants} />
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t">
+                      <Button asChild size="sm" variant="outline" className="cursor-pointer">
+                        <Link to={`/updateproduct/${product._id}`}>
+                          <Pencil className="h-3.5 w-3.5 mr-1" />
+                          Edit
+                        </Link>
+                      </Button>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            disabled={deletingId === product._id}
+                            className="cursor-pointer">
+                            <Trash2 className="h-3.5 w-3.5 mr-1" />
+                            Delete
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Product?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete "{product.name}"? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleProductDelete(product._id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer">
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </CardContent>
                 </Card>
               );
