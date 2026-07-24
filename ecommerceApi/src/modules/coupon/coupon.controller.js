@@ -97,21 +97,50 @@ const applyCouponController = asyncHandler(async (req, res) => {
   });
 });
 
-// GET ALL COUPONS
+// GET ALL COUPONS WITH PAGINATION SUPPORT
 const getCoupons = asyncHandler(async (req, res) => {
-  const couponList = await Coupon.find({});
+  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+  const limit = Math.min(
+    100,
+    Math.max(1, parseInt(req.query.limit, 10) || 50),
+  );
+  const skip = (page - 1) * limit;
+
+  const total = await Coupon.countDocuments({});
+  const couponList = await Coupon.find({})
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
 
   return res.status(200).json({
     success: true,
     message: "All coupons",
     data: couponList,
+    pagination: {
+      total,
+      page,
+      limit,
+      pages: Math.ceil(total / limit),
+    },
   });
 });
 
 const deleteCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const deleteCoupon = await Coupon.findByIdAndDelete(id);
-  res.status(200).json({ message: "Coupon deleted", data: deleteCoupon });
+  const deletedCoupon = await Coupon.findByIdAndDelete(id);
+
+  if (!deletedCoupon) {
+    return res.status(404).json({
+      success: false,
+      message: "Coupon not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Coupon deleted",
+    data: deletedCoupon,
+  });
 });
 
 module.exports = {

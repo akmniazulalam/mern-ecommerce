@@ -69,7 +69,15 @@ async function signupController(req, res) {
     });
     await user.save();
 
-    await emailVerification(email, otp);
+    try {
+      await emailVerification(email, otp);
+    } catch (emailErr) {
+      // Clean up orphan unverified record if email delivery fails
+      await userSchema.deleteOne({ _id: user._id }).catch(() => {});
+      return res.status(500).json({
+        message: "Failed to send verification email. Please try again.",
+      });
+    }
 
     return res.json({
       message: "Data send",
@@ -87,21 +95,38 @@ async function signupController(req, res) {
 }
 
 async function getAllUsers(req, res) {
-  const getAllUsers = await userSchema.find({});
-  res.status(200).json({
-    message: "Get all users",
-    data: getAllUsers,
-  });
+  try {
+    const users = await userSchema
+      .find({})
+      .select("-password -otp -expireOtp -token");
+    res.status(200).json({
+      message: "Get all users",
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch users" });
+  }
 }
 
 async function deleteUser(req, res) {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-  const deleteUser = await userSchema.findByIdAndDelete(id);
-  res.status(200).json({
-    message: "Deleted successfully done",
-    data: deleteUser,
-  });
+    const deletedUser = await userSchema.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Deleted successfully done",
+      data: deletedUser,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete user" });
+  }
 }
 
 async function otpController(req, res) {
