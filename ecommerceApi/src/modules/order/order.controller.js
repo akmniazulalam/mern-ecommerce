@@ -223,6 +223,48 @@ async function createOrderController(req, res) {
       ? normalizedShippingMethod
       : "standard";
 
+    // --- ATOMIC STOCK RESERVATION PHASE ---
+    const deductedItems = [];
+    let stockReservationFailed = false;
+    let failedItemName = "";
+
+    for (const item of orderItems) {
+      // Atomic query ensures stock >= item.quantity before decrementing
+      const updateResult = await Product.updateOne(
+        {
+          _id: item.productId,
+          "variants._id": item.variantId,
+          "variants.stock": { $gte: item.quantity },
+        },
+        {
+          $inc: { "variants.$.stock": -item.quantity },
+        },
+      );
+
+      if (updateResult.modifiedCount === 1) {
+        deductedItems.push(item);
+      } else {
+        stockReservationFailed = true;
+        failedItemName = item.name;
+        break;
+      }
+    }
+
+    // If any item failed atomic reservation (insufficient stock or race condition), roll back deducted items
+    if (stockReservationFailed) {
+      for (const deductedItem of deductedItems) {
+        await Product.updateOne(
+          { _id: deductedItem.productId, "variants._id": deductedItem.variantId },
+          { $inc: { "variants.$.stock": deductedItem.quantity } },
+        ).catch(() => {});
+      }
+
+      return sendError(res, {
+        status: 409,
+        message: `Insufficient stock for ${failedItemName}. Order could not be placed.`,
+      });
+    }
+
     const order = new Order({
       orderNumber: generateOrderNumber(),
       userId: String(userId),
@@ -238,21 +280,22 @@ async function createOrderController(req, res) {
       statusHistory: [{ status: "Pending", changedAt: new Date() }],
     });
 
-    await order.save();
-
-    // Decrement variant stock for ordered items
-    for (const item of orderItems) {
-      if (item.productId && item.variantId) {
+    try {
+      await order.save();
+    } catch (saveError) {
+      // If saving the order fails, roll back all stock deductions
+      for (const item of orderItems) {
         await Product.updateOne(
           { _id: item.productId, "variants._id": item.variantId },
-          { $inc: { "variants.$.stock": -item.quantity } },
+          { $inc: { "variants.$.stock": item.quantity } },
         ).catch(() => {});
       }
+      throw saveError;
     }
 
     // Clear cart after successful order placement (legacy session cart).
     if (sessionUserId) {
-      await Cart.deleteOne({ userId: sessionUserId });
+      await Cart.deleteOne({ userId: sessionUserId }).catch(() => {});
     }
 
     return res.status(201).json({
