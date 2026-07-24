@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken");
 const userSchema = require("./auth.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -7,7 +6,6 @@ const emailValidation = require("../../common/utils/emailValidation");
 const emailVerification = require("../../common/utils/emailVerification");
 const uploadImage = require("../../common/config/cloudinary");
 const { normalizeRole } = require("./auth.middleware");
-const { getEnv } = require("../../common/config/env");
 
 const isProduction = process.env.NODE_ENV === "production";
 const sessionCookieOptions = {
@@ -16,10 +14,13 @@ const sessionCookieOptions = {
   sameSite: isProduction ? "none" : "lax",
 };
 
+// In-memory track of failed OTP attempts per email
+const otpAttemptsMap = new Map();
+
 async function signupController(req, res) {
   try {
     const { firstName, lastName, email, password } = req.body;
-    const token = jwt.sign({ id: email }, getEnv("JWT_SECRET"));
+
     if (!firstName || !lastName) {
       return res.status(400).json({
         message: "Error: First name and last name are required",
@@ -63,7 +64,6 @@ async function signupController(req, res) {
       lastName,
       email,
       password: hash,
-      token: token,
       otp,
       expireOtp,
     });
@@ -72,7 +72,6 @@ async function signupController(req, res) {
     try {
       await emailVerification(email, otp);
     } catch (emailErr) {
-      // Clean up orphan unverified record if email delivery fails
       await userSchema.deleteOne({ _id: user._id }).catch(() => {});
       return res.status(500).json({
         message: "Failed to send verification email. Please try again.",
@@ -149,7 +148,16 @@ async function otpController(req, res) {
       message: "Required Otp",
     });
   }
+
+  const currentAttempts = otpAttemptsMap.get(email) || 0;
+  if (currentAttempts >= 5) {
+    return res.status(429).json({
+      message: "Too many failed OTP attempts. Please request a new OTP.",
+    });
+  }
+
   if (user.otp !== otp) {
+    otpAttemptsMap.set(email, currentAttempts + 1);
     return res.status(400).json({
       message: "Invalid Otp",
     });
@@ -161,10 +169,14 @@ async function otpController(req, res) {
     });
   }
 
+  // Clear attempts on success
+  otpAttemptsMap.delete(email);
+
   user.isVerified = true;
   user.otp = undefined;
   user.expireOtp = undefined;
   await user.save();
+
   res.status(200).json({
     message: "Email Verification Done",
   });
@@ -180,18 +192,18 @@ async function resendOtpController(req, res) {
   const otp = crypto.randomInt(100000, 999999).toString();
   const expireOtp = new Date(Date.now() + 10 * 60 * 1000);
 
+  // Reset attempt counter when new OTP is generated
+  otpAttemptsMap.delete(email);
+
   resendOtpUser.otp = otp;
   resendOtpUser.expireOtp = expireOtp;
 
-  emailVerification(email, otp);
-
+  await emailVerification(email, otp);
   await resendOtpUser.save();
 
   res.status(200).json({
     message: "Resend Otp send successfully",
   });
-
-  // return res.json({message: "Resend Otp Email"})
 }
 
 async function loginController(req, res) {
@@ -253,18 +265,9 @@ async function loginController(req, res) {
           .json({ message: "Login Successful", user: sessionUser });
       });
     });
-
-    // const isMatch = await bcrypt.compare(password, existingEmailUser.password)
-
-    // if (!isMatch) {
-    //     return res.json({ message: "Invalid Password" })
-    // }
-
-    //    res.json({
-    //     message: "Login Successful"
-    //    })
   }
 }
+
 function dashboardController(req, res) {
   return res.status(200).json({
     message: "Welcome to Dashboard",
@@ -311,7 +314,7 @@ async function currentuserController(req, res) {
 function logoutController(req, res) {
   req.session.destroy(function (err) {
     if (err) {
-      return res.status(400).json({ message: "Wrong" });
+      return res.status(500).json({ message: "Failed to log out. Please try again." });
     } else {
       res.clearCookie("ecommerce.sid", sessionCookieOptions);
       res.clearCookie("connect.sid", sessionCookieOptions);
@@ -330,10 +333,8 @@ async function uploadAvatarController(req, res) {
 
     const imagePath = req.file.path;
 
-    // Upload to Cloudinary
     const result = await uploadImage(imagePath);
 
-    // Save URL in DB
     const user = await userSchema.findOneAndUpdate(
       { email: userEmail },
       { profileImage: result.secure_url },

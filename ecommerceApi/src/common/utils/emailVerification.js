@@ -1,13 +1,15 @@
-const nodemailer = require("nodemailer");
-const { Resend } = require("resend");
 const { getEnv } = require("../config/env");
-const axios = require("axios");
 
 async function emailVerification(email, otp) {
   try {
-    const response = await axios.post(
-      "https://api.brevo.com/v3/smtp/email",
-      {
+    const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "api-key": process.env.BREVO_API_KEY,
+      },
+      body: JSON.stringify({
         sender: {
           name: process.env.EMAIL_NAME,
           email: process.env.EMAIL_FROM,
@@ -24,33 +26,20 @@ async function emailVerification(email, otp) {
           <h1>${otp}</h1>
           <p>This OTP will expire in 5 minutes.</p>
         `,
-      },
-      {
-        headers: {
-          accept: "application/json",
-          "content-type": "application/json",
-          "api-key": process.env.BREVO_API_KEY,
-        },
-      }
-    );
+      }),
+    });
 
-    return response.data;
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.message || `HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error(
-      "Brevo Error:",
-      error.response?.data || error.message
-    );
-
+    console.error("Brevo Email Error:", error.message);
     throw error;
   }
-  // const resend = new Resend(getEnv("RESEND_API_KEY"));
-
-  // await resend.emails.send({
-  //   from: "Otp <onboarding@resend.dev>",
-  //   to: email,
-  //   subject: "Otp",
-  //   html: `<h1>Your Otp is: ${otp}</h1>`,
-  // });
 }
 
 module.exports = emailVerification;

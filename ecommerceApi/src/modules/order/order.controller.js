@@ -150,7 +150,7 @@ async function createOrderController(req, res) {
         });
       }
 
-      // Stock check (read-only; we don't mutate stock here to avoid surprises)
+      // Stock check
       if (typeof variant.stock === "number" && variant.stock < quantity) {
         return sendError(res, {
           status: 409,
@@ -158,7 +158,7 @@ async function createOrderController(req, res) {
         });
       }
 
-      // Frontend should send the line price it used. We validate against the catalog to prevent tampering.
+      // Validate pricing
       if (cartItem.price !== undefined && cartItem.price !== null && isPriceMismatch(cartItem.price, variant.price)) {
         return sendError(res, {
           status: 409,
@@ -239,6 +239,16 @@ async function createOrderController(req, res) {
     });
 
     await order.save();
+
+    // Decrement variant stock for ordered items
+    for (const item of orderItems) {
+      if (item.productId && item.variantId) {
+        await Product.updateOne(
+          { _id: item.productId, "variants._id": item.variantId },
+          { $inc: { "variants.$.stock": -item.quantity } },
+        ).catch(() => {});
+      }
+    }
 
     // Clear cart after successful order placement (legacy session cart).
     if (sessionUserId) {
@@ -376,7 +386,6 @@ async function updateOrderStatusController(req, res) {
       });
     }
 
-    // Non-admin users may only cancel, and only while the order isn't already fulfilled.
     if (!isAdmin && newStatus !== "Cancelled") {
       return sendError(res, {
         status: 403,
@@ -405,4 +414,3 @@ module.exports = {
   getOrderByIdController,
   updateOrderStatusController,
 };
-

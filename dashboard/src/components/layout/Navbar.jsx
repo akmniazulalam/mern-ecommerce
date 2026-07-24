@@ -54,19 +54,22 @@ const Navbar = () => {
     formData.append("image", file);
 
     try {
-      const res = await apiClient.post("/auth/upload-avatar", formData);
+      const res = await apiClient.post(authPaths.uploadAvatar, formData);
 
       // Update UI instantly
       setUser(res.data.user);
       setImage(null);
+      toast.success("Profile image updated");
     } catch (err) {
-      console.log(err);
+      toast.error(getApiErrorMessage(err, "Avatar upload failed"));
     }
   };
 
   // Logout
   const handleLogout = async () => {
-    await apiClient.post("/auth/logout", {});
+    try {
+      await apiClient.post(authPaths.logout, {});
+    } catch (e) {}
     setUser(null);
     window.location.href = "/login";
   };
