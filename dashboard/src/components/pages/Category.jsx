@@ -4,6 +4,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import apiClient from "@/lib/apiClient";
@@ -13,6 +14,7 @@ import { categoryPaths } from "@/lib/productApi";
 const Category = () => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const formData = {
@@ -37,6 +39,7 @@ const Category = () => {
     }
 
     try {
+      setIsSubmitting(true);
       await apiClient.post(categoryPaths.create, formData);
       toast.success("Successfully added!");
       setCategoryName("");
@@ -46,6 +49,8 @@ const Category = () => {
       }, 1000);
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Failed to add category"));
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -57,8 +62,9 @@ const Category = () => {
       <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
-            <FieldLabel>Category Name</FieldLabel>
+            <FieldLabel htmlFor="create-category-name">Category Name</FieldLabel>
             <Input
+              id="create-category-name"
               value={categoryName}
               placeholder="Category Name"
               className={"text-sm"}
@@ -72,8 +78,9 @@ const Category = () => {
             ) : null}
           </Field>
           <Field>
-            <FieldLabel>Category Description</FieldLabel>
+            <FieldLabel htmlFor="create-category-description">Category Description</FieldLabel>
             <Textarea
+              id="create-category-description"
               value={categoryDescription}
               placeholder="Type your description here..."
               className={"resize-none text-sm"}
@@ -87,8 +94,11 @@ const Category = () => {
             ) : null}
           </Field>
           <Field orientation="horizontal">
-            <Button onClick={handleCreateCategory} className={"cursor-pointer"}>
-              Add Category
+            <Button
+              onClick={handleCreateCategory}
+              disabled={isSubmitting}
+              className={"cursor-pointer"}>
+              {isSubmitting ? "Adding..." : "Add Category"}
             </Button>
           </Field>
         </FieldGroup>

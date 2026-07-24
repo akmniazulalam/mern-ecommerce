@@ -28,22 +28,25 @@ import { authPaths } from "@/lib/productApi";
 
 const Userlists = () => {
   const [userList, setUserList] = useState([]);
+
   useEffect(() => {
     apiClient
       .get(authPaths.userList)
       .then((res) => {
         setUserList(res.data.data);
-        console.log(userList);
+      })
+      .catch(() => {
+        toast.error("Failed to fetch user list");
       });
   }, []);
 
-  const handleDeleteUser = (id) => {
+  const handleDeleteUser = async (id) => {
     try {
-      apiClient.delete(authPaths.deleteUser(id));
+      await apiClient.delete(authPaths.deleteUser(id));
       toast.success("Successfully deleted");
-      setUserList(userList.filter((item) => item._id !== id));
+      setUserList((prev) => prev.filter((item) => item._id !== id));
     } catch (error) {
-      toast.error(error);
+      toast.error(error.response?.data?.message || "Failed to delete user");
     }
   };
 
@@ -65,11 +68,11 @@ const Userlists = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Action</TableHead>
+                    <TableHead scope="col">User</TableHead>
+                    <TableHead scope="col">Email</TableHead>
+                    <TableHead scope="col">Status</TableHead>
+                    <TableHead scope="col">Created</TableHead>
+                    <TableHead scope="col">Action</TableHead>
                   </TableRow>
                 </TableHeader>
 

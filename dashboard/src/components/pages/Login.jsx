@@ -10,10 +10,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff } from "lucide-react";
 import apiClient from "@/lib/apiClient";
 
+import { authPaths } from "@/lib/productApi";
+
 const Login = () => {
   const { setUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [eyeOn, setEyeOn] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginInput, setLoginInput] = useState({
     email: "",
     password: "",
@@ -45,10 +48,11 @@ const Login = () => {
 
   const handleLoginBtn = async () => {
     try {
-      const res = await apiClient.post("/auth/login", loginInput);
+      setIsSubmitting(true);
+      const res = await apiClient.post(authPaths.login, loginInput);
 
       if (res.data.user?.role !== "admin") {
-        await apiClient.post("/auth/logout", {}).catch(() => {});
+        await apiClient.post(authPaths.logout, {}).catch(() => {});
         setUser(null);
         toast.error("Only admin accounts can access the dashboard");
         return;
@@ -62,6 +66,8 @@ const Login = () => {
       }, 2000);
     } catch (error) {
       toast.error(error.response?.data?.message || error?.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -122,9 +128,10 @@ const Login = () => {
               </div>
 
               <Button
+                disabled={isSubmitting}
                 className="w-full mt-2 cursor-pointer text-base dark:text-white bg-linear-to-r from-[#5e5eee] via-[#3d76dc] to-[#3594d5]"
                 onClick={handleLoginBtn}>
-                Login
+                {isSubmitting ? "Logging in..." : "Login"}
               </Button>
             </form>
             <p className="text-sm text-center mt-2">

@@ -14,14 +14,19 @@ const UpdateCategory = () => {
   const { id } = useParams();
   const [updateName, setUpdateName] = useState("");
   const [updateDes, setUpdateDes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
   useEffect(() => {
     apiClient
       .get(categoryPaths.single(id))
       .then((res) => {
-        setUpdateName(res.data.data.name);
-        setUpdateDes(res.data.data.description);
+        setUpdateName(res.data.data?.name || "");
+        setUpdateDes(res.data.data?.description || "");
+      })
+      .catch((err) => {
+        toast.error(getApiErrorMessage(err, "Failed to load category details"));
       });
   }, [id]);
 
@@ -47,6 +52,7 @@ const UpdateCategory = () => {
     }
 
     try {
+      setIsSubmitting(true);
       await apiClient.patch(categoryPaths.update(id), formData);
       toast.success("Successfully Updated");
       setUpdateName("");
@@ -56,6 +62,8 @@ const UpdateCategory = () => {
       }, 1000);
     } catch (error) {
       toast.error(getApiErrorMessage(error, "Failed to update category"));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,8 +77,9 @@ const UpdateCategory = () => {
       <div className="md:max-w-1/3 mt-4">
         <FieldGroup>
           <Field>
-            <FieldLabel>Update Category Name</FieldLabel>
+            <FieldLabel htmlFor="update-category-name">Update Category Name</FieldLabel>
             <Input
+              id="update-category-name"
               value={updateName}
               placeholder="Update Category Name"
               onChange={(e) => {
@@ -83,8 +92,9 @@ const UpdateCategory = () => {
             ) : null}
           </Field>
           <Field>
-            <FieldLabel>Update Category Description</FieldLabel>
+            <FieldLabel htmlFor="update-category-des">Update Category Description</FieldLabel>
             <Textarea
+              id="update-category-des"
               value={updateDes}
               placeholder="Type your description here..."
               className={"resize-none"}
@@ -98,8 +108,11 @@ const UpdateCategory = () => {
             ) : null}
           </Field>
           <Field orientation="horizontal">
-            <Button onClick={handleUpdateCategory} className={"cursor-pointer"}>
-              Update Category
+            <Button
+              onClick={handleUpdateCategory}
+              disabled={isSubmitting}
+              className={"cursor-pointer"}>
+              {isSubmitting ? "Updating..." : "Update Category"}
             </Button>
           </Field>
         </FieldGroup>

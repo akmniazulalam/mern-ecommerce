@@ -256,14 +256,14 @@ const Orders = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Order</TableHead>
-                      <TableHead>Customer</TableHead>
-                      <TableHead>Items</TableHead>
-                      <TableHead>Total</TableHead>
-                      <TableHead>Payment</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Placed</TableHead>
-                      <TableHead className="text-right">Action</TableHead>
+                      <TableHead scope="col">Order</TableHead>
+                      <TableHead scope="col">Customer</TableHead>
+                      <TableHead scope="col">Items</TableHead>
+                      <TableHead scope="col">Total</TableHead>
+                      <TableHead scope="col">Payment</TableHead>
+                      <TableHead scope="col">Status</TableHead>
+                      <TableHead scope="col">Placed</TableHead>
+                      <TableHead scope="col" className="text-right">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

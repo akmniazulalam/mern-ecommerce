@@ -29,15 +29,23 @@ const CategoryList = () => {
   const [finalData, setFinalData] = useState([]);
   useEffect(() => {
     async function final() {
-      const data = await apiClient.get(categoryPaths.list);
-      setFinalData(data.data.data);
+      try {
+        const data = await apiClient.get(categoryPaths.list);
+        setFinalData(data.data.data || []);
+      } catch (err) {
+        console.error("Failed to fetch category list:", err);
+      }
     }
     final();
   }, []);
 
-  const handleDeleteCategory = (id) => {
-    apiClient.delete(categoryPaths.delete(id));
-    setFinalData(finalData.filter((item) => item._id !== id));
+  const handleDeleteCategory = async (id) => {
+    try {
+      await apiClient.delete(categoryPaths.delete(id));
+      setFinalData((prev) => prev.filter((item) => item._id !== id));
+    } catch (err) {
+      console.error("Failed to delete category:", err);
+    }
   };
 
   return (
@@ -54,10 +62,10 @@ const CategoryList = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Serial</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Action</TableHead>
+                  <TableHead scope="col">Serial</TableHead>
+                  <TableHead scope="col">Name</TableHead>
+                  <TableHead scope="col">Description</TableHead>
+                  <TableHead scope="col">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
@@ -25,17 +26,30 @@ const Coupon = () => {
   const [discountValue, setDiscountValue] = useState("");
   const [minPurchase, setMinPurchase] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
-
-  const formData = {
-    code,
-    discountType,
-    discountValue,
-    minPurchase,
-    expiryDate,
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleCreateCoupon = async () => {
+    const nextErrors = {};
+    if (!code.trim()) nextErrors.code = "Coupon code is required";
+    if (!discountType) nextErrors.discountType = "Discount type is required";
+    if (!discountValue || Number(discountValue) <= 0) nextErrors.discountValue = "Valid discount value required";
+    if (!minPurchase || Number(minPurchase) < 0) nextErrors.minPurchase = "Valid minimum purchase required";
+    if (!expiryDate) nextErrors.expiryDate = "Expiry date is required";
+
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    const formData = {
+      code,
+      discountType,
+      discountValue: Number(discountValue),
+      minPurchase: Number(minPurchase),
+      expiryDate,
+    };
+
     try {
+      setIsSubmitting(true);
       const res = await apiClient.post(couponPaths.create, formData);
 
       if (res.data.success) {
@@ -53,6 +67,8 @@ const Coupon = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -68,22 +84,30 @@ const Coupon = () => {
         <FieldGroup>
           {/* Coupon Code */}
           <Field>
-            <FieldLabel>Coupon Code</FieldLabel>
+            <FieldLabel htmlFor="coupon-code">Coupon Code</FieldLabel>
 
             <Input
+              id="coupon-code"
               value={code}
               placeholder="SAVE20"
               className={"text-sm"}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={(e) => {
+                setCode(e.target.value);
+                setErrors((prev) => ({ ...prev, code: undefined }));
+              }}
             />
+            {errors.code && <p className="text-xs text-destructive mt-1">{errors.code}</p>}
           </Field>
 
           {/* Discount Type */}
           <Field>
-            <FieldLabel>Discount Type</FieldLabel>
+            <FieldLabel htmlFor="coupon-discount-type">Discount Type</FieldLabel>
 
-            <Select onValueChange={(value) => setDiscountType(value)}>
-              <SelectTrigger className="w-full">
+            <Select onValueChange={(value) => {
+              setDiscountType(value);
+              setErrors((prev) => ({ ...prev, discountType: undefined }));
+            }}>
+              <SelectTrigger id="coupon-discount-type" className="w-full">
                 <SelectValue placeholder="Select Discount Type" />
               </SelectTrigger>
 
@@ -97,54 +121,73 @@ const Coupon = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            {errors.discountType && <p className="text-xs text-destructive mt-1">{errors.discountType}</p>}
           </Field>
 
           {/* Discount Value */}
           <Field>
-            <FieldLabel>Discount Value</FieldLabel>
+            <FieldLabel htmlFor="coupon-discount-val">Discount Value</FieldLabel>
 
             <Input
+              id="coupon-discount-val"
               type="number"
               value={discountValue}
               placeholder="20"
               className={
                 "text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               }
-              onChange={(e) => setDiscountValue(e.target.value)}
+              onChange={(e) => {
+                setDiscountValue(e.target.value);
+                setErrors((prev) => ({ ...prev, discountValue: undefined }));
+              }}
             />
+            {errors.discountValue && <p className="text-xs text-destructive mt-1">{errors.discountValue}</p>}
           </Field>
 
           {/* Minimum Purchase */}
           <Field>
-            <FieldLabel>Minimum Purchase</FieldLabel>
+            <FieldLabel htmlFor="coupon-min-purchase">Minimum Purchase</FieldLabel>
 
             <Input
+              id="coupon-min-purchase"
               type="number"
               value={minPurchase}
               placeholder="100"
               className={
                 "text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               }
-              onChange={(e) => setMinPurchase(e.target.value)}
+              onChange={(e) => {
+                setMinPurchase(e.target.value);
+                setErrors((prev) => ({ ...prev, minPurchase: undefined }));
+              }}
             />
+            {errors.minPurchase && <p className="text-xs text-destructive mt-1">{errors.minPurchase}</p>}
           </Field>
 
           {/* Expiry Date */}
           <Field>
-            <FieldLabel>Expiry Date</FieldLabel>
+            <FieldLabel htmlFor="coupon-expiry">Expiry Date</FieldLabel>
 
             <Input
+              id="coupon-expiry"
               type="datetime-local"
               value={expiryDate}
               className={"text-sm"}
-              onChange={(e) => setExpiryDate(e.target.value)}
+              onChange={(e) => {
+                setExpiryDate(e.target.value);
+                setErrors((prev) => ({ ...prev, expiryDate: undefined }));
+              }}
             />
+            {errors.expiryDate && <p className="text-xs text-destructive mt-1">{errors.expiryDate}</p>}
           </Field>
 
           {/* Button */}
           <Field orientation="horizontal">
-            <Button onClick={handleCreateCoupon} className={"cursor-pointer"}>
-              Add Coupon
+            <Button
+              onClick={handleCreateCoupon}
+              disabled={isSubmitting}
+              className={"cursor-pointer"}>
+              {isSubmitting ? "Adding..." : "Add Coupon"}
             </Button>
           </Field>
         </FieldGroup>

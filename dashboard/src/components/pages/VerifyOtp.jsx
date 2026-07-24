@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 
@@ -20,7 +21,12 @@ const VerifyOtp = () => {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            <Input placeholder="Enter OTP" />
+            <div>
+              <Label htmlFor="otp-input" className="block text-left text-sm font-medium mb-2">
+                OTP Code
+              </Label>
+              <Input id="otp-input" placeholder="Enter OTP" />
+            </div>
 
             <Button className="w-full cursor-pointer">Verify</Button>
 

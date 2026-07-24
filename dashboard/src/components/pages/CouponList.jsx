@@ -76,19 +76,19 @@ const CouponList = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Code</TableHead>
+                  <TableHead scope="col">Code</TableHead>
 
-                  <TableHead>Type</TableHead>
+                  <TableHead scope="col">Type</TableHead>
 
-                  <TableHead>Discount</TableHead>
+                  <TableHead scope="col">Discount</TableHead>
 
-                  <TableHead>Min Purchase</TableHead>
+                  <TableHead scope="col">Min Purchase</TableHead>
 
-                  <TableHead>Expiry Date</TableHead>
+                  <TableHead scope="col">Expiry Date</TableHead>
 
-                  <TableHead>Status</TableHead>
+                  <TableHead scope="col">Status</TableHead>
 
-                  <TableHead>Action</TableHead>
+                  <TableHead scope="col">Action</TableHead>
                 </TableRow>
               </TableHeader>
 
