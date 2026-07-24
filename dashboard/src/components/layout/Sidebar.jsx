@@ -41,6 +41,8 @@ const MobileSidebar = () => {
           </NavLink>
 
           <button
+            type="button"
+            aria-expanded={openCategory}
             onClick={() => setOpenCategory(!openCategory)}
             className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium rounded-lg hover:bg-muted transition">
             <div className="flex items-center gap-3">
@@ -101,6 +103,8 @@ const MobileSidebar = () => {
           </NavLink>
 
           <button
+            type="button"
+            aria-expanded={openProduct}
             onClick={() => setOpenProduct(!openProduct)}
             className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium rounded-lg hover:bg-muted transition">
             <div className="flex items-center gap-3">
@@ -148,6 +152,8 @@ const MobileSidebar = () => {
           )}
           {/* Coupon Dropdown */}
           <button
+            type="button"
+            aria-expanded={openCoupon}
             onClick={() => setOpenCoupon(!openCoupon)}
             className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium rounded-lg hover:bg-muted transition">
             <div className="flex items-center gap-3">
