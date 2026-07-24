@@ -87,8 +87,9 @@ const Login = () => {
               ref={focusRef}
               className={"space-y-4"}>
               <div>
-                <Label className={"mb-2"}>Email</Label>
+                <Label htmlFor="login-email" className={"mb-2 block"}>Email</Label>
                 <Input
+                  id="login-email"
                   type="email"
                   placeholder="Enter your email"
                   name="email"
@@ -97,16 +98,18 @@ const Login = () => {
               </div>
 
               <div className="relative">
-                <Label className={"mb-2"}>Password</Label>
+                <Label htmlFor="login-password" className={"mb-2 block"}>Password</Label>
                 <Input
+                  id="login-password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="**********"
+                  placeholder="Enter your password"
                   name="password"
                   onChange={handleInputChange}
                 />
                 {eyeOn && (
                   <button
                     type="button"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-[69%] -translate-y-1/2 cursor-pointer">
                     {showPassword ? (

@@ -153,8 +153,9 @@ const Signup = () => {
                   stack on mobile instead of being squished to ~148px each */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <Label className={"mb-2"}>First Name</Label>
+                  <Label htmlFor="signup-firstname" className={"mb-2 block"}>First Name</Label>
                   <Input
+                    id="signup-firstname"
                     onChange={handleChange}
                     name="firstName"
                     type={"text"}
@@ -163,8 +164,9 @@ const Signup = () => {
                 </div>
 
                 <div>
-                  <Label className={"mb-2"}>Last Name</Label>
+                  <Label htmlFor="signup-lastname" className={"mb-2 block"}>Last Name</Label>
                   <Input
+                    id="signup-lastname"
                     onChange={handleChange}
                     name="lastName"
                     type={"text"}
@@ -174,8 +176,9 @@ const Signup = () => {
               </div>
 
               <div>
-                <Label className={"mb-2"}>Email</Label>
+                <Label htmlFor="signup-email" className={"mb-2 block"}>Email</Label>
                 <Input
+                  id="signup-email"
                   onChange={handleChange}
                   name="email"
                   type="email"
@@ -192,8 +195,9 @@ const Signup = () => {
               </div>
 
               <div className="relative">
-                <Label className={"mb-2"}>Password</Label>
+                <Label htmlFor="signup-password" className={"mb-2 block"}>Password</Label>
                 <Input
+                  id="signup-password"
                   onChange={handleChange}
                   name="password"
                   type={showPassword ? "text" : "password"}
@@ -202,6 +206,7 @@ const Signup = () => {
                 {showEye && (
                   <button
                     type="button"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-[22%] -translate-y-1/2 cursor-pointer">
                     {showPassword ? (
