@@ -26,7 +26,6 @@ import apiClient from "@/lib/apiClient";
 import { categoryPaths } from "@/lib/productApi";
 
 const CategoryList = () => {
-
   const [finalData, setFinalData] = useState([]);
   useEffect(() => {
     async function final() {
@@ -130,7 +129,9 @@ const CategoryList = () => {
 
                 {/* Description */}
                 <div>
-                  <p className="text-base text-muted-foreground mb-1">Description</p>
+                  <p className="text-base text-muted-foreground mb-1">
+                    Description
+                  </p>
                   <p className="text-base leading-5">{item.description}</p>
                 </div>
 
