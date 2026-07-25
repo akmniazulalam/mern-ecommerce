@@ -2,9 +2,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { getVariantSummary } from "@/lib/productVariants";
 
-export default function VariantListPreview({ product }) {
-  const variants = product.variants ?? [];
-
+export default function VariantListPreview({ variants = [] }) {
   if (!variants.length) {
     return (
       <p className="text-xs text-muted-foreground mt-3 px-1">

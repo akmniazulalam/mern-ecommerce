@@ -17,6 +17,7 @@ export const productPaths = {
 };
 
 export const authPaths = {
+  login: "/auth/login",
   signup: "/auth/signup",
   otpVerify: "/auth/otpverify",
   resendOtp: "/auth/resendotp",

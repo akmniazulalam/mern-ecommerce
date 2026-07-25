@@ -178,26 +178,28 @@ export function getVariantSummary(variant) {
 }
 
 export function getProductPriceRange(variants = []) {
-  if (!variants.length) {
-    return null;
+  if (!Array.isArray(variants) || variants.length === 0) {
+    return {
+      minPrice: 0,
+      maxPrice: 0,
+    };
   }
 
   const prices = variants
     .map((variant) => Number(variant.price))
-    .filter((price) => !Number.isNaN(price));
+    .filter((price) => Number.isFinite(price));
 
-  if (!prices.length) {
-    return null;
+  if (prices.length === 0) {
+    return {
+      minPrice: 0,
+      maxPrice: 0,
+    };
   }
 
-  const min = Math.min(...prices);
-  const max = Math.max(...prices);
-
-  if (min === max) {
-    return `$${min.toFixed(2)}`;
-  }
-
-  return `$${min.toFixed(2)} – $${max.toFixed(2)}`;
+  return {
+    minPrice: Math.min(...prices),
+    maxPrice: Math.max(...prices),
+  };
 }
 
 export function getTotalStock(variants = []) {
