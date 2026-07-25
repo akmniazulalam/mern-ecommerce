@@ -64,16 +64,16 @@ const CouponList = () => {
         <title>Coupon List</title>
       </Helmet>
 
-      <Card className="shadow-xl rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold">
+      <Card className="shadow-xl rounded-2xl overflow-hidden">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-xl sm:text-2xl font-semibold break-words">
             🎟️ Coupon List
           </CardTitle>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="px-3 sm:px-6">
           <div className="overflow-x-auto">
-            <Table>
+            <Table className="min-w-[760px]">
               <TableHeader>
                 <TableRow>
                   <TableHead scope="col">Code</TableHead>
@@ -96,13 +96,17 @@ const CouponList = () => {
                 {coupons.map((coupon) => (
                   <TableRow key={coupon._id}>
                     {/* Coupon Code */}
-                    <TableCell className="font-medium">{coupon.code}</TableCell>
+                    <TableCell className="font-medium whitespace-normal">
+                      <span className="block max-w-48 break-all">{coupon.code}</span>
+                    </TableCell>
 
                     {/* Discount Type */}
-                    <TableCell>{coupon.discountType}</TableCell>
+                    <TableCell className="whitespace-normal capitalize">
+                      {coupon.discountType}
+                    </TableCell>
 
                     {/* Discount Value */}
-                    <TableCell>
+                    <TableCell className="whitespace-normal">
                       {coupon.discountType === "percentage"
                         ? `${coupon.discountValue}%`
                         : `$${coupon.discountValue}`}
@@ -112,12 +116,12 @@ const CouponList = () => {
                     <TableCell>${coupon.minPurchase}</TableCell>
 
                     {/* Expiry Date */}
-                    <TableCell>
+                    <TableCell className="whitespace-normal">
                       {new Date(coupon.expiryDate).toLocaleDateString()}
                     </TableCell>
 
                     {/* Status */}
-                    <TableCell>
+                    <TableCell className="whitespace-normal">
                       {coupon.isActive ? (
                         <Badge className="bg-green-500">Active</Badge>
                       ) : (
@@ -128,7 +132,7 @@ const CouponList = () => {
                     </TableCell>
 
                     {/* Delete */}
-                    <TableCell>
+                    <TableCell className="whitespace-normal">
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
@@ -139,7 +143,7 @@ const CouponList = () => {
                           </Button>
                         </AlertDialogTrigger>
 
-                        <AlertDialogContent>
+                        <AlertDialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg">
                           <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
 

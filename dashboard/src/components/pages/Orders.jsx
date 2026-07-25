@@ -161,18 +161,18 @@ const Orders = () => {
         <title>Orders</title>
       </Helmet>
 
-      <div className="space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
+      <div className="min-w-0 space-y-5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0">
             <h2 className="text-xl font-bold tracking-tight">Order Management</h2>
             <p className="text-sm text-muted-foreground mt-1">
               Review customer orders, payment details, and fulfillment statuses.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[170px]">
+              <SelectTrigger className="w-full sm:w-[170px]">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
@@ -188,7 +188,7 @@ const Orders = () => {
             <Button
               type="button"
               variant="outline"
-              className="cursor-pointer"
+              className="w-full cursor-pointer sm:w-auto"
               disabled={isLoading}
               onClick={loadOrders}>
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
@@ -218,11 +218,11 @@ const Orders = () => {
           </Card>
         </div>
 
-        <Card className="shadow-sm py-4">
+        <Card className="shadow-sm py-4 overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-lg">Orders</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 sm:px-6">
             {isLoading ? (
               <div className="flex items-center justify-center py-14 text-muted-foreground">
                 <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -253,7 +253,7 @@ const Orders = () => {
 
             {!isLoading && !loadError && orders.length > 0 ? (
               <div className="overflow-x-auto">
-                <Table>
+                <Table className="min-w-[860px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead scope="col">Order</TableHead>
@@ -275,14 +275,14 @@ const Orders = () => {
 
                       return (
                         <TableRow key={order._id}>
-                          <TableCell className="font-medium">
-                            <div className="space-y-0.5">
+                          <TableCell className="font-medium whitespace-normal">
+                            <div className="space-y-0.5 max-w-48">
                               <p>{order.orderNumber || "-"}</p>
                               <p className="text-xs text-muted-foreground break-all">{order._id}</p>
                             </div>
                           </TableCell>
-                          <TableCell>
-                            <div className="space-y-0.5">
+                          <TableCell className="whitespace-normal">
+                            <div className="space-y-0.5 max-w-56">
                               <p>{customerName || "-"}</p>
                               <p className="text-xs text-muted-foreground break-all">
                                 {order?.customer?.email || "-"}
@@ -293,7 +293,7 @@ const Orders = () => {
                           <TableCell>
                             {formatMoney(order?.pricing?.total, order?.pricing?.currency)}
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="whitespace-normal">
                             <div className="space-y-0.5">
                               <p className="capitalize">{order?.payment?.method || "-"}</p>
                               <p className="text-xs text-muted-foreground">
@@ -329,10 +329,10 @@ const Orders = () => {
       </div>
 
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto p-4 sm:max-w-4xl sm:p-6">
           <DialogHeader>
-            <DialogTitle>Order Details</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="break-words">Order Details</DialogTitle>
+            <DialogDescription className="break-words">
               {selectedOrder?.orderNumber || "Order"} • {formatDate(selectedOrder?.createdAt)}
             </DialogDescription>
           </DialogHeader>
@@ -345,23 +345,23 @@ const Orders = () => {
                     <CardTitle className="text-base">Customer Information</CardTitle>
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Name</p>
-                      <p className="font-medium">
+                      <p className="font-medium break-words">
                         {selectedOrder.customer?.firstName} {selectedOrder.customer?.lastName}
                       </p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Email</p>
-                      <p className="font-medium">{selectedOrder.customer?.email || "-"}</p>
+                      <p className="font-medium break-all">{selectedOrder.customer?.email || "-"}</p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Phone</p>
-                      <p className="font-medium">{selectedOrder.customer?.phone || "-"}</p>
+                      <p className="font-medium break-words">{selectedOrder.customer?.phone || "-"}</p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Address</p>
-                      <p className="font-medium">
+                      <p className="font-medium break-words">
                         {[
                           selectedOrder.customer?.street,
                           selectedOrder.customer?.apartment,
@@ -375,9 +375,9 @@ const Orders = () => {
                       </p>
                     </div>
                     {selectedOrder.customer?.notes ? (
-                      <div className="sm:col-span-2">
+                      <div className="min-w-0 sm:col-span-2">
                         <p className="text-muted-foreground">Notes</p>
-                        <p className="font-medium">{selectedOrder.customer.notes}</p>
+                        <p className="font-medium break-words">{selectedOrder.customer.notes}</p>
                       </div>
                     ) : null}
                   </CardContent>
@@ -435,7 +435,7 @@ const Orders = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <Table>
+                    <Table className="min-w-[680px]">
                       <TableHeader>
                         <TableRow>
                           <TableHead>Product</TableHead>
@@ -448,8 +448,8 @@ const Orders = () => {
                       <TableBody>
                         {(selectedOrder.items || []).map((item, idx) => (
                           <TableRow key={`${item.productId}-${item.variantId}-${idx}`}>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
+                            <TableCell className="whitespace-normal">
+                              <div className="flex min-w-0 items-center gap-2">
                                 {item.image ? (
                                   <img
                                     src={item.image}
@@ -461,9 +461,9 @@ const Orders = () => {
                                     <UserRound className="h-4 w-4 text-muted-foreground" />
                                   </div>
                                 )}
-                                <div>
-                                  <p className="font-medium">{item.name || "-"}</p>
-                                  <p className="text-xs text-muted-foreground">
+                                <div className="min-w-0">
+                                  <p className="font-medium break-words">{item.name || "-"}</p>
+                                  <p className="text-xs text-muted-foreground break-words">
                                     {[item.color, item.size, item.ram, item.storage]
                                       .filter(Boolean)
                                       .join(" • ") || "Variant info not available"}
@@ -493,21 +493,21 @@ const Orders = () => {
                     <CardTitle className="text-base">Payment Information</CardTitle>
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Method</p>
                       <p className="font-medium capitalize">
                         {selectedOrder.payment?.method || "-"}
                       </p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Payment status</p>
                       <p className="font-medium">{selectedOrder.payment?.status || "-"}</p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Transaction ID</p>
-                      <p className="font-medium">{selectedOrder.payment?.transactionId || "-"}</p>
+                      <p className="font-medium break-all">{selectedOrder.payment?.transactionId || "-"}</p>
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-muted-foreground">Amount</p>
                       <p className="font-medium">
                         {formatMoney(
