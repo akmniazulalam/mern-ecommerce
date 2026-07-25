@@ -22,6 +22,7 @@ export const authPaths = {
   otpVerify: "/auth/otpverify",
   resendOtp: "/auth/resendotp",
   userList: "/auth/userlist",
+  currentUser: "/auth/currentuser",
   deleteUser: (id) => `/auth/deleteuser/${id}`,
 };
 
