@@ -73,7 +73,7 @@ const CouponList = () => {
 
         <CardContent className="px-3 sm:px-6">
           <div className="overflow-x-auto">
-            <Table className="min-w-[760px]">
+            <Table className="min-w-190">
               <TableHeader>
                 <TableRow>
                   <TableHead scope="col">Code</TableHead>

@@ -22,7 +22,7 @@ const MobileSidebar = () => {
   const [openCoupon, setOpenCoupon] = useState(false);
 
   return (
-    <DialogContent className="p-0 w-64 h-full translate-x-[0%] left-0">
+    <DialogContent className="left-0 top-0 h-dvh w-[min(18rem,calc(100vw-2rem))] max-w-none translate-x-0 translate-y-0 rounded-none border-l-0 p-0">
       <div className="flex flex-col h-full bg-background">
         <div className="p-6 text-xl font-bold border-b">E-Commerce</div>
         <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
@@ -241,7 +241,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="w-64 bg-background border-r hidden md:flex flex-col">
+      <aside className="hidden w-64 shrink-0 bg-background border-r md:flex flex-col">
         <div className="p-6 text-xl font-bold">E-Commerce</div>
 
         <nav className="flex-1 px-4 space-y-2">
