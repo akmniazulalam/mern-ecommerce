@@ -62,7 +62,7 @@ const Userlists = () => {
 
   const getRoleRestriction = (user) => {
     if (user?.isPrimaryAdmin) {
-      return "Primary Admin role is managed by system configuration and cannot be changed.";
+      return "Primary Admin role is locked by system configuration.";
     }
 
     if (isCurrentUser(user)) {
@@ -74,7 +74,7 @@ const Userlists = () => {
 
   const getDeleteRestriction = (user) => {
     if (user?.isPrimaryAdmin) {
-      return "Primary Admin account is protected by system configuration and cannot be deleted.";
+      return "Primary Admin account cannot be deleted.";
     }
 
     return "";
@@ -129,37 +129,28 @@ const Userlists = () => {
     }
   };
 
-  const RoleBadge = ({ role }) => (
-    <Badge variant={normalizeRole(role) === "admin" ? "default" : "secondary"}>
-      {normalizeRole(role) === "admin" ? "Admin" : "User"}
-    </Badge>
-  );
-
   const RoleAction = ({ user }) => {
     const restriction = getRoleRestriction(user);
     const isDisabled = Boolean(restriction) || roleSavingId === user._id;
 
     return (
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <RoleBadge role={user.role} />
-          <Select
-            value={normalizeRole(user.role)}
-            onValueChange={(role) => handleRoleSelect(user, role)}
-            disabled={isDisabled}>
-            <SelectTrigger
-              className="w-[120px]"
-              title={restriction || "Change user role"}>
-              <SelectValue placeholder="Role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="user">User</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <div className="flex w-full max-w-[14rem] flex-col gap-2 whitespace-normal">
+        <Select
+          value={normalizeRole(user.role)}
+          onValueChange={(role) => handleRoleSelect(user, role)}
+          disabled={isDisabled}>
+          <SelectTrigger
+            className="w-full min-w-[8rem]"
+            title={restriction || "Change user role"}>
+            <SelectValue placeholder="Role" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="user">User</SelectItem>
+            <SelectItem value="admin">Admin</SelectItem>
+          </SelectContent>
+        </Select>
         {restriction ? (
-          <p className="max-w-[220px] text-xs text-muted-foreground">
+          <p className="text-xs leading-snug text-muted-foreground whitespace-normal break-words">
             {restriction}
           </p>
         ) : null}
@@ -172,7 +163,7 @@ const Userlists = () => {
 
     if (restriction) {
       return (
-        <div className="space-y-2">
+        <div className="max-w-[14rem] space-y-2 whitespace-normal">
           <Button
             size="sm"
             variant="destructive"
@@ -181,7 +172,9 @@ const Userlists = () => {
             className={className}>
             Delete
           </Button>
-          <p className="text-xs text-muted-foreground">{restriction}</p>
+          <p className="text-xs leading-snug text-muted-foreground whitespace-normal break-words">
+            {restriction}
+          </p>
         </div>
       );
     }
@@ -271,7 +264,7 @@ const Userlists = () => {
                       <TableCell>{user.email}</TableCell>
 
                       {/* Role */}
-                      <TableCell>
+                      <TableCell className="align-top whitespace-normal">
                         <RoleAction user={user} />
                       </TableCell>
 
@@ -292,7 +285,7 @@ const Userlists = () => {
                       <TableCell>
                         {new Date(user.createdAt).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="align-top whitespace-normal">
                         <DeleteAction user={user} />
                       </TableCell>
                     </TableRow>
