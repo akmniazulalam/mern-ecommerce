@@ -9,8 +9,11 @@ import { Helmet } from "react-helmet-async";
 import apiClient from "@/lib/apiClient";
 import { getApiErrorMessage } from "@/lib/apiErrors";
 import { categoryPaths } from "@/lib/productApi";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const UpdateCategory = () => {
+  const { user } = useAuth();
   const { id } = useParams();
   const [updateName, setUpdateName] = useState("");
   const [updateDes, setUpdateDes] = useState("");
@@ -31,6 +34,11 @@ const UpdateCategory = () => {
   }, [id]);
 
   const handleUpdateCategory = async () => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     const formData = {
       name: updateName,
       description: updateDes,
@@ -82,6 +90,7 @@ const UpdateCategory = () => {
               id="update-category-name"
               value={updateName}
               placeholder="Update Category Name"
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setUpdateName(e.target.value);
                 setErrors((prev) => ({ ...prev, name: undefined }));
@@ -98,6 +107,7 @@ const UpdateCategory = () => {
               value={updateDes}
               placeholder="Type your description here..."
               className={"resize-none"}
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setUpdateDes(e.target.value);
                 setErrors((prev) => ({ ...prev, description: undefined }));
@@ -110,7 +120,8 @@ const UpdateCategory = () => {
           <Field orientation="horizontal">
             <Button
               onClick={handleUpdateCategory}
-              disabled={isSubmitting}
+              disabled={isSubmitting || user?.isDemoAdmin}
+              title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
               className={"cursor-pointer"}>
               {isSubmitting ? "Updating..." : "Update Category"}
             </Button>
