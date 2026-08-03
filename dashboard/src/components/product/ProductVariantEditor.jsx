@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronUp, ImagePlus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,18 +12,21 @@ const numberInputClass =
   "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
 function VariantImagePreview({ variant, mode }) {
-  const [filePreview, setFilePreview] = useState(null);
-
-  useEffect(() => {
-    if (!(variant.image instanceof File)) {
-      setFilePreview(null);
-      return undefined;
+  const filePreview = useMemo(() => {
+    if (variant.image instanceof File) {
+      return URL.createObjectURL(variant.image);
     }
 
-    const url = URL.createObjectURL(variant.image);
-    setFilePreview(url);
-    return () => URL.revokeObjectURL(url);
+    return null;
   }, [variant.image]);
+
+  useEffect(() => {
+    return () => {
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
+      }
+    };
+  }, [filePreview]);
 
   const previewUrl = filePreview || variant.images?.[0];
 
@@ -52,6 +55,7 @@ export default function ProductVariantEditor({
   onChange,
   mode = "create",
   minVariants = 1,
+  disabled = false,
 }) {
   const [expandedAdvanced, setExpandedAdvanced] = useState({});
 
@@ -117,7 +121,7 @@ export default function ProductVariantEditor({
                   variant="ghost"
                   size="sm"
                   className="h-8 text-destructive hover:text-destructive cursor-pointer"
-                  disabled={variants.length <= minVariants}
+                  disabled={disabled || variants.length <= minVariants}
                   onClick={() => handleRemoveVariant(index)}>
                   <Trash2 className="h-3.5 w-3.5 mr-1" />
                   Remove
@@ -132,6 +136,7 @@ export default function ProductVariantEditor({
                       <Input
                         placeholder="e.g. Navy"
                         value={variant.color ?? ""}
+                        disabled={disabled}
                         onChange={(e) =>
                           handleVariantChange(index, "color", e.target.value)
                         }
@@ -143,6 +148,7 @@ export default function ProductVariantEditor({
                       <Input
                         placeholder="e.g. M, 42, 256GB"
                         value={variant.size ?? ""}
+                        disabled={disabled}
                         onChange={(e) =>
                           handleVariantChange(index, "size", e.target.value)
                         }
@@ -154,6 +160,7 @@ export default function ProductVariantEditor({
                       <Input
                         placeholder="e.g. TEE-NAVY-M"
                         value={variant.sku ?? ""}
+                        disabled={disabled}
                         onChange={(e) =>
                           handleVariantChange(index, "sku", e.target.value)
                         }
@@ -169,6 +176,7 @@ export default function ProductVariantEditor({
                         placeholder="0.00"
                         className={numberInputClass}
                         value={variant.price ?? ""}
+                        disabled={disabled}
                         onChange={(e) =>
                           handleVariantChange(index, "price", e.target.value)
                         }
@@ -183,6 +191,7 @@ export default function ProductVariantEditor({
                         placeholder="Units in stock"
                         className={numberInputClass}
                         value={variant.stock ?? ""}
+                        disabled={disabled}
                         onChange={(e) => {
                           const value = e.target.value;
                           if (value === "" || Number(value) >= 0) {
@@ -201,6 +210,7 @@ export default function ProductVariantEditor({
                         type="file"
                         accept="image/*"
                         className="text-xs"
+                        disabled={disabled}
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -232,6 +242,7 @@ export default function ProductVariantEditor({
                         <Input
                           placeholder="e.g. 8GB"
                           value={variant.ram ?? ""}
+                          disabled={disabled}
                           onChange={(e) =>
                             handleVariantChange(index, "ram", e.target.value)
                           }
@@ -242,6 +253,7 @@ export default function ProductVariantEditor({
                         <Input
                           placeholder="e.g. 256GB"
                           value={variant.storage ?? ""}
+                          disabled={disabled}
                           onChange={(e) =>
                             handleVariantChange(index, "storage", e.target.value)
                           }
@@ -252,6 +264,7 @@ export default function ProductVariantEditor({
                         <Input
                           placeholder="e.g. New, Sale"
                           value={variant.badge ?? ""}
+                          disabled={disabled}
                           onChange={(e) =>
                             handleVariantChange(index, "badge", e.target.value)
                           }
@@ -273,6 +286,7 @@ export default function ProductVariantEditor({
           "w-full border-dashed cursor-pointer",
           "hover:bg-muted/50",
         )}
+        disabled={disabled}
         onClick={handleAddVariant}>
         <Plus className="h-4 w-4 mr-2" />
         Add another variant
