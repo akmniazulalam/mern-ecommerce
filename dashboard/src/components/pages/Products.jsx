@@ -23,8 +23,11 @@ import {
   validateVariantsBeforeSubmit,
 } from "@/lib/productVariants";
 import { createProduct, fetchCategories } from "@/services/productService";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const Products = () => {
+  const { user } = useAuth();
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -56,6 +59,11 @@ const Products = () => {
   }, []);
 
   const handleCreateProduct = async () => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     const trimmedName = productName.trim();
     const trimmedDescription = productDescription.trim();
 
@@ -105,7 +113,9 @@ const Products = () => {
     }
   };
 
-  const isFormDisabled = isSubmitting || isLoadingCategories || !!categoriesError;
+  const isDemoReadOnly = Boolean(user?.isDemoAdmin);
+  const isFormDisabled =
+    isDemoReadOnly || isSubmitting || isLoadingCategories || !!categoriesError;
 
   return (
     <>
@@ -206,6 +216,7 @@ const Products = () => {
               variants={variants}
               onChange={setVariants}
               mode="create"
+              disabled={isDemoReadOnly}
             />
           </div>
 
@@ -213,6 +224,7 @@ const Products = () => {
             <Button
               type="button"
               className="cursor-pointer min-w-[140px]"
+              title={isDemoReadOnly ? DEMO_READ_ONLY_MESSAGE : undefined}
               disabled={isFormDisabled}
               onClick={handleCreateProduct}>
               {isSubmitting ? (
