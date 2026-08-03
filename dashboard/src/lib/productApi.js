@@ -24,6 +24,7 @@ export const authPaths = {
   userList: "/auth/userlist",
   currentUser: "/auth/currentuser",
   deleteUser: (id) => `/auth/deleteuser/${id}`,
+  updateUserRole: (id) => `/auth/updateuserrole/${id}`,
 };
 
 export const categoryPaths = {
