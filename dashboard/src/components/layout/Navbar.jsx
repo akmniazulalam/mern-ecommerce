@@ -7,19 +7,19 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { MobileSidebar } from "./Sidebar";
 import { useAuth } from "@/context/AuthContext";
 import apiClient from "@/lib/apiClient";
+import { authPaths } from "@/lib/productApi";
+import { getApiErrorMessage } from "@/lib/apiErrors";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() =>
+    document.documentElement.classList.contains("dark"),
+  );
   const [openProfile, setOpenProfile] = useState(false);
   const [image, setImage] = useState(null);
 
   const profileRef = useRef();
-
-  // Dark mode sync
-  useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark");
-    setDarkMode(isDark);
-  }, []);
 
   const { user, setUser } = useAuth();
 
@@ -50,6 +50,11 @@ const Navbar = () => {
   };
 
   const handleImageUpload = async (file) => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     const formData = new FormData();
     formData.append("image", file);
 
@@ -69,7 +74,9 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await apiClient.post(authPaths.logout, {});
-    } catch (e) {}
+    } catch {
+      // Logout should continue locally even if the server session is already gone.
+    }
     setUser(null);
     window.location.href = "/login";
   };
@@ -156,11 +163,18 @@ const Navbar = () => {
                 </div>
 
                 {/* Camera Icon */}
-                <label className="absolute bottom-0 right-17.5 bg-black text-white p-1 rounded-full cursor-pointer">
+                <label
+                  title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                  className={`absolute bottom-0 right-17.5 bg-black text-white p-1 rounded-full ${
+                    user?.isDemoAdmin
+                      ? "cursor-not-allowed opacity-60"
+                      : "cursor-pointer"
+                  }`}>
                   <Camera size={14} />
                   <input
                     type="file"
                     className="hidden"
+                    disabled={user?.isDemoAdmin}
                     onChange={(e) => {
                       const file = e.target.files[0];
                       if (file) {
