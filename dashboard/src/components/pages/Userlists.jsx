@@ -33,6 +33,7 @@ import toast from "react-hot-toast";
 import apiClient from "@/lib/apiClient";
 import { authPaths } from "@/lib/productApi";
 import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const Userlists = () => {
   const { user: currentUser } = useAuth();
@@ -61,6 +62,10 @@ const Userlists = () => {
     String(user?._id || "") === String(currentUser?.id || "");
 
   const getRoleRestriction = (user) => {
+    if (currentUser?.isDemoAdmin) {
+      return DEMO_READ_ONLY_MESSAGE;
+    }
+
     if (user?.isPrimaryAdmin) {
       return "Primary Admin role cannot be changed.";
     }
@@ -73,6 +78,10 @@ const Userlists = () => {
   };
 
   const getDeleteRestriction = (user) => {
+    if (currentUser?.isDemoAdmin) {
+      return DEMO_READ_ONLY_MESSAGE;
+    }
+
     if (user?.isPrimaryAdmin) {
       return "Primary Admin account cannot be deleted.";
     }
