@@ -26,6 +26,8 @@ import {
   deleteProduct,
   fetchProducts,
 } from "@/services/productService";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 import {
   AlertCircle,
   Loader2,
@@ -37,6 +39,7 @@ import {
 } from "lucide-react";
 
 const ProductList = () => {
+  const { user } = useAuth();
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
@@ -71,6 +74,11 @@ const ProductList = () => {
   }, []);
 
   const handleProductDelete = async (id) => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     setDeletingId(id);
 
     try {
@@ -110,12 +118,22 @@ const ProductList = () => {
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
-            <Button asChild size="sm" className="cursor-pointer">
-              <Link to="/products">
+            {user?.isDemoAdmin ? (
+              <Button
+                size="sm"
+                disabled
+                title={DEMO_READ_ONLY_MESSAGE}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Product
-              </Link>
-            </Button>
+              </Button>
+            ) : (
+              <Button asChild size="sm" className="cursor-pointer">
+                <Link to="/products">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Product
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
 
@@ -143,12 +161,23 @@ const ProductList = () => {
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">
               Start by creating your first product with color, size, or image variants.
             </p>
-            <Button asChild size="sm" className="mt-2 cursor-pointer">
-              <Link to="/products">
+            {user?.isDemoAdmin ? (
+              <Button
+                size="sm"
+                disabled
+                title={DEMO_READ_ONLY_MESSAGE}
+                className="mt-2">
                 <Plus className="h-4 w-4 mr-2" />
                 Create Product
-              </Link>
-            </Button>
+              </Button>
+            ) : (
+              <Button asChild size="sm" className="mt-2 cursor-pointer">
+                <Link to="/products">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Product
+                </Link>
+              </Button>
+            )}
           </div>
         ) : null}
 
@@ -192,41 +221,63 @@ const ProductList = () => {
                     <VariantListPreview variants={product.variants} />
 
                     <div className="flex items-center justify-end gap-2 pt-2 border-t">
-                      <Button asChild size="sm" variant="outline" className="cursor-pointer">
-                        <Link to={`/updateproduct/${product._id}`}>
+                      {user?.isDemoAdmin ? (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled
+                          title={DEMO_READ_ONLY_MESSAGE}>
                           <Pencil className="h-3.5 w-3.5 mr-1" />
                           Edit
-                        </Link>
-                      </Button>
+                        </Button>
+                      ) : (
+                        <Button asChild size="sm" variant="outline" className="cursor-pointer">
+                          <Link to={`/updateproduct/${product._id}`}>
+                            <Pencil className="h-3.5 w-3.5 mr-1" />
+                            Edit
+                          </Link>
+                        </Button>
+                      )}
 
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            disabled={deletingId === product._id}
-                            className="cursor-pointer">
-                            <Trash2 className="h-3.5 w-3.5 mr-1" />
-                            Delete
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Product?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete "{product.name}"? This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleProductDelete(product._id)}
-                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer">
+                      {user?.isDemoAdmin ? (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          disabled
+                          title={DEMO_READ_ONLY_MESSAGE}>
+                          <Trash2 className="h-3.5 w-3.5 mr-1" />
+                          Delete
+                        </Button>
+                      ) : (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              disabled={deletingId === product._id}
+                              className="cursor-pointer">
+                              <Trash2 className="h-3.5 w-3.5 mr-1" />
                               Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Product?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete "{product.name}"? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleProductDelete(product._id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer">
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
