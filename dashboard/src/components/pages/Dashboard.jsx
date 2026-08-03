@@ -36,6 +36,7 @@ import { useAuth } from "@/context/AuthContext";
 import apiClient from "@/lib/apiClient";
 import { authPaths, categoryPaths, couponPaths, unwrapApiData } from "@/lib/productApi";
 import { getApiErrorMessage } from "@/lib/apiErrors";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 import { fetchProducts } from "@/services/productService";
 import { fetchAdminOrders, ORDER_STATUSES } from "@/services/orderService";
 
@@ -552,23 +553,59 @@ const Dashboard = () => {
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
-                  <Button asChild variant="outline" className="h-11 justify-start">
-                    <Link to="/products">
-                      <PackagePlus className="h-4 w-4" />
-                      Add Product
-                    </Link>
+                  <Button
+                    asChild={!user?.isDemoAdmin}
+                    variant="outline"
+                    disabled={user?.isDemoAdmin}
+                    title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                    className="h-11 justify-start">
+                    {user?.isDemoAdmin ? (
+                      <span>
+                        <PackagePlus className="h-4 w-4" />
+                        Add Product
+                      </span>
+                    ) : (
+                      <Link to="/products">
+                        <PackagePlus className="h-4 w-4" />
+                        Add Product
+                      </Link>
+                    )}
                   </Button>
-                  <Button asChild variant="outline" className="h-11 justify-start">
-                    <Link to="/category">
-                      <FolderPlus className="h-4 w-4" />
-                      Create Category
-                    </Link>
+                  <Button
+                    asChild={!user?.isDemoAdmin}
+                    variant="outline"
+                    disabled={user?.isDemoAdmin}
+                    title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                    className="h-11 justify-start">
+                    {user?.isDemoAdmin ? (
+                      <span>
+                        <FolderPlus className="h-4 w-4" />
+                        Create Category
+                      </span>
+                    ) : (
+                      <Link to="/category">
+                        <FolderPlus className="h-4 w-4" />
+                        Create Category
+                      </Link>
+                    )}
                   </Button>
-                  <Button asChild variant="outline" className="h-11 justify-start">
-                    <Link to="/coupon">
-                      <Ticket className="h-4 w-4" />
-                      Create Coupon
-                    </Link>
+                  <Button
+                    asChild={!user?.isDemoAdmin}
+                    variant="outline"
+                    disabled={user?.isDemoAdmin}
+                    title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                    className="h-11 justify-start">
+                    {user?.isDemoAdmin ? (
+                      <span>
+                        <Ticket className="h-4 w-4" />
+                        Create Coupon
+                      </span>
+                    ) : (
+                      <Link to="/coupon">
+                        <Ticket className="h-4 w-4" />
+                        Create Coupon
+                      </Link>
+                    )}
                   </Button>
                   <Button asChild variant="outline" className="h-11 justify-start">
                     <Link to="/orders">
