@@ -7,6 +7,7 @@ const emailVerification = require("../../common/utils/emailVerification");
 const uploadImage = require("../../common/config/cloudinary");
 const {
   getEffectiveRole,
+  isDemoAdminEmail,
   isPrimaryAdminEmail,
   normalizeRole,
 } = require("./auth.middleware");
@@ -34,11 +35,13 @@ function formatUser(user) {
   delete plainUser.token;
 
   const isPrimaryAdmin = isPrimaryAdminEmail(plainUser.email);
+  const isDemoAdmin = isDemoAdminEmail(plainUser.email);
 
   return {
     ...plainUser,
     role: getEffectiveRole(plainUser),
     isPrimaryAdmin,
+    isDemoAdmin,
   };
 }
 
@@ -359,6 +362,7 @@ async function loginController(req, res) {
         lastName: existingEmailUser.lastName,
         role: getEffectiveRole(existingEmailUser),
         isPrimaryAdmin: isPrimaryAdminEmail(existingEmailUser.email),
+        isDemoAdmin: isDemoAdminEmail(existingEmailUser.email),
         profileImage: existingEmailUser.profileImage || "",
       };
 
@@ -410,6 +414,7 @@ async function currentuserController(req, res) {
     lastName: user.lastName,
     role: getEffectiveRole(user),
     isPrimaryAdmin: isPrimaryAdminEmail(user.email),
+    isDemoAdmin: isDemoAdminEmail(user.email),
     profileImage: user.profileImage || "",
   };
 

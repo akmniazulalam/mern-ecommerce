@@ -8,6 +8,7 @@ const { MongoStore } = require("connect-mongo");
 const routes = require("./routes");
 const { getEnv } = require("./common/config/env");
 const { errorHandler } = require("./common/middleware/errorHandler");
+const { demoReadOnlyMiddleware } = require("./modules/auth/auth.middleware");
 
 app.use(
   helmet({
@@ -55,6 +56,7 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+app.use(demoReadOnlyMiddleware);
 app.use("/api/v1", routes);
 app.use(errorHandler);
 
