@@ -5,7 +5,11 @@ const passVal = require("../../common/utils/passVal");
 const emailValidation = require("../../common/utils/emailValidation");
 const emailVerification = require("../../common/utils/emailVerification");
 const uploadImage = require("../../common/config/cloudinary");
-const { normalizeRole } = require("./auth.middleware");
+const {
+  getEffectiveRole,
+  isPrimaryAdminEmail,
+  normalizeRole,
+} = require("./auth.middleware");
 
 const isProduction = process.env.NODE_ENV === "production";
 const sessionCookieOptions = {
@@ -16,6 +20,43 @@ const sessionCookieOptions = {
 
 // In-memory track of failed OTP attempts per email
 const otpAttemptsMap = new Map();
+
+function formatUser(user) {
+  const plainUser = typeof user?.toObject === "function" ? user.toObject() : user;
+
+  if (!plainUser) {
+    return plainUser;
+  }
+
+  delete plainUser.password;
+  delete plainUser.otp;
+  delete plainUser.expireOtp;
+  delete plainUser.token;
+
+  const isPrimaryAdmin = isPrimaryAdminEmail(plainUser.email);
+
+  return {
+    ...plainUser,
+    role: getEffectiveRole(plainUser),
+    isPrimaryAdmin,
+  };
+}
+
+function isSameUserId(firstId, secondId) {
+  return String(firstId || "") === String(secondId || "");
+}
+
+async function getEffectiveAdminCount(excludeUserId) {
+  const users = await userSchema.find({}).select("email role");
+
+  return users.filter((user) => {
+    if (excludeUserId && isSameUserId(user._id, excludeUserId)) {
+      return false;
+    }
+
+    return getEffectiveRole(user) === "admin";
+  }).length;
+}
 
 async function signupController(req, res) {
   try {
@@ -100,7 +141,7 @@ async function getAllUsers(req, res) {
       .select("-password -otp -expireOtp -token");
     res.status(200).json({
       message: "Get all users",
-      data: users,
+      data: users.map(formatUser),
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch users" });
@@ -111,20 +152,87 @@ async function deleteUser(req, res) {
   try {
     const { id } = req.params;
 
-    const deletedUser = await userSchema.findByIdAndDelete(id);
+    const user = await userSchema
+      .findById(id)
+      .select("-password -otp -expireOtp -token");
 
-    if (!deletedUser) {
+    if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
     }
 
+    if (isPrimaryAdminEmail(user.email)) {
+      return res.status(403).json({
+        message: "Primary Admin account cannot be deleted",
+      });
+    }
+
+    if (getEffectiveRole(user) === "admin") {
+      const remainingAdminCount = await getEffectiveAdminCount(user._id);
+
+      if (remainingAdminCount < 1) {
+        return res.status(409).json({
+          message: "Cannot delete the last remaining admin account",
+        });
+      }
+    }
+
+    await userSchema.findByIdAndDelete(id);
+
     res.status(200).json({
       message: "Deleted successfully done",
-      data: deletedUser,
+      data: formatUser(user),
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete user" });
+  }
+}
+
+async function updateUserRole(req, res) {
+  try {
+    const { id } = req.params;
+    const requestedRole = normalizeRole(req.body.role);
+
+    const user = await userSchema.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    if (isPrimaryAdminEmail(user.email)) {
+      return res.status(403).json({
+        message: "Primary Admin role cannot be changed",
+      });
+    }
+
+    if (isSameUserId(req.session?.user?.id, user._id)) {
+      return res.status(403).json({
+        message: "You cannot change your own role",
+      });
+    }
+
+    if (getEffectiveRole(user) === "admin" && requestedRole === "user") {
+      const remainingAdminCount = await getEffectiveAdminCount(user._id);
+
+      if (remainingAdminCount < 1) {
+        return res.status(409).json({
+          message: "Cannot remove the last remaining admin account",
+        });
+      }
+    }
+
+    user.role = requestedRole;
+    await user.save();
+
+    return res.status(200).json({
+      message: "User role updated successfully",
+      data: formatUser(user),
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update user role" });
   }
 }
 
@@ -249,7 +357,8 @@ async function loginController(req, res) {
         email: existingEmailUser.email,
         firstName: existingEmailUser.firstName,
         lastName: existingEmailUser.lastName,
-        role: normalizeRole(existingEmailUser.role),
+        role: getEffectiveRole(existingEmailUser),
+        isPrimaryAdmin: isPrimaryAdminEmail(existingEmailUser.email),
         profileImage: existingEmailUser.profileImage || "",
       };
 
@@ -299,7 +408,8 @@ async function currentuserController(req, res) {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    role: normalizeRole(user.role),
+    role: getEffectiveRole(user),
+    isPrimaryAdmin: isPrimaryAdminEmail(user.email),
     profileImage: user.profileImage || "",
   };
 
@@ -359,6 +469,7 @@ module.exports = {
   signupController,
   getAllUsers,
   deleteUser,
+  updateUserRole,
   currentuserController,
   uploadAvatarController,
 };
