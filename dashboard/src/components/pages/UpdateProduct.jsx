@@ -27,8 +27,11 @@ import {
   fetchProductById,
   updateProduct,
 } from "@/services/productService";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const UpdateProduct = () => {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -84,6 +87,11 @@ const UpdateProduct = () => {
   }, [loadProduct]);
 
   const handleUpdate = async () => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     const trimmedName = name.trim();
     const trimmedDescription = description.trim();
 
@@ -169,6 +177,9 @@ const UpdateProduct = () => {
     );
   }
 
+  const isDemoReadOnly = Boolean(user?.isDemoAdmin);
+  const isFormDisabled = isSubmitting || isDemoReadOnly;
+
   return (
     <>
       <Helmet>
@@ -196,7 +207,7 @@ const UpdateProduct = () => {
               <FieldLabel className="font-semibold">Product name</FieldLabel>
               <Input
                 value={name}
-                disabled={isSubmitting}
+                disabled={isFormDisabled}
                 onChange={(e) => setName(e.target.value)}
               />
             </Field>
@@ -206,7 +217,7 @@ const UpdateProduct = () => {
               <Textarea
                 value={description}
                 className="resize-none min-h-[100px]"
-                disabled={isSubmitting}
+                disabled={isFormDisabled}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </Field>
@@ -215,7 +226,7 @@ const UpdateProduct = () => {
               <FieldLabel className="font-semibold">Category</FieldLabel>
               <Select
                 value={category}
-                disabled={isSubmitting}
+                disabled={isFormDisabled}
                 onValueChange={setCategory}>
                 <SelectTrigger className="w-full max-w-xs h-10 cursor-pointer">
                   <SelectValue placeholder="Select category" />
@@ -242,13 +253,15 @@ const UpdateProduct = () => {
               variants={variants}
               onChange={setVariants}
               mode="edit"
+              disabled={isDemoReadOnly}
             />
           </div>
 
           <Button
             type="button"
             className="w-full sm:w-auto cursor-pointer min-w-[140px]"
-            disabled={isSubmitting}
+            title={isDemoReadOnly ? DEMO_READ_ONLY_MESSAGE : undefined}
+            disabled={isFormDisabled}
             onClick={handleUpdate}>
             {isSubmitting ? (
               <>
