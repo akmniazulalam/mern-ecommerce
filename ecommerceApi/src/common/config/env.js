@@ -6,6 +6,7 @@ const REQUIRED_ENV_VARS = [
   "API_KEY",
   "API_SECRET",
   "RESEND_API_KEY",
+  "PRIMARY_ADMIN_EMAIL",
 ];
 
 function getEnv(name) {
