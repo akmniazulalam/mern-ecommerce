@@ -62,7 +62,7 @@ const Userlists = () => {
 
   const getRoleRestriction = (user) => {
     if (user?.isPrimaryAdmin) {
-      return "Primary Admin role is locked by system configuration.";
+      return "Primary Admin role cannot be changed.";
     }
 
     if (isCurrentUser(user)) {
@@ -129,31 +129,47 @@ const Userlists = () => {
     }
   };
 
+  const TooltipHint = ({ message, children }) => (
+    <span
+      className="group relative inline-flex w-full max-w-max focus:outline-none"
+      tabIndex={0}
+      aria-label={message}>
+      {children}
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute left-0 bottom-full z-50 mb-2 hidden max-w-[14rem] rounded-md border bg-popover px-2.5 py-1.5 text-xs leading-snug text-popover-foreground shadow-md whitespace-normal break-words group-hover:block group-focus:block group-focus-within:block">
+        {message}
+      </span>
+    </span>
+  );
+
   const RoleAction = ({ user }) => {
     const restriction = getRoleRestriction(user);
     const isDisabled = Boolean(restriction) || roleSavingId === user._id;
+    const roleSelect = (
+      <Select
+        value={normalizeRole(user.role)}
+        onValueChange={(role) => handleRoleSelect(user, role)}
+        disabled={isDisabled}>
+        <SelectTrigger
+          className="w-full min-w-[7.5rem]"
+          title={restriction || "Change user role"}>
+          <SelectValue placeholder="Role" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="user">User</SelectItem>
+          <SelectItem value="admin">Admin</SelectItem>
+        </SelectContent>
+      </Select>
+    );
 
     return (
-      <div className="flex w-full max-w-[13rem] flex-col gap-1.5 whitespace-normal">
-        <Select
-          value={normalizeRole(user.role)}
-          onValueChange={(role) => handleRoleSelect(user, role)}
-          disabled={isDisabled}>
-          <SelectTrigger
-            className="w-full min-w-[7.5rem]"
-            title={restriction || "Change user role"}>
-            <SelectValue placeholder="Role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="user">User</SelectItem>
-            <SelectItem value="admin">Admin</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex w-full max-w-[13rem] whitespace-normal">
         {restriction ? (
-          <p className="max-w-full text-[11px] leading-snug text-muted-foreground whitespace-normal break-words">
-            {restriction}
-          </p>
-        ) : null}
+          <TooltipHint message={restriction}>{roleSelect}</TooltipHint>
+        ) : (
+          roleSelect
+        )}
       </div>
     );
   };
@@ -163,7 +179,7 @@ const Userlists = () => {
 
     if (restriction) {
       return (
-        <div className="max-w-[12rem] space-y-1.5 whitespace-normal">
+        <TooltipHint message={restriction}>
           <Button
             size="sm"
             variant="destructive"
@@ -172,10 +188,7 @@ const Userlists = () => {
             className={className}>
             Delete
           </Button>
-          <p className="max-w-full text-[11px] leading-snug text-muted-foreground whitespace-normal break-words">
-            {restriction}
-          </p>
-        </div>
+        </TooltipHint>
       );
     }
 
