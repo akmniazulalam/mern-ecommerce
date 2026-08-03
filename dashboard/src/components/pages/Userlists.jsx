@@ -134,13 +134,13 @@ const Userlists = () => {
     const isDisabled = Boolean(restriction) || roleSavingId === user._id;
 
     return (
-      <div className="flex w-full max-w-[14rem] flex-col gap-2 whitespace-normal">
+      <div className="flex w-full max-w-[13rem] flex-col gap-1.5 whitespace-normal">
         <Select
           value={normalizeRole(user.role)}
           onValueChange={(role) => handleRoleSelect(user, role)}
           disabled={isDisabled}>
           <SelectTrigger
-            className="w-full min-w-[8rem]"
+            className="w-full min-w-[7.5rem]"
             title={restriction || "Change user role"}>
             <SelectValue placeholder="Role" />
           </SelectTrigger>
@@ -150,7 +150,7 @@ const Userlists = () => {
           </SelectContent>
         </Select>
         {restriction ? (
-          <p className="text-xs leading-snug text-muted-foreground whitespace-normal break-words">
+          <p className="max-w-full text-[11px] leading-snug text-muted-foreground whitespace-normal break-words">
             {restriction}
           </p>
         ) : null}
@@ -163,7 +163,7 @@ const Userlists = () => {
 
     if (restriction) {
       return (
-        <div className="max-w-[14rem] space-y-2 whitespace-normal">
+        <div className="max-w-[12rem] space-y-1.5 whitespace-normal">
           <Button
             size="sm"
             variant="destructive"
@@ -172,7 +172,7 @@ const Userlists = () => {
             className={className}>
             Delete
           </Button>
-          <p className="text-xs leading-snug text-muted-foreground whitespace-normal break-words">
+          <p className="max-w-full text-[11px] leading-snug text-muted-foreground whitespace-normal break-words">
             {restriction}
           </p>
         </div>
@@ -228,7 +228,7 @@ const Userlists = () => {
             </CardHeader>
 
             <CardContent>
-              <Table>
+              <Table className="min-w-[760px]">
                 <TableHeader>
                   <TableRow>
                     <TableHead scope="col">User</TableHead>
@@ -244,32 +244,36 @@ const Userlists = () => {
                   {userList.map((user) => (
                     <TableRow key={user._id}>
                       {/* User Info */}
-                      <TableCell className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-primary dark:text-black text-white flex items-center justify-center font-semibold">
-                          {user.firstName?.charAt(0)}
-                          {user.lastName?.charAt(0)}
-                        </div>
+                      <TableCell className="align-middle">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-primary dark:text-black text-white flex items-center justify-center font-semibold">
+                            {user.firstName?.charAt(0)}
+                            {user.lastName?.charAt(0)}
+                          </div>
 
-                        <div>
-                          <p className="font-medium">
-                            {user.firstName} {user.lastName}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            ID: {user._id}
-                          </p>
+                          <div>
+                            <p className="font-medium">
+                              {user.firstName} {user.lastName}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              ID: {user._id}
+                            </p>
+                          </div>
                         </div>
                       </TableCell>
 
                       {/* Email */}
-                      <TableCell>{user.email}</TableCell>
+                      <TableCell className="max-w-[14rem] align-middle whitespace-normal break-all">
+                        {user.email}
+                      </TableCell>
 
                       {/* Role */}
-                      <TableCell className="align-top whitespace-normal">
+                      <TableCell className="align-middle whitespace-normal">
                         <RoleAction user={user} />
                       </TableCell>
 
                       {/* Status */}
-                      <TableCell>
+                      <TableCell className="align-middle">
                         {user.isVerified ? (
                           <Badge className="bg-green-500">Verified</Badge>
                         ) : (
@@ -282,10 +286,10 @@ const Userlists = () => {
                       </TableCell>
 
                       {/* Created */}
-                      <TableCell>
+                      <TableCell className="align-middle">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </TableCell>
-                      <TableCell className="align-top whitespace-normal">
+                      <TableCell className="align-middle whitespace-normal">
                         <DeleteAction user={user} />
                       </TableCell>
                     </TableRow>
