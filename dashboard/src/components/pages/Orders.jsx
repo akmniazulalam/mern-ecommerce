@@ -33,6 +33,8 @@ import {
   ORDER_STATUSES,
   updateOrderStatus,
 } from "@/services/orderService";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 import {
   AlertCircle,
   Eye,
@@ -83,6 +85,7 @@ function getStatusBadgeClass(status) {
 }
 
 const Orders = () => {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -133,6 +136,11 @@ const Orders = () => {
   };
 
   const handleSaveStatus = async () => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     if (!selectedOrder || !draftStatus || draftStatus === selectedOrder.orderStatus) {
       return;
     }
@@ -394,7 +402,10 @@ const Orders = () => {
                       </Badge>
                     </div>
 
-                    <Select value={draftStatus} onValueChange={setDraftStatus}>
+                    <Select
+                      value={draftStatus}
+                      onValueChange={setDraftStatus}
+                      disabled={user?.isDemoAdmin}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Update order status" />
                       </SelectTrigger>
@@ -410,7 +421,9 @@ const Orders = () => {
                     <Button
                       type="button"
                       className="w-full cursor-pointer"
+                      title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
                       disabled={
+                        user?.isDemoAdmin ||
                         isStatusSaving ||
                         !draftStatus ||
                         draftStatus === selectedOrder.orderStatus
