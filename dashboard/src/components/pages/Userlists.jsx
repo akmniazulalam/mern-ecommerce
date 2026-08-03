@@ -21,24 +21,103 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Helmet } from "react-helmet-async";
 import toast from "react-hot-toast";
 import apiClient from "@/lib/apiClient";
 import { authPaths } from "@/lib/productApi";
+import { useAuth } from "@/context/AuthContext";
 
 const Userlists = () => {
+  const { user: currentUser } = useAuth();
   const [userList, setUserList] = useState([]);
+  const [pendingRoleChange, setPendingRoleChange] = useState(null);
+  const [roleSavingId, setRoleSavingId] = useState(null);
 
-  useEffect(() => {
+  const fetchUsers = () => {
     apiClient
       .get(authPaths.userList)
       .then((res) => {
-        setUserList(res.data.data);
+        setUserList(Array.isArray(res.data.data) ? res.data.data : []);
       })
       .catch(() => {
         toast.error("Failed to fetch user list");
       });
+  };
+
+  useEffect(() => {
+    fetchUsers();
   }, []);
+
+  const normalizeRole = (role) => String(role || "user").toLowerCase();
+
+  const isCurrentUser = (user) =>
+    String(user?._id || "") === String(currentUser?.id || "");
+
+  const getRoleRestriction = (user) => {
+    if (user?.isPrimaryAdmin) {
+      return "Primary Admin role is managed by system configuration and cannot be changed.";
+    }
+
+    if (isCurrentUser(user)) {
+      return "You cannot change your own role.";
+    }
+
+    return "";
+  };
+
+  const getDeleteRestriction = (user) => {
+    if (user?.isPrimaryAdmin) {
+      return "Primary Admin account is protected by system configuration and cannot be deleted.";
+    }
+
+    return "";
+  };
+
+  const handleRoleSelect = (targetUser, nextRole) => {
+    const normalizedNextRole = normalizeRole(nextRole);
+    const restriction = getRoleRestriction(targetUser);
+
+    if (restriction) {
+      toast.error(restriction);
+      return;
+    }
+
+    if (normalizedNextRole === normalizeRole(targetUser.role)) {
+      return;
+    }
+
+    setPendingRoleChange({
+      user: targetUser,
+      role: normalizedNextRole,
+    });
+  };
+
+  const handleConfirmRoleUpdate = async () => {
+    if (!pendingRoleChange) {
+      return;
+    }
+
+    const { user, role } = pendingRoleChange;
+
+    try {
+      setRoleSavingId(user._id);
+      await apiClient.patch(authPaths.updateUserRole(user._id), { role });
+      toast.success("User role updated successfully");
+      fetchUsers();
+      setPendingRoleChange(null);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update user role");
+    } finally {
+      setRoleSavingId(null);
+    }
+  };
 
   const handleDeleteUser = async (id) => {
     try {
@@ -48,6 +127,97 @@ const Userlists = () => {
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to delete user");
     }
+  };
+
+  const RoleBadge = ({ role }) => (
+    <Badge variant={normalizeRole(role) === "admin" ? "default" : "secondary"}>
+      {normalizeRole(role) === "admin" ? "Admin" : "User"}
+    </Badge>
+  );
+
+  const RoleAction = ({ user }) => {
+    const restriction = getRoleRestriction(user);
+    const isDisabled = Boolean(restriction) || roleSavingId === user._id;
+
+    return (
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <RoleBadge role={user.role} />
+          <Select
+            value={normalizeRole(user.role)}
+            onValueChange={(role) => handleRoleSelect(user, role)}
+            disabled={isDisabled}>
+            <SelectTrigger
+              className="w-[120px]"
+              title={restriction || "Change user role"}>
+              <SelectValue placeholder="Role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="user">User</SelectItem>
+              <SelectItem value="admin">Admin</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        {restriction ? (
+          <p className="max-w-[220px] text-xs text-muted-foreground">
+            {restriction}
+          </p>
+        ) : null}
+      </div>
+    );
+  };
+
+  const DeleteAction = ({ user, className = "" }) => {
+    const restriction = getDeleteRestriction(user);
+
+    if (restriction) {
+      return (
+        <div className="space-y-2">
+          <Button
+            size="sm"
+            variant="destructive"
+            disabled
+            title={restriction}
+            className={className}>
+            Delete
+          </Button>
+          <p className="text-xs text-muted-foreground">{restriction}</p>
+        </div>
+      );
+    }
+
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            size="sm"
+            variant="destructive"
+            className={`cursor-pointer dark:bg-red-600 ${className}`}>
+            Delete
+          </Button>
+        </AlertDialogTrigger>
+
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this
+              user.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => handleDeleteUser(user._id)}
+              className={"cursor-pointer"}>
+              Confirm Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
   };
 
   return (
@@ -70,6 +240,7 @@ const Userlists = () => {
                   <TableRow>
                     <TableHead scope="col">User</TableHead>
                     <TableHead scope="col">Email</TableHead>
+                    <TableHead scope="col">Role</TableHead>
                     <TableHead scope="col">Status</TableHead>
                     <TableHead scope="col">Created</TableHead>
                     <TableHead scope="col">Action</TableHead>
@@ -99,6 +270,11 @@ const Userlists = () => {
                       {/* Email */}
                       <TableCell>{user.email}</TableCell>
 
+                      {/* Role */}
+                      <TableCell>
+                        <RoleAction user={user} />
+                      </TableCell>
+
                       {/* Status */}
                       <TableCell>
                         {user.isVerified ? (
@@ -117,36 +293,7 @@ const Userlists = () => {
                         {new Date(user.createdAt).toLocaleDateString()}
                       </TableCell>
                       <TableCell>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              className="cursor-pointer dark:bg-red-600">
-                              Delete
-                            </Button>
-                          </AlertDialogTrigger>
-
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete this user.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-
-                              <AlertDialogAction
-                                onClick={() => handleDeleteUser(user._id)}
-                                className={"cursor-pointer"}>
-                                Confirm Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <DeleteAction user={user} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -184,6 +331,12 @@ const Userlists = () => {
                 <p className="text-sm break-all">{user.email}</p>
               </div>
 
+              {/* Role */}
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Role</p>
+                <RoleAction user={user} />
+              </div>
+
               {/* Status + Date */}
               <div className="flex justify-between items-center text-sm">
                 <div>
@@ -204,38 +357,46 @@ const Userlists = () => {
               </div>
 
               {/* Action */}
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="w-full shrink dark:bg-red-700">
-                    Delete
-                  </Button>
-                </AlertDialogTrigger>
-
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-
-                    <AlertDialogAction
-                      onClick={() => handleDeleteUser(user._id)}>
-                      Confirm Delete
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <DeleteAction user={user} className="w-full shrink dark:bg-red-700" />
             </div>
           ))}
         </div>
       </div>
+
+      <AlertDialog
+        open={Boolean(pendingRoleChange)}
+        onOpenChange={(open) => {
+          if (!open && !roleSavingId) {
+            setPendingRoleChange(null);
+          }
+        }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Update user role?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will change{" "}
+              {pendingRoleChange?.user?.firstName}{" "}
+              {pendingRoleChange?.user?.lastName}'s role to{" "}
+              {pendingRoleChange?.role === "admin" ? "Admin" : "User"}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={Boolean(roleSavingId)}>
+              Cancel
+            </AlertDialogCancel>
+
+            <AlertDialogAction
+              disabled={Boolean(roleSavingId)}
+              onClick={(event) => {
+                event.preventDefault();
+                handleConfirmRoleUpdate();
+              }}>
+              {roleSavingId ? "Saving..." : "Confirm Update"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
