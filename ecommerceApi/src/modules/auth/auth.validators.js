@@ -93,10 +93,28 @@ function validateAvatarUpload(req) {
   return null;
 }
 
+function validateUpdateUserRoleRequest(req) {
+  const role = toTrimmedString(req.body?.role).toLowerCase();
+
+  if (isMissing(role)) {
+    return { field: "role", message: "Role is required" };
+  }
+
+  if (!["user", "admin"].includes(role)) {
+    return {
+      field: "role",
+      message: "Role must be either user or admin",
+    };
+  }
+
+  return null;
+}
+
 module.exports = {
   validateAvatarUpload: validateRequest(validateAvatarUpload),
   validateLoginRequest: validateRequest(validateLoginRequest),
   validateOtpRequest: validateRequest(validateOtpRequest),
   validateResendOtpRequest: validateRequest(validateResendOtpRequest),
   validateSignupRequest: validateRequest(validateSignupRequest),
+  validateUpdateUserRoleRequest: validateRequest(validateUpdateUserRoleRequest),
 };

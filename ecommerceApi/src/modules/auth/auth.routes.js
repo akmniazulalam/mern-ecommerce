@@ -63,6 +63,7 @@ const {
   signupController,
   getAllUsers,
   deleteUser,
+  updateUserRole,
   loginController,
   logoutController,
   dashboardController,
@@ -80,6 +81,7 @@ const {
   validateOtpRequest,
   validateResendOtpRequest,
   validateSignupRequest,
+  validateUpdateUserRoleRequest,
 } = require("./auth.validators");
 const router = express.Router();
 
@@ -93,6 +95,14 @@ router.delete(
   adminMiddleware,
   validateObjectIdParam("id", "user id"),
   deleteUser,
+);
+router.patch(
+  "/updateuserrole/:id",
+  authMiddleware,
+  adminMiddleware,
+  validateObjectIdParam("id", "user id"),
+  validateUpdateUserRoleRequest,
+  updateUserRole,
 );
 router.post("/login", authLimiter, validateLoginRequest, loginController);
 router.get("/currentuser", currentuserController);
