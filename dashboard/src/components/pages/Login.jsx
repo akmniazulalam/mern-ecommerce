@@ -107,7 +107,9 @@ const Login = () => {
                 ref={focusRef}
                 className={"space-y-4"}>
                 <div>
-                  <Label htmlFor="login-email" className={"mb-2 block"}>Email</Label>
+                  <Label htmlFor="login-email" className={"mb-2 block"}>
+                    Email
+                  </Label>
                   <Input
                     id="login-email"
                     type="email"
@@ -118,7 +120,9 @@ const Login = () => {
                 </div>
 
                 <div className="relative">
-                  <Label htmlFor="login-password" className={"mb-2 block"}>Password</Label>
+                  <Label htmlFor="login-password" className={"mb-2 block"}>
+                    Password
+                  </Label>
                   <Input
                     id="login-password"
                     type={showPassword ? "text" : "password"}
@@ -129,7 +133,9 @@ const Login = () => {
                   {eyeOn && (
                     <button
                       type="button"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-[69%] -translate-y-1/2 cursor-pointer">
                       {showPassword ? (
@@ -165,12 +171,15 @@ const Login = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-sm text-muted-foreground">
-                Use this account to explore the Admin Dashboard in read-only mode.
+                Use this account to explore the Admin Dashboard in read-only
+                mode.
               </p>
 
               <div className="space-y-3">
                 <div className="rounded-lg border bg-background p-3">
-                  <p className="text-xs font-medium text-muted-foreground">Email</p>
+                  <p className="text-xs font-medium text-muted-foreground">
+                    Email
+                  </p>
                   <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <code className="break-all text-sm">{DEMO_EMAIL}</code>
                     <Button
@@ -185,7 +194,9 @@ const Login = () => {
                 </div>
 
                 <div className="rounded-lg border bg-background p-3">
-                  <p className="text-xs font-medium text-muted-foreground">Password</p>
+                  <p className="text-xs font-medium text-muted-foreground">
+                    Password
+                  </p>
                   <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <code className="break-all text-sm">{DEMO_PASSWORD}</code>
                     <Button
@@ -193,7 +204,9 @@ const Login = () => {
                       variant="outline"
                       size="sm"
                       className="shrink-0 cursor-pointer"
-                      onClick={() => copyToClipboard("Password", DEMO_PASSWORD)}>
+                      onClick={() =>
+                        copyToClipboard("Password", DEMO_PASSWORD)
+                      }>
                       Copy Password
                     </Button>
                   </div>
