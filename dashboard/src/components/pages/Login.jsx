@@ -177,7 +177,7 @@ const Login = () => {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="shrink-0"
+                      className="shrink-0 cursor-pointer"
                       onClick={() => copyToClipboard("Email", DEMO_EMAIL)}>
                       Copy Email
                     </Button>
@@ -192,7 +192,7 @@ const Login = () => {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="shrink-0"
+                      className="shrink-0 cursor-pointer"
                       onClick={() => copyToClipboard("Password", DEMO_PASSWORD)}>
                       Copy Password
                     </Button>
