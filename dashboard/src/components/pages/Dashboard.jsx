@@ -560,7 +560,7 @@ const Dashboard = () => {
                     title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
                     className="h-11 justify-start">
                     {user?.isDemoAdmin ? (
-                      <span>
+                      <span className="inline-flex items-center gap-2">
                         <PackagePlus className="h-4 w-4" />
                         Add Product
                       </span>
@@ -578,7 +578,7 @@ const Dashboard = () => {
                     title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
                     className="h-11 justify-start">
                     {user?.isDemoAdmin ? (
-                      <span>
+                      <span className="inline-flex items-center gap-2">
                         <FolderPlus className="h-4 w-4" />
                         Create Category
                       </span>
@@ -596,7 +596,7 @@ const Dashboard = () => {
                     title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
                     className="h-11 justify-start">
                     {user?.isDemoAdmin ? (
-                      <span>
+                      <span className="inline-flex items-center gap-2">
                         <Ticket className="h-4 w-4" />
                         Create Coupon
                       </span>
