@@ -24,8 +24,11 @@ import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import apiClient from "@/lib/apiClient";
 import { categoryPaths } from "@/lib/productApi";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const CategoryList = () => {
+  const { user } = useAuth();
   const [finalData, setFinalData] = useState([]);
   useEffect(() => {
     async function final() {
@@ -40,6 +43,10 @@ const CategoryList = () => {
   }, []);
 
   const handleDeleteCategory = async (id) => {
+    if (user?.isDemoAdmin) {
+      return;
+    }
+
     try {
       await apiClient.delete(categoryPaths.delete(id));
       setFinalData((prev) => prev.filter((item) => item._id !== id));
@@ -76,44 +83,65 @@ const CategoryList = () => {
                     <TableCell>{item.description}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Link to={`/updatecategory/${item._id}`}>
+                        {user?.isDemoAdmin ? (
                           <Button
                             size="sm"
                             variant="outline"
-                            className={"cursor-pointer"}>
+                            disabled
+                            title={DEMO_READ_ONLY_MESSAGE}>
                             Edit
                           </Button>
-                        </Link>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
+                        ) : (
+                          <Link to={`/updatecategory/${item._id}`}>
                             <Button
                               size="sm"
-                              variant="destructive"
-                              className="cursor-pointer dark:bg-red-600">
-                              Delete
+                              variant="outline"
+                              className={"cursor-pointer"}>
+                              Edit
                             </Button>
-                          </AlertDialogTrigger>
+                          </Link>
+                        )}
+                        {user?.isDemoAdmin ? (
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            disabled
+                            title={DEMO_READ_ONLY_MESSAGE}
+                            className="dark:bg-red-600">
+                            Delete
+                          </Button>
+                        ) : (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                className="cursor-pointer dark:bg-red-600">
+                                Delete
+                              </Button>
+                            </AlertDialogTrigger>
 
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action cannot be undone. This will
-                                permanently delete this category.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will
+                                  permanently delete this category.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
 
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-                              <AlertDialogAction
-                                onClick={() => handleDeleteCategory(item._id)}
-                                className={"cursor-pointer"}>
-                                Confirm Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                                <AlertDialogAction
+                                  onClick={() => handleDeleteCategory(item._id)}
+                                  className={"cursor-pointer"}>
+                                  Confirm Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -145,40 +173,62 @@ const CategoryList = () => {
 
                 {/* Actions */}
                 <div className="flex gap-2 pt-2">
-                  <Link to={`/updatecategory/${item._id}`} className="flex-1">
-                    <Button size="sm" variant="outline" className="w-full">
+                  {user?.isDemoAdmin ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled
+                      title={DEMO_READ_ONLY_MESSAGE}
+                      className="flex-1">
                       Edit
                     </Button>
-                  </Link>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        className="w-1/2 shrink dark:bg-red-600">
-                        Delete
+                  ) : (
+                    <Link to={`/updatecategory/${item._id}`} className="flex-1">
+                      <Button size="sm" variant="outline" className="w-full">
+                        Edit
                       </Button>
-                    </AlertDialogTrigger>
+                    </Link>
+                  )}
 
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
+                  {user?.isDemoAdmin ? (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      disabled
+                      title={DEMO_READ_ONLY_MESSAGE}
+                      className="w-1/2 shrink dark:bg-red-600">
+                      Delete
+                    </Button>
+                  ) : (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="w-1/2 shrink dark:bg-red-600">
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
 
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
 
-                        <AlertDialogAction
-                          onClick={() => handleDeleteCategory(item._id)}>
-                          Confirm Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                          <AlertDialogAction
+                            onClick={() => handleDeleteCategory(item._id)}>
+                            Confirm Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               </div>
             ))}
