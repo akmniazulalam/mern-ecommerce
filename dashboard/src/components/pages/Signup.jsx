@@ -140,7 +140,8 @@ const Signup = () => {
             <CardTitle className="text-2xl ">Create Your Account</CardTitle>
             {/* Removed max-w-80 — was clipping text on narrow (≤320px) screens */}
             <CardDescription>
-              Enter your Name, Email &amp; Password below to create to your account
+              Enter your Name, Email &amp; Password below to create to your
+              account
             </CardDescription>
           </CardHeader>
 
@@ -153,7 +154,9 @@ const Signup = () => {
                   stack on mobile instead of being squished to ~148px each */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="signup-firstname" className={"mb-2 block"}>First Name</Label>
+                  <Label htmlFor="signup-firstname" className={"mb-2 block"}>
+                    First Name
+                  </Label>
                   <Input
                     id="signup-firstname"
                     onChange={handleChange}
@@ -164,7 +167,9 @@ const Signup = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="signup-lastname" className={"mb-2 block"}>Last Name</Label>
+                  <Label htmlFor="signup-lastname" className={"mb-2 block"}>
+                    Last Name
+                  </Label>
                   <Input
                     id="signup-lastname"
                     onChange={handleChange}
@@ -176,7 +181,9 @@ const Signup = () => {
               </div>
 
               <div>
-                <Label htmlFor="signup-email" className={"mb-2 block"}>Email</Label>
+                <Label htmlFor="signup-email" className={"mb-2 block"}>
+                  Email
+                </Label>
                 <Input
                   id="signup-email"
                   onChange={handleChange}
@@ -185,17 +192,20 @@ const Signup = () => {
                   placeholder="Enter your email"
                 />
                 <div className="mt-2 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950/30">
-  <Info className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <Info className="h-4 w-4 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
 
-  <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
-    <span className="font-medium">Note:</span> For the best OTP delivery,
-    please use a Yahoo email address. Gmail emails may be delayed or filtered.
-  </p>
-</div>
+                  <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed">
+                    <span className="font-medium">Note:</span> For the best OTP
+                    delivery, please use a Yahoo email address. Gmail emails may
+                    be delayed or filtered.
+                  </p>
+                </div>
               </div>
 
               <div className="relative">
-                <Label htmlFor="signup-password" className={"mb-2 block"}>Password</Label>
+                <Label htmlFor="signup-password" className={"mb-2 block"}>
+                  Password
+                </Label>
                 <Input
                   id="signup-password"
                   onChange={handleChange}
@@ -206,7 +216,9 @@ const Signup = () => {
                 {showEye && (
                   <button
                     type="button"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-[22%] -translate-y-1/2 cursor-pointer">
                     {showPassword ? (
@@ -287,8 +299,9 @@ const Signup = () => {
               <DialogHeader>
                 <DialogTitle>Verify OTP</DialogTitle>
                 <DialogDescription>
-                  Enter the 6-digit OTP sent to your "{registrationInput.email}". 
-                  Please check your Spam/Junk folder if you don't receive the email within a few minutes.
+                  Enter the 6-digit OTP sent to your "{registrationInput.email}
+                  ". Please check your Spam/Junk folder if you don't receive the
+                  email within a few minutes.
                 </DialogDescription>
               </DialogHeader>
 
