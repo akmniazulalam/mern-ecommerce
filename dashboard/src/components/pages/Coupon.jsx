@@ -17,8 +17,11 @@ import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import apiClient from "@/lib/apiClient";
 import { couponPaths } from "@/lib/productApi";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const Coupon = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [code, setCode] = useState("");
@@ -30,6 +33,11 @@ const Coupon = () => {
   const [errors, setErrors] = useState({});
 
   const handleCreateCoupon = async () => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     const nextErrors = {};
     if (!code.trim()) nextErrors.code = "Coupon code is required";
     if (!discountType) nextErrors.discountType = "Discount type is required";
@@ -91,6 +99,7 @@ const Coupon = () => {
               value={code}
               placeholder="SAVE20"
               className={"text-sm"}
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setCode(e.target.value);
                 setErrors((prev) => ({ ...prev, code: undefined }));
@@ -103,7 +112,7 @@ const Coupon = () => {
           <Field>
             <FieldLabel htmlFor="coupon-discount-type">Discount Type</FieldLabel>
 
-            <Select onValueChange={(value) => {
+            <Select disabled={isSubmitting || user?.isDemoAdmin} onValueChange={(value) => {
               setDiscountType(value);
               setErrors((prev) => ({ ...prev, discountType: undefined }));
             }}>
@@ -136,6 +145,7 @@ const Coupon = () => {
               className={
                 "text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               }
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setDiscountValue(e.target.value);
                 setErrors((prev) => ({ ...prev, discountValue: undefined }));
@@ -156,6 +166,7 @@ const Coupon = () => {
               className={
                 "text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               }
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setMinPurchase(e.target.value);
                 setErrors((prev) => ({ ...prev, minPurchase: undefined }));
@@ -173,6 +184,7 @@ const Coupon = () => {
               type="datetime-local"
               value={expiryDate}
               className={"text-sm"}
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setExpiryDate(e.target.value);
                 setErrors((prev) => ({ ...prev, expiryDate: undefined }));
@@ -185,7 +197,8 @@ const Coupon = () => {
           <Field orientation="horizontal">
             <Button
               onClick={handleCreateCoupon}
-              disabled={isSubmitting}
+              disabled={isSubmitting || user?.isDemoAdmin}
+              title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
               className={"cursor-pointer"}>
               {isSubmitting ? "Adding..." : "Add Coupon"}
             </Button>

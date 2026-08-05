@@ -29,8 +29,11 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const CouponList = () => {
+  const { user } = useAuth();
   const [coupons, setCoupons] = useState([]);
 
   // Get All Coupons
@@ -47,6 +50,10 @@ const CouponList = () => {
 
   // Delete Coupon
   const handleDeleteCoupon = async (id) => {
+    if (user?.isDemoAdmin) {
+      return;
+    }
+
     try {
       await apiClient.delete(couponPaths.delete(id));
 
@@ -133,36 +140,47 @@ const CouponList = () => {
 
                     {/* Delete */}
                     <TableCell className="whitespace-normal">
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            className="cursor-pointer dark:bg-red-700">
-                            Delete
-                          </Button>
-                        </AlertDialogTrigger>
+                      {user?.isDemoAdmin ? (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          disabled
+                          title={DEMO_READ_ONLY_MESSAGE}
+                          className="dark:bg-red-700">
+                          Delete
+                        </Button>
+                      ) : (
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              className="cursor-pointer dark:bg-red-700">
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
 
-                        <AlertDialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg">
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                          <AlertDialogContent className="w-[calc(100vw-2rem)] sm:max-w-lg">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
 
-                            <AlertDialogDescription>
-                              This coupon will be permanently deleted.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
+                              <AlertDialogDescription>
+                                This coupon will be permanently deleted.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
 
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
 
-                            <AlertDialogAction
-                              onClick={() => handleDeleteCoupon(coupon._id)}
-                              className="cursor-pointer">
-                              Confirm Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteCoupon(coupon._id)}
+                                className="cursor-pointer">
+                                Confirm Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
