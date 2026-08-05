@@ -34,7 +34,12 @@ import {
 } from "@/components/ui/table";
 import { useAuth } from "@/context/AuthContext";
 import apiClient from "@/lib/apiClient";
-import { authPaths, categoryPaths, couponPaths, unwrapApiData } from "@/lib/productApi";
+import {
+  authPaths,
+  categoryPaths,
+  couponPaths,
+  unwrapApiData,
+} from "@/lib/productApi";
 import { getApiErrorMessage } from "@/lib/apiErrors";
 import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 import { fetchProducts } from "@/services/productService";
@@ -133,7 +138,10 @@ function DashboardSkeleton() {
           <CardContent className="space-y-4">
             <div className="h-5 w-32 rounded bg-muted animate-pulse" />
             {Array.from({ length: 5 }).map((_, index) => (
-              <div key={index} className="h-10 rounded bg-muted animate-pulse" />
+              <div
+                key={index}
+                className="h-10 rounded bg-muted animate-pulse"
+              />
             ))}
           </CardContent>
         </Card>
@@ -186,9 +194,13 @@ function CompactMetric({ label, value, icon }) {
 function EmptyState({ title, description, icon }) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      {React.createElement(icon, { className: "h-9 w-9 text-muted-foreground" })}
+      {React.createElement(icon, {
+        className: "h-9 w-9 text-muted-foreground",
+      })}
       <p className="mt-3 font-medium">{title}</p>
-      <p className="mt-1 max-w-md text-sm text-muted-foreground">{description}</p>
+      <p className="mt-1 max-w-md text-sm text-muted-foreground">
+        {description}
+      </p>
     </div>
   );
 }
@@ -209,22 +221,37 @@ const Dashboard = () => {
     setLoadError("");
 
     try {
-      const [productList, orderList, userResponse, categoryResponse, couponResponse] =
-        await Promise.all([
-          fetchProducts(),
-          fetchAdminOrders(),
-          apiClient.get(authPaths.userList),
-          apiClient.get(categoryPaths.list),
-          apiClient.get(couponPaths.list),
-        ]);
+      const [
+        productList,
+        orderList,
+        userResponse,
+        categoryResponse,
+        couponResponse,
+      ] = await Promise.all([
+        fetchProducts(),
+        fetchAdminOrders(),
+        apiClient.get(authPaths.userList),
+        apiClient.get(categoryPaths.list),
+        apiClient.get(couponPaths.list),
+      ]);
 
       setProducts(Array.isArray(productList) ? productList : []);
       setOrders(Array.isArray(orderList) ? orderList : []);
-      setUsers(Array.isArray(unwrapApiData(userResponse)) ? unwrapApiData(userResponse) : []);
-      setCategories(
-        Array.isArray(unwrapApiData(categoryResponse)) ? unwrapApiData(categoryResponse) : [],
+      setUsers(
+        Array.isArray(unwrapApiData(userResponse))
+          ? unwrapApiData(userResponse)
+          : [],
       );
-      setCoupons(Array.isArray(unwrapApiData(couponResponse)) ? unwrapApiData(couponResponse) : []);
+      setCategories(
+        Array.isArray(unwrapApiData(categoryResponse))
+          ? unwrapApiData(categoryResponse)
+          : [],
+      );
+      setCoupons(
+        Array.isArray(unwrapApiData(couponResponse))
+          ? unwrapApiData(couponResponse)
+          : [],
+      );
       setLastUpdated(new Date());
     } catch (error) {
       setProducts([]);
@@ -272,7 +299,9 @@ const Dashboard = () => {
 
   const orderStatusCounts = useMemo(() => {
     return ORDER_STATUSES.reduce((acc, status) => {
-      acc[status] = orders.filter((order) => order.orderStatus === status).length;
+      acc[status] = orders.filter(
+        (order) => order.orderStatus === status,
+      ).length;
       return acc;
     }, {});
   }, [orders]);
@@ -296,7 +325,8 @@ const Dashboard = () => {
   const recentOrders = orders.slice(0, 5);
   const activeCoupons = coupons.filter((coupon) => coupon.isActive).length;
   const pendingOrders = orderStatusCounts.Pending || 0;
-  const displayName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Admin";
+  const displayName =
+    [user?.firstName, user?.lastName].filter(Boolean).join(" ") || "Admin";
 
   return (
     <>
@@ -325,7 +355,9 @@ const Dashboard = () => {
             className="w-full cursor-pointer md:w-auto"
             disabled={isLoading}
             onClick={loadDashboardData}>
-            <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
         </div>
@@ -337,11 +369,15 @@ const Dashboard = () => {
             <CardContent>
               <div className="flex flex-col items-center justify-center text-center">
                 <AlertCircle className="h-9 w-9 text-destructive" />
-                <p className="mt-3 font-medium">Could not load dashboard data</p>
+                <p className="mt-3 font-medium">
+                  Could not load dashboard data
+                </p>
                 <p className="mt-1 max-w-xl text-sm text-muted-foreground">
                   {loadError}
                 </p>
-                <Button className="mt-4 cursor-pointer" onClick={loadDashboardData}>
+                <Button
+                  className="mt-4 cursor-pointer"
+                  onClick={loadDashboardData}>
                   Try again
                 </Button>
               </div>
@@ -355,7 +391,9 @@ const Dashboard = () => {
               <CardHeader className="pb-2">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                   <CardTitle className="text-lg">Store Health</CardTitle>
-                  <Badge variant="outline" className="w-fit border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
+                  <Badge
+                    variant="outline"
+                    className="w-fit border-emerald-500/30 text-emerald-700 dark:text-emerald-400">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     Data connected
                   </Badge>
@@ -363,8 +401,16 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                  <CompactMetric label="Total Products" value={products.length} icon={Package} />
-                  <CompactMetric label="Pending Orders" value={pendingOrders} icon={Clock} />
+                  <CompactMetric
+                    label="Total Products"
+                    value={products.length}
+                    icon={Package}
+                  />
+                  <CompactMetric
+                    label="Pending Orders"
+                    value={pendingOrders}
+                    icon={Clock}
+                  />
                   <CompactMetric
                     label="Low Stock Products"
                     value={inventory.lowStock}
@@ -413,7 +459,9 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-5">
               <Card className="py-5 xl:col-span-3">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Order Status Overview</CardTitle>
+                  <CardTitle className="text-lg">
+                    Order Status Overview
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {orders.length === 0 ? (
@@ -428,12 +476,16 @@ const Dashboard = () => {
                         <div
                           key={status}
                           className="rounded-lg border bg-muted/10 p-3 transition-colors hover:bg-muted/20">
-                          <Badge className={getStatusBadgeClass(status)}>{status}</Badge>
+                          <Badge className={getStatusBadgeClass(status)}>
+                            {status}
+                          </Badge>
                           <p className="mt-3 text-2xl font-bold">
                             {orderStatusCounts[status] || 0}
                           </p>
                           <p className="mt-1 text-xs text-muted-foreground">
-                            {status === "Pending" ? "Awaiting action" : "Orders"}
+                            {status === "Pending"
+                              ? "Awaiting action"
+                              : "Orders"}
                           </p>
                         </div>
                       ))}
@@ -467,7 +519,11 @@ const Dashboard = () => {
                     value={categories.length}
                     icon={Layers}
                   />
-                  <CompactMetric label="Active Coupons" value={activeCoupons} icon={Ticket} />
+                  <CompactMetric
+                    label="Active Coupons"
+                    value={activeCoupons}
+                    icon={Ticket}
+                  />
                 </CardContent>
               </Card>
             </div>
@@ -500,12 +556,15 @@ const Dashboard = () => {
                           <TableHead scope="col">Amount</TableHead>
                           <TableHead scope="col">Status</TableHead>
                           <TableHead scope="col">Date</TableHead>
-                          <TableHead scope="col" className="text-right">View</TableHead>
+                          <TableHead scope="col" className="text-right">
+                            View
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {recentOrders.map((order) => {
-                          const customerName = `${order?.customer?.firstName || ""} ${order?.customer?.lastName || ""}`.trim();
+                          const customerName =
+                            `${order?.customer?.firstName || ""} ${order?.customer?.lastName || ""}`.trim();
 
                           return (
                             <TableRow key={order._id}>
@@ -526,14 +585,22 @@ const Dashboard = () => {
                                 </div>
                               </TableCell>
                               <TableCell>
-                                {formatMoney(order?.pricing?.total, order?.pricing?.currency)}
+                                {formatMoney(
+                                  order?.pricing?.total,
+                                  order?.pricing?.currency,
+                                )}
                               </TableCell>
                               <TableCell>
-                                <Badge className={getStatusBadgeClass(order.orderStatus)}>
+                                <Badge
+                                  className={getStatusBadgeClass(
+                                    order.orderStatus,
+                                  )}>
                                   {order.orderStatus || "Pending"}
                                 </Badge>
                               </TableCell>
-                              <TableCell>{formatDate(order.createdAt)}</TableCell>
+                              <TableCell>
+                                {formatDate(order.createdAt)}
+                              </TableCell>
                               <TableCell className="text-right">
                                 <Button asChild size="sm" variant="outline">
                                   <Link to="/orders">View</Link>
@@ -557,7 +624,9 @@ const Dashboard = () => {
                     asChild={!user?.isDemoAdmin}
                     variant="outline"
                     disabled={user?.isDemoAdmin}
-                    title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                    title={
+                      user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined
+                    }
                     className="h-11 justify-start">
                     {user?.isDemoAdmin ? (
                       <span className="inline-flex items-center gap-2">
@@ -575,7 +644,9 @@ const Dashboard = () => {
                     asChild={!user?.isDemoAdmin}
                     variant="outline"
                     disabled={user?.isDemoAdmin}
-                    title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                    title={
+                      user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined
+                    }
                     className="h-11 justify-start">
                     {user?.isDemoAdmin ? (
                       <span className="inline-flex items-center gap-2">
@@ -593,7 +664,9 @@ const Dashboard = () => {
                     asChild={!user?.isDemoAdmin}
                     variant="outline"
                     disabled={user?.isDemoAdmin}
-                    title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                    title={
+                      user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined
+                    }
                     className="h-11 justify-start">
                     {user?.isDemoAdmin ? (
                       <span className="inline-flex items-center gap-2">
@@ -607,7 +680,10 @@ const Dashboard = () => {
                       </Link>
                     )}
                   </Button>
-                  <Button asChild variant="outline" className="h-11 justify-start">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-11 justify-start">
                     <Link to="/orders">
                       <ShoppingBag className="h-4 w-4" />
                       Manage Orders
