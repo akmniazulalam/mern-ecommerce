@@ -80,7 +80,7 @@ const Login = () => {
 
   const copyToClipboard = async (label, value) => {
     try {
-      await navigator.clipboard.writeText(value);
+      await navigator.clipboard.writeText(value); // navigator hocche browser er built-in API ja clipboard e text copy korte use hoy. navigator.clipboard.writeText(value) method ta use kore value ke clipboard e copy kora hoy. eta promise return kore, tai await use kora hoy.
       toast.success(`${label} copied`);
     } catch {
       toast.error(`Could not copy ${label.toLowerCase()}`);
