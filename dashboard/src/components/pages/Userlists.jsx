@@ -122,7 +122,9 @@ const Userlists = () => {
       fetchUsers();
       setPendingRoleChange(null);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update user role");
+      toast.error(
+        error.response?.data?.message || "Failed to update user role",
+      );
     } finally {
       setRoleSavingId(null);
     }
@@ -376,7 +378,10 @@ const Userlists = () => {
               </div>
 
               {/* Action */}
-              <DeleteAction user={user} className="w-full shrink dark:bg-red-700" />
+              <DeleteAction
+                user={user}
+                className="w-full shrink dark:bg-red-700"
+              />
             </div>
           ))}
         </div>
@@ -393,8 +398,7 @@ const Userlists = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Update user role?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will change{" "}
-              {pendingRoleChange?.user?.firstName}{" "}
+              This will change {pendingRoleChange?.user?.firstName}{" "}
               {pendingRoleChange?.user?.lastName}'s role to{" "}
               {pendingRoleChange?.role === "admin" ? "Admin" : "User"}.
             </AlertDialogDescription>
