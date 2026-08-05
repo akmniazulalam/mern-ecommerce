@@ -10,8 +10,11 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "@/lib/apiClient";
 import { getApiErrorMessage } from "@/lib/apiErrors";
 import { categoryPaths } from "@/lib/productApi";
+import { useAuth } from "@/context/AuthContext";
+import { DEMO_READ_ONLY_MESSAGE } from "@/lib/demoMode";
 
 const Category = () => {
+  const { user } = useAuth();
   const [categoryName, setCategoryName] = useState("");
   const [categoryDescription, setCategoryDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,6 +25,11 @@ const Category = () => {
     description: categoryDescription,
   };
   const handleCreateCategory = async () => {
+    if (user?.isDemoAdmin) {
+      toast.error(DEMO_READ_ONLY_MESSAGE);
+      return;
+    }
+
     const nextErrors = {};
 
     if (!categoryName.trim()) {
@@ -68,6 +76,7 @@ const Category = () => {
               value={categoryName}
               placeholder="Category Name"
               className={"text-sm"}
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setCategoryName(e.target.value);
                 setErrors((prev) => ({ ...prev, name: undefined }));
@@ -84,6 +93,7 @@ const Category = () => {
               value={categoryDescription}
               placeholder="Type your description here..."
               className={"resize-none text-sm"}
+              disabled={isSubmitting || user?.isDemoAdmin}
               onChange={(e) => {
                 setCategoryDescription(e.target.value);
                 setErrors((prev) => ({ ...prev, description: undefined }));
@@ -96,7 +106,8 @@ const Category = () => {
           <Field orientation="horizontal">
             <Button
               onClick={handleCreateCategory}
-              disabled={isSubmitting}
+              disabled={isSubmitting || user?.isDemoAdmin}
+              title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
               className={"cursor-pointer"}>
               {isSubmitting ? "Adding..." : "Add Category"}
             </Button>
