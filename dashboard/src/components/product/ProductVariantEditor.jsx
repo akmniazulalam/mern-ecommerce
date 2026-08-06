@@ -205,7 +205,7 @@ export default function ProductVariantEditor({
                   <div className="space-y-2">
                     <VariantImagePreview variant={variant} mode={mode} />
                     <Field>
-                      <FieldLabel className="text-xs">Variant image</FieldLabel>
+                      <FieldLabel className="text-xs justify-center">Variant image</FieldLabel>
                       <Input
                         type="file"
                         accept="image/*"
