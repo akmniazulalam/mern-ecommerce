@@ -71,6 +71,7 @@ const {
   resendOtpController,
   currentuserController,
   uploadAvatarController,
+  customerSignupController,
 } = require("./auth.controller");
 const authMiddleware = require("./auth.middleware");
 const { adminMiddleware } = require("./auth.middleware");
@@ -85,7 +86,10 @@ const {
 } = require("./auth.validators");
 const router = express.Router();
 
+// Admin Dashboard signup (OTP-based, requires email verification)
 router.post("/signup", authLimiter, validateSignupRequest, signupController);
+// Orebi customer signup (no OTP, immediate login)
+router.post("/customer-signup", authLimiter, validateSignupRequest, customerSignupController);
 router.post("/otpverify", otpLimiter, validateOtpRequest, otpController);
 router.post("/resendotp", otpLimiter, validateResendOtpRequest, resendOtpController);
 router.get("/userlist", authMiddleware, adminMiddleware, getAllUsers);

@@ -61,6 +61,7 @@ async function getEffectiveAdminCount(excludeUserId) {
   }).length;
 }
 
+// Admin Dashboard signup: generates OTP, sends verification email, requires OTP step before login.
 async function signupController(req, res) {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -124,6 +125,69 @@ async function signupController(req, res) {
 
     return res.json({
       message: "Data send",
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({
+        message: "This email already used",
+      });
+    }
+    return res.status(500).json({
+      message: error.message || "Registration failed",
+    });
+  }
+}
+
+// Orebi customer storefront signup: no OTP, no email dependency — user is pre-verified.
+async function customerSignupController(req, res) {
+  try {
+    const { firstName, lastName, email, password } = req.body;
+
+    if (!firstName || !lastName) {
+      return res.status(400).json({
+        message: "Error: First name and last name are required",
+      });
+    }
+    if (!email) {
+      return res.status(400).json({
+        message: "Error: Email is required",
+      });
+    }
+    if (!password) {
+      return res.status(400).json({
+        message: "Error: Password is required",
+      });
+    }
+    if (!emailValidation(email)) {
+      return res.status(400).json({
+        message: "Error: Email format is not correct.",
+      });
+    }
+    if (!passVal(password)) {
+      return res.status(400).json({
+        message: "Error: Password format is not correct.",
+      });
+    }
+
+    const existingEmail = await userSchema.find({ email });
+    if (existingEmail.length > 0) {
+      return res.status(409).json({
+        message: "This email already used",
+      });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    const user = new userSchema({
+      firstName,
+      lastName,
+      email,
+      password: hash,
+      isVerified: true,
+    });
+    await user.save();
+
+    return res.status(201).json({
+      message: "Account created successfully. You can now log in.",
     });
   } catch (error) {
     if (error.code === 11000) {
@@ -347,8 +411,9 @@ async function loginController(req, res) {
     return res.status(403).json({
       message: "User is not verified",
     });
-  } else {
-    bcrypt.compare(password, existingEmailUser.password, (err, result) => {
+  }
+
+  bcrypt.compare(password, existingEmailUser.password, (err, result) => {
       if (err) {
         return res.status(500).json({ message: "Login failed" });
       }
@@ -378,7 +443,6 @@ async function loginController(req, res) {
           .json({ message: "Login Successful", user: sessionUser });
       });
     });
-  }
 }
 
 function dashboardController(req, res) {
@@ -472,6 +536,7 @@ module.exports = {
   otpController,
   resendOtpController,
   signupController,
+  customerSignupController,
   getAllUsers,
   deleteUser,
   updateUserRole,
