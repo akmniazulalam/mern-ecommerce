@@ -66,7 +66,13 @@ function computeAllowedTransition(from, to) {
 async function createOrderController(req, res) {
   try {
     const sessionUserId = req?.session?.user?.id;
-    const userId = sessionUserId || "guest";
+    if (!sessionUserId) {
+      return sendError(res, {
+        status: 401,
+        message: "Authentication required to place an order.",
+      });
+    }
+    const userId = String(sessionUserId);
 
     const {
       customer,
