@@ -186,8 +186,31 @@ async function customerSignupController(req, res) {
     });
     await user.save();
 
-    return res.status(201).json({
-      message: "Account created successfully. You can now log in.",
+    const sessionUser = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: getEffectiveRole(user),
+      isPrimaryAdmin: isPrimaryAdminEmail(user.email),
+      isDemoAdmin: isDemoAdminEmail(user.email),
+      profileImage: user.profileImage || "",
+    };
+
+    req.session.isAuth = true;
+    req.session.user = sessionUser;
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        return res.status(201).json({
+          message: "Account created successfully.",
+          user: sessionUser,
+        });
+      }
+
+      return res.status(201).json({
+        message: "Account created successfully.",
+        user: sessionUser,
+      });
     });
   } catch (error) {
     if (error.code === 11000) {
