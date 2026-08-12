@@ -19,7 +19,7 @@ const {
 const router = express.Router();
 
 // Checkout -> create a new order snapshot from the authenticated user's cart
-router.post("/create", validateCreateOrderRequest, createOrderController);
+router.post("/create", authMiddleware, validateCreateOrderRequest, createOrderController);
 
 // User order history
 router.get("/mine", authMiddleware, getMyOrdersController);
