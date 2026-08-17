@@ -40,7 +40,9 @@ function validateProductCreateRequest(req, res, next) {
     return sendError(res, parsed.error);
   }
 
-  const variantsError = validateVariants(parsed.data, { requireStockMinOne: true });
+  const variantsError = validateVariants(parsed.data, {
+    requireStockMinOne: true,
+  });
   if (variantsError) {
     return sendError(res, variantsError);
   }
@@ -66,12 +68,17 @@ function validateProductUpdateRequest(req, res, next) {
     return sendError(res, parsed.error);
   }
 
-  const variantsError = validateVariants(parsed.data, { requireStockMinOne: true });
+  const variantsError = validateVariants(parsed.data, {
+    requireStockMinOne: true,
+  });
   if (variantsError) {
     return sendError(res, variantsError);
   }
 
-  const updateImagesError = validateUpdateImages(req.files, req.body.imageIndexes);
+  const updateImagesError = validateUpdateImages(
+    req.files,
+    req.body.imageIndexes,
+  );
   if (updateImagesError) {
     return sendError(res, updateImagesError);
   }
@@ -190,7 +197,11 @@ function normalizeStock(value) {
     return { value: "in-stock" };
   }
 
-  if (["out", "outofstock", "out-of-stock", "unavailable", "false"].includes(normalized)) {
+  if (
+    ["out", "outofstock", "out-of-stock", "unavailable", "false"].includes(
+      normalized,
+    )
+  ) {
     return { value: "out-of-stock" };
   }
 
@@ -203,7 +214,8 @@ function normalizeStock(value) {
     error: {
       status: 400,
       field: "stock",
-      message: "stock must be in-stock, out-of-stock, all, true, false, or a non-negative integer",
+      message:
+        "stock must be in-stock, out-of-stock, all, true, false, or a non-negative integer",
     },
   };
 }
@@ -272,7 +284,8 @@ function validateProductListQuery(req, res, next) {
     });
   }
 
-  const category = query.category === undefined ? "" : String(query.category).trim();
+  const category =
+    query.category === undefined ? "" : String(query.category).trim();
   if (category.length > 100) {
     return sendError(res, {
       status: 400,
@@ -281,7 +294,8 @@ function validateProductListQuery(req, res, next) {
     });
   }
 
-  const hasPagination = pageResult.value !== undefined || limitResult.value !== undefined;
+  const hasPagination =
+    pageResult.value !== undefined || limitResult.value !== undefined;
 
   req.productListQuery = {
     page: pageResult.value || 1,
