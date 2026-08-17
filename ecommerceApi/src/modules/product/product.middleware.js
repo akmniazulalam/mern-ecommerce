@@ -290,6 +290,7 @@ function validateProductListQuery(req, res, next) {
     search,
     category,
     sort,
+    badge,
     minPrice: minPriceResult.value,
     maxPrice: maxPriceResult.value,
     stock: stockResult.value,
