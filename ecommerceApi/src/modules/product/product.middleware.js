@@ -295,7 +295,7 @@ function validateProductListQuery(req, res, next) {
   }
 
   const badge =
-  query.badge === undefined ? "" : String(query.badge).trim().toLowerCase();
+    query.badge === undefined ? "" : String(query.badge).trim().toLowerCase();
 
   const hasPagination =
     pageResult.value !== undefined || limitResult.value !== undefined;
