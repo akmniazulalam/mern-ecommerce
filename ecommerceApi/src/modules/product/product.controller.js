@@ -41,6 +41,7 @@ function buildProductListFilter(query) {
 
   if (query.search) {
     const searchRegex = new RegExp(escapeRegex(query.search), "i");
+
     filter.$or = [
       { name: searchRegex },
       { description: searchRegex },
@@ -57,6 +58,17 @@ function buildProductListFilter(query) {
   }
 
   const variantCriteria = {};
+
+  const badgeMap = {
+    "best-seller": "Best Seller",
+    popular: "Popular",
+    "hot-deal": "Hot Deal",
+    trending: "Trending",
+  };
+
+  if (query.badge && badgeMap[query.badge]) {
+    variantCriteria.badge = badgeMap[query.badge];
+  }
 
   if (query.minPrice !== undefined || query.maxPrice !== undefined) {
     variantCriteria.price = {};
@@ -79,7 +91,9 @@ function buildProductListFilter(query) {
   }
 
   if (Object.keys(variantCriteria).length > 0) {
-    filter.variants = { $elemMatch: variantCriteria };
+    filter.variants = {
+      $elemMatch: variantCriteria,
+    };
   }
 
   return filter;
@@ -99,7 +113,9 @@ async function productController(req, res) {
       return sendError(res, parsed.error);
     }
 
-    const variantsError = validateVariants(parsed.data, { requireStockMinOne: true });
+    const variantsError = validateVariants(parsed.data, {
+      requireStockMinOne: true,
+    });
     if (variantsError) {
       return sendError(res, variantsError);
     }
@@ -111,7 +127,10 @@ async function productController(req, res) {
 
     const imageUrls = await uploadFiles(req.files);
     const normalizedVariants = normalizeVariantsForSave(parsed.data);
-    const variantsWithImages = attachImagesToVariants(normalizedVariants, imageUrls);
+    const variantsWithImages = attachImagesToVariants(
+      normalizedVariants,
+      imageUrls,
+    );
 
     const product = new Product({
       name: toTrimmedString(name),
@@ -189,6 +208,7 @@ async function getProductController(req, res) {
           search: listQuery.search || "",
           category: listQuery.category || "",
           sort: listQuery.sort || "latest",
+          badge: listQuery.badge || "",
           minPrice: listQuery.minPrice ?? null,
           maxPrice: listQuery.maxPrice ?? null,
           stock: listQuery.stock ?? "all",
@@ -245,12 +265,17 @@ async function updateProductController(req, res) {
       return sendError(res, parsed.error);
     }
 
-    const variantsError = validateVariants(parsed.data, { requireStockMinOne: true });
+    const variantsError = validateVariants(parsed.data, {
+      requireStockMinOne: true,
+    });
     if (variantsError) {
       return sendError(res, variantsError);
     }
 
-    const updateImagesError = validateUpdateImages(req.files, req.body.imageIndexes);
+    const updateImagesError = validateUpdateImages(
+      req.files,
+      req.body.imageIndexes,
+    );
     if (updateImagesError) {
       return sendError(res, updateImagesError);
     }
