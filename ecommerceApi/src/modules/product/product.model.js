@@ -27,6 +27,16 @@ const productVariantSchema = new Schema(
       required: [true, "Variant price is required"],
       min: [0, "Price cannot be negative"],
     },
+    salePrice: {
+      type: Number,
+      min: [0, "Sale price cannot be negative"],
+    },
+    saleStartDate: {
+      type: Date,
+    },
+    saleEndDate: {
+      type: Date,
+    },
     stock: {
       type: Number,
       required: [true, "Variant stock is required"],
