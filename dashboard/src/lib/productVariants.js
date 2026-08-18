@@ -63,7 +63,8 @@ export function mapApiVariantsToForm(apiVariants = []) {
       ...createEmptyVariant(),
       ...normalized,
       price: normalized.price === "" ? "" : String(normalized.price),
-      salePrice: normalized.salePrice === "" ? "" : String(normalized.salePrice),
+      salePrice:
+        normalized.salePrice === "" ? "" : String(normalized.salePrice),
       saleStartDate: normalized.saleStartDate || undefined,
       saleEndDate: normalized.saleEndDate || undefined,
       stock: normalized.stock === "" ? "" : String(normalized.stock),
@@ -74,7 +75,10 @@ export function mapApiVariantsToForm(apiVariants = []) {
   });
 }
 
-export function buildProductFormData({ name, description, category, variants }, mode = "create") {
+export function buildProductFormData(
+  { name, description, category, variants },
+  mode = "create",
+) {
   const formData = new FormData();
 
   formData.append("name", name);
@@ -135,7 +139,10 @@ export function buildVariantPayload(variants) {
   });
 }
 
-export function validateVariantsBeforeSubmit(variants, { isCreate = false } = {}) {
+export function validateVariantsBeforeSubmit(
+  variants,
+  { isCreate = false } = {},
+) {
   if (!variants?.length) {
     return "Add at least one variant.";
   }
@@ -144,7 +151,11 @@ export function validateVariantsBeforeSubmit(variants, { isCreate = false } = {}
     const variant = variants[i];
     const label = `Variant ${i + 1}`;
 
-    if (variant.price === "" || variant.price === undefined || Number.isNaN(Number(variant.price))) {
+    if (
+      variant.price === "" ||
+      variant.price === undefined ||
+      Number.isNaN(Number(variant.price))
+    ) {
       return `${label}: price is required.`;
     }
 
@@ -152,7 +163,10 @@ export function validateVariantsBeforeSubmit(variants, { isCreate = false } = {}
       return `${label}: price cannot be negative.`;
     }
 
-    if (variant.salePrice !== undefined && (variant.salePrice === "" || Number.isNaN(Number(variant.salePrice)))) {
+    if (
+      variant.salePrice !== undefined &&
+      (variant.salePrice === "" || Number.isNaN(Number(variant.salePrice)))
+    ) {
       return `${label}: sale price is invalid.`;
     }
 
@@ -168,11 +182,19 @@ export function validateVariantsBeforeSubmit(variants, { isCreate = false } = {}
       return `${label}: sale end date is invalid.`;
     }
 
-    if (variant.saleStartDate && variant.saleEndDate && new Date(variant.saleStartDate) > new Date(variant.saleEndDate)) {
+    if (
+      variant.saleStartDate &&
+      variant.saleEndDate &&
+      new Date(variant.saleStartDate) > new Date(variant.saleEndDate)
+    ) {
       return `${label}: sale start date cannot be after sale end date.`;
     }
 
-    if (variant.stock === "" || variant.stock === undefined || Number.isNaN(Number(variant.stock))) {
+    if (
+      variant.stock === "" ||
+      variant.stock === undefined ||
+      Number.isNaN(Number(variant.stock))
+    ) {
       return `${label}: stock is required.`;
     }
 
@@ -235,6 +257,84 @@ export function getProductPriceRange(variants = []) {
   };
 }
 
+export function getProductSalePriceRange(variants = []) {
+  if (!Array.isArray(variants) || variants.length === 0) {
+    return {
+      minSalePrice: 0,
+      maxSalePrice: 0,
+    };
+  }
+
+  const salePrices = variants
+    .map((variant) => Number(variant.salePrice))
+    .filter((price) => Number.isFinite(price));
+
+  if (salePrices.length === 0) {
+    return {
+      minSalePrice: 0,
+      maxSalePrice: 0,
+    };
+  }
+
+  return {
+    minSalePrice: Math.min(...salePrices),
+    maxSalePrice: Math.max(...salePrices),
+  };
+}
+
+export function getProductSaleStartDateRange(variants = []) {
+  if (!Array.isArray(variants) || variants.length === 0) {
+    return {
+      minSaleStartDate: undefined,
+      maxSaleStartDate: undefined,
+    };
+  }
+
+  const saleStartDates = variants
+    .map((variant) => variant.saleStartDate && new Date(variant.saleStartDate))
+    .filter((date) => date instanceof Date);
+
+  if (saleStartDates.length === 0) {
+    return {
+      minSaleStartDate: undefined,
+      maxSaleStartDate: undefined,
+    };
+  }
+
+  return {
+    minSaleStartDate: Math.min(...saleStartDates),
+    maxSaleStartDate: Math.max(...saleStartDates),
+  };
+}
+
+export function getProductSaleEndDateRange(variants = []) {
+  if (!Array.isArray(variants) || variants.length === 0) {
+    return {
+      minSaleEndDate: undefined,
+      maxSaleEndDate: undefined,
+    };
+  }
+
+  const saleEndDates = variants
+    .map((variant) => variant.saleEndDate && new Date(variant.saleEndDate))
+    .filter((date) => date instanceof Date);
+
+  if (saleEndDates.length === 0) {
+    return {
+      minSaleEndDate: undefined,
+      maxSaleEndDate: undefined,
+    };
+  }
+
+  return {
+    minSaleEndDate: Math.min(...saleEndDates),
+    maxSaleEndDate: Math.max(...saleEndDates),
+  };
+}
+
 export function getTotalStock(variants = []) {
-  return variants.reduce((sum, variant) => sum + (Number(variant.stock) || 0), 0);
+  return variants.reduce(
+    (sum, variant) => sum + (Number(variant.stock) || 0),
+    0,
+  );
 }
