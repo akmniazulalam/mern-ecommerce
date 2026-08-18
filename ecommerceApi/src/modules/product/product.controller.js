@@ -82,6 +82,18 @@ function buildProductListFilter(query) {
     }
   }
 
+  if (query.minSalePrice !== undefined || query.maxSalePrice !== undefined) {
+    variantCriteria.salePrice = {};
+
+    if (query.minSalePrice !== undefined) {
+      variantCriteria.salePrice.$gte = query.minSalePrice;
+    }
+
+    if (query.maxSalePrice !== undefined) {
+      variantCriteria.salePrice.$lte = query.maxSalePrice;
+    }
+  }
+
   if (query.stock === "in-stock") {
     variantCriteria.stock = { $gt: 0 };
   } else if (query.stock === "out-of-stock") {
