@@ -4,6 +4,9 @@ const ALLOWED_VARIANT_KEYS = new Set([
   "size",
   "color",
   "price",
+  "salePrice",
+  "saleStartDate",
+  "saleEndDate",
   "stock",
   "images",
   "badge",
@@ -140,6 +143,24 @@ function validateVariantEntry(variant, index, options = {}) {
       message: "Price cannot be negative",
     };
   }
+
+  const salePrice = Number(variant.salePrice);
+  if (variant.salePrice !== undefined && (variant.salePrice === "" || Number.isNaN(salePrice))) {
+    return {
+      field: `${prefix}.salePrice`,
+      message: "Sale price is invalid",
+    };
+  }
+
+  if (salePrice < 0) {
+    return {
+      field: `${prefix}.salePrice`,
+      message: "Sale price cannot be negative",
+    };
+  }
+
+  const saleStartDate = variant.saleStartDate ? new Date(variant.saleStartDate) : undefined;
+  const saleEndDate = variant.saleEndDate ? new Date(variant.saleEndDate) : undefined;
 
   const stock = Number(variant.stock);
   if (variant.stock === undefined || variant.stock === "" || Number.isNaN(stock)) {
