@@ -8,6 +8,10 @@ export function createEmptyVariant() {
     storage: "",
     stock: "",
     price: "",
+    salePrice: undefined,
+    saleStartDate: undefined,
+    saleEndDate: undefined,
+    attributes: {},
     badge: "",
     image: null,
     images: [],
@@ -24,6 +28,9 @@ export function normalizeVariantFromApi(variant = {}) {
     storage: variant.storage ?? "",
     badge: variant.badge ?? "",
     price: variant.price ?? "",
+    salePrice: variant.salePrice ?? undefined,
+    saleStartDate: variant.saleStartDate ?? undefined,
+    saleEndDate: variant.saleEndDate ?? undefined,
     stock: variant.stock ?? "",
     images: Array.isArray(variant.images) ? variant.images : [],
     attributes:
@@ -56,6 +63,9 @@ export function mapApiVariantsToForm(apiVariants = []) {
       ...createEmptyVariant(),
       ...normalized,
       price: normalized.price === "" ? "" : String(normalized.price),
+      salePrice: normalized.salePrice === "" ? "" : String(normalized.salePrice),
+      saleStartDate: normalized.saleStartDate || undefined,
+      saleEndDate: normalized.saleEndDate || undefined,
       stock: normalized.stock === "" ? "" : String(normalized.stock),
       clientKey: normalized._id || crypto.randomUUID(),
       image: null,
@@ -99,6 +109,9 @@ export function buildVariantPayload(variants) {
       storage: variant.storage ?? "",
       stock: variant.stock,
       price: variant.price,
+      salePrice: variant.salePrice ?? undefined,
+      saleStartDate: variant.saleStartDate ?? undefined,
+      saleEndDate: variant.saleEndDate ?? undefined,
       badge: variant.badge ?? "",
     };
 
@@ -137,6 +150,26 @@ export function validateVariantsBeforeSubmit(variants, { isCreate = false } = {}
 
     if (Number(variant.price) < 0) {
       return `${label}: price cannot be negative.`;
+    }
+
+    if (variant.salePrice !== undefined && (variant.salePrice === "" || Number.isNaN(Number(variant.salePrice)))) {
+      return `${label}: sale price is invalid.`;
+    }
+
+    if (variant.salePrice !== undefined && Number(variant.salePrice) < 0) {
+      return `${label}: sale price cannot be negative.`;
+    }
+
+    if (variant.saleStartDate !== undefined && !variant.saleStartDate) {
+      return `${label}: sale start date is invalid.`;
+    }
+
+    if (variant.saleEndDate !== undefined && !variant.saleEndDate) {
+      return `${label}: sale end date is invalid.`;
+    }
+
+    if (variant.saleStartDate && variant.saleEndDate && new Date(variant.saleStartDate) > new Date(variant.saleEndDate)) {
+      return `${label}: sale start date cannot be after sale end date.`;
     }
 
     if (variant.stock === "" || variant.stock === undefined || Number.isNaN(Number(variant.stock))) {
