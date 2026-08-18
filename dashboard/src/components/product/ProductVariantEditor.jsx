@@ -183,7 +183,47 @@ export default function ProductVariantEditor({
                       />
                     </Field>
 
-                    <Field className="sm:col-span-2">
+                    <Field>
+                      <FieldLabel>Sale Price ($)</FieldLabel>
+                      <Input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        placeholder="0.00"
+                        className={numberInputClass}
+                        value={variant.salePrice ?? ""}
+                        disabled={disabled}
+                        onChange={(e) =>
+                          handleVariantChange(index, "salePrice", e.target.value)
+                        }
+                      />
+                    </Field>
+
+                    <Field>
+                      <FieldLabel>Sale Start Date</FieldLabel>
+                      <Input
+                        type="date"
+                        value={variant.saleStartDate ?? ""}
+                        disabled={disabled}
+                        onChange={(e) =>
+                          handleVariantChange(index, "saleStartDate", e.target.value)
+                        }
+                      />
+                    </Field>
+
+                    <Field>
+                      <FieldLabel>Sale End Date</FieldLabel>
+                      <Input
+                        type="date"
+                        value={variant.saleEndDate ?? ""}
+                        disabled={disabled}
+                        onChange={(e) =>
+                          handleVariantChange(index, "saleEndDate", e.target.value)
+                        }
+                      />
+                    </Field>
+
+                    <Field>
                       <FieldLabel>Stock</FieldLabel>
                       <Input
                         type="number"
