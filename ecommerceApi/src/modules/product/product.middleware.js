@@ -170,6 +170,7 @@ function normalizeSort(value) {
     "-price": "price-desc",
     hightolow: "price-desc",
     "high-to-low": "price-desc",
+
     stock: "stock-desc",
     stockdesc: "stock-desc",
     "stock-desc": "stock-desc",
@@ -260,6 +261,84 @@ function validateProductListQuery(req, res, next) {
       status: 400,
       field: "maxPrice",
       message: "maxPrice must be greater than or equal to minPrice",
+    });
+  }
+
+  const minSalePriceResult = parseNonNegativeNumber(
+    firstQueryValue(query, ["minSalePrice", "min_sale_price"]),
+    "minSalePrice"
+  );
+  if (minSalePriceResult.error) return sendError(res, minSalePriceResult.error);
+
+  const maxSalePriceResult = parseNonNegativeNumber(
+    firstQueryValue(query, ["maxSalePrice", "max_sale_price"]),
+    "maxSalePrice"
+  );
+  if (maxSalePriceResult.error) return sendError(res, maxSalePriceResult.error);
+
+  if (
+    minSalePriceResult.value !== undefined &&
+    maxSalePriceResult.value !== undefined &&
+    minSalePriceResult.value > maxSalePriceResult.value
+  ) {
+    return sendError(res, {
+      status: 400,
+      field: "maxSalePrice",
+      message: "maxSalePrice must be greater than or equal to minSalePrice",
+    });
+  }
+
+  const minSaleStartDate = query.minSaleStartDate ? new Date(query.minSaleStartDate) : undefined;
+  const maxSaleStartDate = query.maxSaleStartDate ? new Date(query.maxSaleStartDate) : undefined;
+
+  if (minSaleStartDate && isNaN(minSaleStartDate.getTime())) {
+    return sendError(res, {
+      status: 400,
+      field: "minSaleStartDate",
+      message: "minSaleStartDate must be a valid date",
+    });
+  }
+
+  if (maxSaleStartDate && isNaN(maxSaleStartDate.getTime())) {
+    return sendError(res, {
+      status: 400,
+      field: "maxSaleStartDate",
+      message: "maxSaleStartDate must be a valid date",
+    });
+  }
+
+  if (minSaleStartDate && maxSaleStartDate && minSaleStartDate > maxSaleStartDate) {
+    return sendError(res, {
+      status: 400,
+      field: "maxSaleStartDate",
+      message: "maxSaleStartDate must be greater than or equal to minSaleStartDate",
+    });
+  }
+
+  const minSaleEndDate = query.minSaleEndDate ? new Date(query.minSaleEndDate) : undefined;
+  const maxSaleEndDate = query.maxSaleEndDate ? new Date(query.maxSaleEndDate) : undefined;
+
+  if (minSaleEndDate && isNaN(minSaleEndDate.getTime())) {
+    return sendError(res, {
+      status: 400,
+      field: "minSaleEndDate",
+      message: "minSaleEndDate must be a valid date",
+    });
+  }
+
+  if (maxSaleEndDate && isNaN(maxSaleEndDate.getTime())) {
+    return sendError(res, {
+      status: 400,
+      field: "maxSaleEndDate",
+      message: "maxSaleEndDate must be a valid date",
+    });
+  }
+
+  if (minSaleEndDate && maxSaleEndDate && minSaleEndDate > maxSaleEndDate) {
+    return sendError(res, {
+      status: 400,
+      field: "maxSaleEndDate",
+      message: "maxSaleEndDate must be greater than or equal to minSaleEndDate",
     });
   }
 
