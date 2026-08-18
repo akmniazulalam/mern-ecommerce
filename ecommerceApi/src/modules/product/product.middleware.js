@@ -389,6 +389,12 @@ function validateProductListQuery(req, res, next) {
     badge,
     minPrice: minPriceResult.value,
     maxPrice: maxPriceResult.value,
+    minSalePrice: minSalePriceResult.value,
+    maxSalePrice: maxSalePriceResult.value,
+    minSaleStartDate,
+    maxSaleStartDate,
+    minSaleEndDate,
+    maxSaleEndDate,
     stock: stockResult.value,
   };
 
