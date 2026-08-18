@@ -94,6 +94,30 @@ function buildProductListFilter(query) {
     }
   }
 
+  if (query.minSaleStartDate !== undefined || query.maxSaleStartDate !== undefined) {
+    variantCriteria.saleStartDate = {};
+
+    if (query.minSaleStartDate !== undefined) {
+      variantCriteria.saleStartDate.$gte = new Date(query.minSaleStartDate);
+    }
+
+    if (query.maxSaleStartDate !== undefined) {
+      variantCriteria.saleStartDate.$lte = new Date(query.maxSaleStartDate);
+    }
+  }
+
+  if (query.minSaleEndDate !== undefined || query.maxSaleEndDate !== undefined) {
+    variantCriteria.saleEndDate = {};
+
+    if (query.minSaleEndDate !== undefined) {
+      variantCriteria.saleEndDate.$gte = new Date(query.minSaleEndDate);
+    }
+
+    if (query.maxSaleEndDate !== undefined) {
+      variantCriteria.saleEndDate.$lte = new Date(query.maxSaleEndDate);
+    }
+  }
+
   if (query.stock === "in-stock") {
     variantCriteria.stock = { $gt: 0 };
   } else if (query.stock === "out-of-stock") {
@@ -178,6 +202,12 @@ async function getProductController(req, res) {
         $addFields: {
           minVariantPrice: { $ifNull: [{ $min: "$variants.price" }, 0] },
           maxVariantPrice: { $ifNull: [{ $max: "$variants.price" }, 0] },
+          minSalePrice: { $ifNull: [{ $min: "$variants.salePrice" }, 0] },
+          maxSalePrice: { $ifNull: [{ $max: "$variants.salePrice" }, 0] },
+          minSaleStartDate: { $ifNull: [{ $min: "$variants.saleStartDate" }, null] },
+          maxSaleStartDate: { $ifNull: [{ $max: "$variants.saleStartDate" }, null] },
+          minSaleEndDate: { $ifNull: [{ $min: "$variants.saleEndDate" }, null] },
+          maxSaleEndDate: { $ifNull: [{ $max: "$variants.saleEndDate" }, null] },
           totalVariantStock: { $ifNull: [{ $sum: "$variants.stock" }, 0] },
         },
       },
@@ -193,6 +223,12 @@ async function getProductController(req, res) {
       $project: {
         minVariantPrice: 0,
         maxVariantPrice: 0,
+        minSalePrice: 0,
+        maxSalePrice: 0,
+        minSaleStartDate: 0,
+        maxSaleStartDate: 0,
+        minSaleEndDate: 0,
+        maxSaleEndDate: 0,
         totalVariantStock: 0,
       },
     });
