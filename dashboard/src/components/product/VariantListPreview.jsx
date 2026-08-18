@@ -73,6 +73,30 @@ export default function VariantListPreview({ variants = [] }) {
                       ${Number(variant.price).toFixed(2)}
                     </span>
                   </span>
+                  {variant.salePrice !== undefined && variant.salePrice !== null && (
+                    <span>
+                      <span className="text-muted-foreground">Sale Price:</span>{" "}
+                      <span className="font-semibold text-destructive">
+                        ${Number(variant.salePrice).toFixed(2)}
+                      </span>
+                    </span>
+                  )}
+                  {variant.saleStartDate && (
+                    <span>
+                      <span className="text-muted-foreground">Sale Start:</span>{" "}
+                      <span className="font-semibold">
+                        {new Date(variant.saleStartDate).toLocaleDateString()}
+                      </span>
+                    </span>
+                  )}
+                  {variant.saleEndDate && (
+                    <span>
+                      <span className="text-muted-foreground">Sale End:</span>{" "}
+                      <span className="font-semibold">
+                        {new Date(variant.saleEndDate).toLocaleDateString()}
+                      </span>
+                    </span>
+                  )}
                   <span>
                     <span className="text-muted-foreground">Stock:</span>{" "}
                     <span
