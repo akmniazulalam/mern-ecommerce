@@ -7,6 +7,7 @@ const {
   validateUpdateImages,
   validateVariants,
 } = require("./product.validators");
+const { off } = require("./product.model");
 
 function isValidProductId(id) {
   if (id === undefined || id === null || id === "") {
@@ -266,13 +267,13 @@ function validateProductListQuery(req, res, next) {
 
   const minSalePriceResult = parseNonNegativeNumber(
     firstQueryValue(query, ["minSalePrice", "min_sale_price"]),
-    "minSalePrice"
+    "minSalePrice",
   );
   if (minSalePriceResult.error) return sendError(res, minSalePriceResult.error);
 
   const maxSalePriceResult = parseNonNegativeNumber(
     firstQueryValue(query, ["maxSalePrice", "max_sale_price"]),
-    "maxSalePrice"
+    "maxSalePrice",
   );
   if (maxSalePriceResult.error) return sendError(res, maxSalePriceResult.error);
 
@@ -288,8 +289,12 @@ function validateProductListQuery(req, res, next) {
     });
   }
 
-  const minSaleStartDate = query.minSaleStartDate ? new Date(query.minSaleStartDate) : undefined;
-  const maxSaleStartDate = query.maxSaleStartDate ? new Date(query.maxSaleStartDate) : undefined;
+  const minSaleStartDate = query.minSaleStartDate
+    ? new Date(query.minSaleStartDate)
+    : undefined;
+  const maxSaleStartDate = query.maxSaleStartDate
+    ? new Date(query.maxSaleStartDate)
+    : undefined;
 
   if (minSaleStartDate && isNaN(minSaleStartDate.getTime())) {
     return sendError(res, {
@@ -307,16 +312,25 @@ function validateProductListQuery(req, res, next) {
     });
   }
 
-  if (minSaleStartDate && maxSaleStartDate && minSaleStartDate > maxSaleStartDate) {
+  if (
+    minSaleStartDate &&
+    maxSaleStartDate &&
+    minSaleStartDate > maxSaleStartDate
+  ) {
     return sendError(res, {
       status: 400,
       field: "maxSaleStartDate",
-      message: "maxSaleStartDate must be greater than or equal to minSaleStartDate",
+      message:
+        "maxSaleStartDate must be greater than or equal to minSaleStartDate",
     });
   }
 
-  const minSaleEndDate = query.minSaleEndDate ? new Date(query.minSaleEndDate) : undefined;
-  const maxSaleEndDate = query.maxSaleEndDate ? new Date(query.maxSaleEndDate) : undefined;
+  const minSaleEndDate = query.minSaleEndDate
+    ? new Date(query.minSaleEndDate)
+    : undefined;
+  const maxSaleEndDate = query.maxSaleEndDate
+    ? new Date(query.maxSaleEndDate)
+    : undefined;
 
   if (minSaleEndDate && isNaN(minSaleEndDate.getTime())) {
     return sendError(res, {
@@ -379,6 +393,17 @@ function validateProductListQuery(req, res, next) {
   const hasPagination =
     pageResult.value !== undefined || limitResult.value !== undefined;
 
+  const offer =
+    query.offer === undefined ? "" : String(query.offer).trim().toLowerCase();
+
+  if (offer !== "" && offer !== "true") {
+    return sendError(res, {
+      status: 400,
+      field: "offer",
+      message: "offer must be true",
+    });
+  }
+
   req.productListQuery = {
     page: pageResult.value || 1,
     limit: limitResult.value || (hasPagination ? 12 : undefined),
@@ -395,6 +420,7 @@ function validateProductListQuery(req, res, next) {
     maxSaleStartDate,
     minSaleEndDate,
     maxSaleEndDate,
+    offer,
     stock: stockResult.value,
   };
 
