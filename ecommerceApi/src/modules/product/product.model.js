@@ -34,9 +34,11 @@ const productVariantSchema = new Schema(
     },
     saleStartDate: {
       type: Date,
+      default: null,
     },
     saleEndDate: {
       type: Date,
+      default: null,
     },
     stock: {
       type: Number,
