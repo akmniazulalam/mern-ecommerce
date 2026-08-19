@@ -13,6 +13,7 @@ const ALLOWED_VARIANT_KEYS = new Set([
   "ram",
   "storage",
   "attributes",
+  "offer"
 ]);
 
 function parseVariantsJson(variantsPayload) {
