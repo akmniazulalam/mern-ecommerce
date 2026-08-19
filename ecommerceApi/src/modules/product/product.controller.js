@@ -118,6 +118,22 @@ function buildProductListFilter(query) {
     }
   }
 
+  if (query.offer !== undefined) {
+    if (query.offer === "true") {
+      const now = new Date();
+      filter.variants = {
+        $elemMatch: {
+          salePrice: { $gt: 0 },
+          saleStartDate: { $lte: now },
+          saleEndDate: { $gte: now },
+        },
+      };
+      variantCriteria.offer = { $exists: true, $ne: null };
+    } else if (query.offer === "false") {
+      variantCriteria.offer = { $exists: false };
+    }
+  }
+
   if (query.stock === "in-stock") {
     variantCriteria.stock = { $gt: 0 };
   } else if (query.stock === "out-of-stock") {
@@ -208,6 +224,7 @@ async function getProductController(req, res) {
           maxSaleStartDate: { $ifNull: [{ $max: "$variants.saleStartDate" }, null] },
           minSaleEndDate: { $ifNull: [{ $min: "$variants.saleEndDate" }, null] },
           maxSaleEndDate: { $ifNull: [{ $max: "$variants.saleEndDate" }, null] },
+          offer: { $ifNull: [{ $max: "$variants.offer" }, null] },
           totalVariantStock: { $ifNull: [{ $sum: "$variants.stock" }, 0] },
         },
       },
@@ -229,6 +246,7 @@ async function getProductController(req, res) {
         maxSaleStartDate: 0,
         minSaleEndDate: 0,
         maxSaleEndDate: 0,
+        offer: 0,
         totalVariantStock: 0,
       },
     });
@@ -265,6 +283,7 @@ async function getProductController(req, res) {
           maxSaleStartDate: listQuery.maxSaleStartDate ?? null,
           minSaleEndDate: listQuery.minSaleEndDate ?? null,
           maxSaleEndDate: listQuery.maxSaleEndDate ?? null,
+          offer: listQuery.offer ?? null,
           stock: listQuery.stock ?? "all",
         },
       },
