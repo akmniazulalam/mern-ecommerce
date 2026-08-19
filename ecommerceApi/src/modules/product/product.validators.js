@@ -159,8 +159,60 @@ function validateVariantEntry(variant, index, options = {}) {
     };
   }
 
+  if (salePrice > 0 && salePrice >= price) {
+    return {
+      field: `${prefix}.salePrice`,
+      message: "Sale price must be less than the regular price",
+    };
+  }
+
+  if (variant.saleStartDate && isNaN(Date.parse(variant.saleStartDate))) {
+    return {
+      field: `${prefix}.saleStartDate`,
+      message: "Sale start date is invalid",
+    };
+  }
+
+  if (variant.saleEndDate && isNaN(Date.parse(variant.saleEndDate))) {
+    return {
+      field: `${prefix}.saleEndDate`,
+      message: "Sale end date is invalid",
+    };
+  }
+
   const saleStartDate = variant.saleStartDate ? new Date(variant.saleStartDate) : undefined;
   const saleEndDate = variant.saleEndDate ? new Date(variant.saleEndDate) : undefined;
+
+  if (saleStartDate && saleEndDate && saleStartDate > saleEndDate) {
+    return {
+      field: `${prefix}.saleStartDate`,
+      message: "Sale start date must be before sale end date",
+    };
+  }
+
+  if (variant.saleStartDate && !variant.saleEndDate) {
+    return {
+      field: `${prefix}.saleEndDate`,
+      message: "Sale end date is required when sale start date is provided",
+    };
+  }
+
+  if (!variant.saleStartDate && variant.saleEndDate) {
+    return {
+      field: `${prefix}.saleStartDate`,
+      message: "Sale start date is required when sale end date is provided",
+    };
+  }
+
+  if (variant.saleStartDate && variant.saleEndDate) {
+    const now = new Date();
+    if (saleEndDate < now) {
+      return {
+        field: `${prefix}.saleEndDate`,
+        message: "Sale end date cannot be in the past",
+      };
+    }
+  }
 
   const stock = Number(variant.stock);
   if (variant.stock === undefined || variant.stock === "" || Number.isNaN(stock)) {
