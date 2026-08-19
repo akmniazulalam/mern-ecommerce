@@ -30,6 +30,7 @@ const productVariantSchema = new Schema(
     salePrice: {
       type: Number,
       min: [0, "Sale price cannot be negative"],
+      default: null,
     },
     saleStartDate: {
       type: Date,
