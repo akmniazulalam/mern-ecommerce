@@ -94,7 +94,10 @@ function buildProductListFilter(query) {
     }
   }
 
-  if (query.minSaleStartDate !== undefined || query.maxSaleStartDate !== undefined) {
+  if (
+    query.minSaleStartDate !== undefined ||
+    query.maxSaleStartDate !== undefined
+  ) {
     variantCriteria.saleStartDate = {};
 
     if (query.minSaleStartDate !== undefined) {
@@ -106,7 +109,10 @@ function buildProductListFilter(query) {
     }
   }
 
-  if (query.minSaleEndDate !== undefined || query.maxSaleEndDate !== undefined) {
+  if (
+    query.minSaleEndDate !== undefined ||
+    query.maxSaleEndDate !== undefined
+  ) {
     variantCriteria.saleEndDate = {};
 
     if (query.minSaleEndDate !== undefined) {
@@ -118,20 +124,20 @@ function buildProductListFilter(query) {
     }
   }
 
-  if (query.offer !== undefined) {
-    if (query.offer === "true") {
-      const now = new Date();
-      filter.variants = {
-        $elemMatch: {
-          salePrice: { $gt: 0 },
-          saleStartDate: { $lte: now },
-          saleEndDate: { $gte: now },
-        },
-      };
-      variantCriteria.offer = { $exists: true, $ne: null };
-    } else if (query.offer === "false") {
-      variantCriteria.offer = { $exists: false };
-    }
+  if (query.offer === "true") {
+    const now = new Date();
+    variantCriteria.salePrice = {
+      ...(variantCriteria.salePrice || {}),
+      $gt: 0,
+    };
+    variantCriteria.saleStartDate = {
+      ...(variantCriteria.saleStartDate || {}),
+      $lte: now,
+    };
+    variantCriteria.saleEndDate = {
+      ...(variantCriteria.saleEndDate || {}),
+      $gte: now,
+    };
   }
 
   if (query.stock === "in-stock") {
@@ -209,6 +215,11 @@ async function getProductController(req, res) {
       limit: undefined,
       hasPagination: false,
       sort: "latest",
+      search: "",
+      category: "",
+      badge: "",
+      offer: "",
+      stock: "",
     };
     const filter = buildProductListFilter(listQuery);
     const total = await Product.countDocuments(filter);
@@ -220,11 +231,18 @@ async function getProductController(req, res) {
           maxVariantPrice: { $ifNull: [{ $max: "$variants.price" }, 0] },
           minSalePrice: { $ifNull: [{ $min: "$variants.salePrice" }, 0] },
           maxSalePrice: { $ifNull: [{ $max: "$variants.salePrice" }, 0] },
-          minSaleStartDate: { $ifNull: [{ $min: "$variants.saleStartDate" }, null] },
-          maxSaleStartDate: { $ifNull: [{ $max: "$variants.saleStartDate" }, null] },
-          minSaleEndDate: { $ifNull: [{ $min: "$variants.saleEndDate" }, null] },
-          maxSaleEndDate: { $ifNull: [{ $max: "$variants.saleEndDate" }, null] },
-          offer: { $ifNull: [{ $max: "$variants.offer" }, null] },
+          minSaleStartDate: {
+            $ifNull: [{ $min: "$variants.saleStartDate" }, null],
+          },
+          maxSaleStartDate: {
+            $ifNull: [{ $max: "$variants.saleStartDate" }, null],
+          },
+          minSaleEndDate: {
+            $ifNull: [{ $min: "$variants.saleEndDate" }, null],
+          },
+          maxSaleEndDate: {
+            $ifNull: [{ $max: "$variants.saleEndDate" }, null],
+          },
           totalVariantStock: { $ifNull: [{ $sum: "$variants.stock" }, 0] },
         },
       },
@@ -246,7 +264,6 @@ async function getProductController(req, res) {
         maxSaleStartDate: 0,
         minSaleEndDate: 0,
         maxSaleEndDate: 0,
-        offer: 0,
         totalVariantStock: 0,
       },
     });
