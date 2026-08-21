@@ -48,7 +48,9 @@ const Products = () => {
         setSelectedCategory((current) => current || list[0].name);
       }
     } catch (error) {
-      setCategoriesError(getApiErrorMessage(error, "Failed to load categories"));
+      setCategoriesError(
+        getApiErrorMessage(error, "Failed to load categories"),
+      );
     } finally {
       setIsLoadingCategories(false);
     }
@@ -82,7 +84,9 @@ const Products = () => {
       return;
     }
 
-    const variantError = validateVariantsBeforeSubmit(variants, { isCreate: true });
+    const variantError = validateVariantsBeforeSubmit(variants, {
+      isCreate: true,
+    });
     if (variantError) {
       toast.error(variantError);
       return;
