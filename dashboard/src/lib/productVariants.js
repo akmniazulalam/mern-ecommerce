@@ -64,9 +64,25 @@ export function mapApiVariantsToForm(apiVariants = []) {
       ...normalized,
       price: normalized.price === "" ? "" : String(normalized.price),
       salePrice:
-        normalized.salePrice === "" ? "" : String(normalized.salePrice),
-      saleStartDate: normalized.saleStartDate || undefined,
-      saleEndDate: normalized.saleEndDate || undefined,
+        normalized.salePrice === undefined ||
+        normalized.salePrice === null ||
+        normalized.salePrice === "" ||
+        normalized.salePrice === "undefined" ||
+        normalized.salePrice === "null"
+          ? undefined
+          : String(normalized.salePrice),
+      saleStartDate:
+        normalized.saleStartDate &&
+        normalized.saleStartDate !== "undefined" &&
+        normalized.saleStartDate !== "null"
+          ? normalized.saleStartDate
+          : undefined,
+      saleEndDate:
+        normalized.saleEndDate &&
+        normalized.saleEndDate !== "undefined" &&
+        normalized.saleEndDate !== "null"
+          ? normalized.saleEndDate
+          : undefined,
       stock: normalized.stock === "" ? "" : String(normalized.stock),
       clientKey: normalized._id || crypto.randomUUID(),
       image: null,
@@ -106,6 +122,13 @@ export function buildProductFormData(
 
 export function buildVariantPayload(variants) {
   return variants.map((variant) => {
+    const isNoSale =
+      variant.salePrice === undefined ||
+      variant.salePrice === null ||
+      variant.salePrice === "" ||
+      variant.salePrice === "undefined" ||
+      variant.salePrice === "null";
+
     const payload = {
       color: variant.color ?? "",
       size: variant.size ?? "",
@@ -113,9 +136,19 @@ export function buildVariantPayload(variants) {
       storage: variant.storage ?? "",
       stock: variant.stock,
       price: variant.price,
-      salePrice: variant.salePrice ?? undefined,
-      saleStartDate: variant.saleStartDate ?? undefined,
-      saleEndDate: variant.saleEndDate ?? undefined,
+      salePrice: isNoSale ? undefined : variant.salePrice,
+      saleStartDate:
+        variant.saleStartDate &&
+        variant.saleStartDate !== "undefined" &&
+        variant.saleStartDate !== "null"
+          ? variant.saleStartDate
+          : undefined,
+      saleEndDate:
+        variant.saleEndDate &&
+        variant.saleEndDate !== "undefined" &&
+        variant.saleEndDate !== "null"
+          ? variant.saleEndDate
+          : undefined,
       badge: variant.badge ?? "",
     };
 
@@ -163,14 +196,18 @@ export function validateVariantsBeforeSubmit(
       return `${label}: price cannot be negative.`;
     }
 
-    if (
-      variant.salePrice !== undefined &&
-      (variant.salePrice === "" || Number.isNaN(Number(variant.salePrice)))
-    ) {
+    const isNoSale =
+      variant.salePrice === undefined ||
+      variant.salePrice === null ||
+      variant.salePrice === "" ||
+      variant.salePrice === "undefined" ||
+      variant.salePrice === "null";
+
+    if (!isNoSale && Number.isNaN(Number(variant.salePrice))) {
       return `${label}: sale price is invalid.`;
     }
 
-    if (variant.salePrice !== undefined && Number(variant.salePrice) < 0) {
+    if (!isNoSale && Number(variant.salePrice) < 0) {
       return `${label}: sale price cannot be negative.`;
     }
 
