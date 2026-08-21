@@ -145,26 +145,35 @@ function validateVariantEntry(variant, index, options = {}) {
     };
   }
 
-  const salePrice = Number(variant.salePrice);
-  if (variant.salePrice !== undefined && (variant.salePrice === "" || Number.isNaN(salePrice))) {
-    return {
-      field: `${prefix}.salePrice`,
-      message: "Sale price is invalid",
-    };
-  }
+  const isNoSale =
+    variant.salePrice === undefined ||
+    variant.salePrice === null ||
+    variant.salePrice === "" ||
+    variant.salePrice === "null" ||
+    variant.salePrice === "undefined";
 
-  if (salePrice < 0) {
-    return {
-      field: `${prefix}.salePrice`,
-      message: "Sale price cannot be negative",
-    };
-  }
+  if (!isNoSale) {
+    const salePrice = Number(variant.salePrice);
+    if (Number.isNaN(salePrice)) {
+      return {
+        field: `${prefix}.salePrice`,
+        message: "Sale price is invalid",
+      };
+    }
 
-  if (salePrice > 0 && salePrice >= price) {
-    return {
-      field: `${prefix}.salePrice`,
-      message: "Sale price must be less than the regular price",
-    };
+    if (salePrice < 0) {
+      return {
+        field: `${prefix}.salePrice`,
+        message: "Sale price cannot be negative",
+      };
+    }
+
+    if (salePrice > 0 && salePrice >= price) {
+      return {
+        field: `${prefix}.salePrice`,
+        message: "Sale price must be less than the regular price",
+      };
+    }
   }
 
   if (variant.saleStartDate && isNaN(Date.parse(variant.saleStartDate))) {
