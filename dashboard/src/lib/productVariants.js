@@ -151,6 +151,10 @@ export function validateVariantsBeforeSubmit(
     const variant = variants[i];
     const label = `Variant ${i + 1}`;
 
+    // --------------------
+    // Price
+    // --------------------
+
     if (
       variant.price === "" ||
       variant.price === undefined ||
@@ -159,36 +163,84 @@ export function validateVariantsBeforeSubmit(
       return `${label}: price is required.`;
     }
 
-    if (Number(variant.price) < 0) {
+    const price = Number(variant.price);
+
+    if (price < 0) {
       return `${label}: price cannot be negative.`;
     }
 
-    if (
+    // --------------------
+    // Sale fields
+    // --------------------
+
+    const hasSalePrice =
       variant.salePrice !== undefined &&
-      (variant.salePrice === "" || Number.isNaN(Number(variant.salePrice)))
-    ) {
-      return `${label}: sale price is invalid.`;
+      variant.salePrice !== null &&
+      variant.salePrice !== "";
+
+    const hasSaleStartDate =
+      variant.saleStartDate !== undefined &&
+      variant.saleStartDate !== null &&
+      variant.saleStartDate !== "";
+
+    const hasSaleEndDate =
+      variant.saleEndDate !== undefined &&
+      variant.saleEndDate !== null &&
+      variant.saleEndDate !== "";
+
+    const hasAnySaleField = hasSalePrice || hasSaleStartDate || hasSaleEndDate;
+
+    // If any sale field is provided,
+    // all three should be provided.
+    if (hasAnySaleField && !hasSalePrice) {
+      return `${label}: sale price is required.`;
     }
 
-    if (variant.salePrice !== undefined && Number(variant.salePrice) < 0) {
-      return `${label}: sale price cannot be negative.`;
+    if (hasAnySaleField && !hasSaleStartDate) {
+      return `${label}: sale start date is required.`;
     }
 
-    if (variant.saleStartDate !== undefined && !variant.saleStartDate) {
+    if (hasAnySaleField && !hasSaleEndDate) {
+      return `${label}: sale end date is required.`;
+    }
+
+    // Sale price is provided → validate it
+    if (hasSalePrice) {
+      const salePrice = Number(variant.salePrice);
+
+      if (Number.isNaN(salePrice)) {
+        return `${label}: sale price is invalid.`;
+      }
+
+      if (salePrice < 0) {
+        return `${label}: sale price cannot be negative.`;
+      }
+
+      if (salePrice >= price) {
+        return `${label}: sale price must be less than price.`;
+      }
+    }
+
+    // Sale dates are provided → validate them
+    if (hasSaleStartDate && isNaN(Date.parse(variant.saleStartDate))) {
       return `${label}: sale start date is invalid.`;
     }
 
-    if (variant.saleEndDate !== undefined && !variant.saleEndDate) {
+    if (hasSaleEndDate && isNaN(Date.parse(variant.saleEndDate))) {
       return `${label}: sale end date is invalid.`;
     }
 
     if (
-      variant.saleStartDate &&
-      variant.saleEndDate &&
+      hasSaleStartDate &&
+      hasSaleEndDate &&
       new Date(variant.saleStartDate) > new Date(variant.saleEndDate)
     ) {
       return `${label}: sale start date cannot be after sale end date.`;
     }
+
+    // --------------------
+    // Stock
+    // --------------------
 
     if (
       variant.stock === "" ||
@@ -198,9 +250,15 @@ export function validateVariantsBeforeSubmit(
       return `${label}: stock is required.`;
     }
 
-    if (Number(variant.stock) < 1) {
+    const stock = Number(variant.stock);
+
+    if (stock < 1) {
       return `${label}: stock must be at least 1.`;
     }
+
+    // --------------------
+    // Image
+    // --------------------
 
     if (isCreate && !(variant.image instanceof File)) {
       return `${label}: image is required.`;
