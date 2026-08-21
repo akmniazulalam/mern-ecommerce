@@ -193,15 +193,24 @@ export function validateVariantsBeforeSubmit(
     // If any sale field is provided,
     // all three should be provided.
     if (hasAnySaleField && !hasSalePrice) {
-      return `${label}: sale price is required.`;
+      return {
+        field: `${prefix}.salePrice`,
+        message: "Sale price is required",
+      };
     }
 
     if (hasAnySaleField && !hasSaleStartDate) {
-      return `${label}: sale start date is required.`;
+      return {
+        field: `${prefix}.saleStartDate`,
+        message: "Sale start date is required",
+      };
     }
 
     if (hasAnySaleField && !hasSaleEndDate) {
-      return `${label}: sale end date is required.`;
+      return {
+        field: `${prefix}.saleEndDate`,
+        message: "Sale end date is required",
+      };
     }
 
     // Sale price is provided → validate it
