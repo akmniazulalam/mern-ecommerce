@@ -216,7 +216,7 @@ const UpdateProduct = () => {
               <FieldLabel className="font-semibold">Description</FieldLabel>
               <Textarea
                 value={description}
-                className="resize-none min-h-[100px]"
+                className="resize-none min-h-25"
                 disabled={isFormDisabled}
                 onChange={(e) => setDescription(e.target.value)}
               />
