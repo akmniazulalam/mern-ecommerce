@@ -20,4 +20,4 @@ COPY . .
 RUN npm run build
 
 #stage 3
-FROM nginx:stable-alpine
+FROM nginx:stable-alpine AS runner
