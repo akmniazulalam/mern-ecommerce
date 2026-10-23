@@ -2,9 +2,7 @@
 FROM node:22-bookworm-slim AS deps
 
 WORKDIR /app
-
 COPY package*.json ./
-
 RUN npm ci
 
 #stage 2
