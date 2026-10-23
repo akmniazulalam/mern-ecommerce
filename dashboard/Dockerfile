@@ -21,3 +21,5 @@ RUN npm run build
 
 #stage 3
 FROM nginx:stable-alpine AS runner
+
+COPY /app/dist /usr/share/nginx/html
