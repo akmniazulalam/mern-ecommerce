@@ -1,36 +1,22 @@
-FROM node:22-bookworm-slim AS builder
+FROM node:22-bookworm-slim AS runner
 
 ARG APP_VERSION=1.0.0
 LABEL version=${APP_VERSION}
 
 WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-FROM node:22-bookworm-slim AS runner
-
 ENV NODE_ENV=production
-
-WORKDIR /app
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm ci --omit=dev
 
-COPY --from=builder /app/server.js ./
+COPY --chown=node:node . .
 
-COPY runner.sh ./
+USER node
 
-RUN chmod +x runner.sh && chown -R appuser:appgroup /app
+EXPOSE 5000
 
-EXPOSE 5843
-
-ENTRYPOINT [ "./runner.sh" ]
-
-CMD [ "node", "server.js" ]
+CMD [ "npm", "start" ]
