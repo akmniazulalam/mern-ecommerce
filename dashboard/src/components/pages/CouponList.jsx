@@ -73,7 +73,7 @@ const CouponList = () => {
 
       <Card className="shadow-xl rounded-2xl overflow-hidden">
         <CardHeader className="px-4 sm:px-6">
-          <CardTitle className="text-xl sm:text-2xl font-semibold break-words">
+          <CardTitle className="text-xl sm:text-2xl font-semibold wrap-break-word">
             🎟️ Coupon List
           </CardTitle>
         </CardHeader>
