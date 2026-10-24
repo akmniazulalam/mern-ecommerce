@@ -123,7 +123,9 @@ const CategoryList = () => {
 
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogTitle>
+                                  Are you sure?
+                                </AlertDialogTitle>
                                 <AlertDialogDescription>
                                   This action cannot be undone. This will
                                   permanently delete this category.
