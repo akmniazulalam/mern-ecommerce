@@ -526,7 +526,7 @@ const Orders = () => {
                                   <p className="font-medium break-words">
                                     {item.name || "-"}
                                   </p>
-                                  <p className="text-xs text-muted-foreground break-words">
+                                  <p className="text-xs text-muted-foreground wrap-break-word">
                                     {[
                                       item.color,
                                       item.size,
