@@ -192,7 +192,7 @@ const Orders = () => {
 
           <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center lg:w-auto">
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-[170px]">
+              <SelectTrigger className="w-full sm:w-42.5">
                 <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
