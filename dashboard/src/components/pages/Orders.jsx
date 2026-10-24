@@ -425,7 +425,7 @@ const Orders = () => {
                     {selectedOrder.customer?.notes ? (
                       <div className="min-w-0 sm:col-span-2">
                         <p className="text-muted-foreground">Notes</p>
-                        <p className="font-medium break-words">
+                        <p className="font-medium wrap-break-word">
                           {selectedOrder.customer.notes}
                         </p>
                       </div>
