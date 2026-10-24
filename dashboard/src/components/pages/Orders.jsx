@@ -277,7 +277,7 @@ const Orders = () => {
 
             {!isLoading && !loadError && orders.length > 0 ? (
               <div className="overflow-x-auto">
-                <Table className="min-w-[860px]">
+                <Table className="min-w-215">
                   <TableHeader>
                     <TableRow>
                       <TableHead scope="col">Order</TableHead>
