@@ -41,8 +41,10 @@ const Coupon = () => {
     const nextErrors = {};
     if (!code.trim()) nextErrors.code = "Coupon code is required";
     if (!discountType) nextErrors.discountType = "Discount type is required";
-    if (!discountValue || Number(discountValue) <= 0) nextErrors.discountValue = "Valid discount value required";
-    if (!minPurchase || Number(minPurchase) < 0) nextErrors.minPurchase = "Valid minimum purchase required";
+    if (!discountValue || Number(discountValue) <= 0)
+      nextErrors.discountValue = "Valid discount value required";
+    if (!minPurchase || Number(minPurchase) < 0)
+      nextErrors.minPurchase = "Valid minimum purchase required";
     if (!expiryDate) nextErrors.expiryDate = "Expiry date is required";
 
     setErrors(nextErrors);
@@ -105,17 +107,23 @@ const Coupon = () => {
                 setErrors((prev) => ({ ...prev, code: undefined }));
               }}
             />
-            {errors.code && <p className="text-xs text-destructive mt-1">{errors.code}</p>}
+            {errors.code && (
+              <p className="text-xs text-destructive mt-1">{errors.code}</p>
+            )}
           </Field>
 
           {/* Discount Type */}
           <Field>
-            <FieldLabel htmlFor="coupon-discount-type">Discount Type</FieldLabel>
+            <FieldLabel htmlFor="coupon-discount-type">
+              Discount Type
+            </FieldLabel>
 
-            <Select disabled={isSubmitting || user?.isDemoAdmin} onValueChange={(value) => {
-              setDiscountType(value);
-              setErrors((prev) => ({ ...prev, discountType: undefined }));
-            }}>
+            <Select
+              disabled={isSubmitting || user?.isDemoAdmin}
+              onValueChange={(value) => {
+                setDiscountType(value);
+                setErrors((prev) => ({ ...prev, discountType: undefined }));
+              }}>
               <SelectTrigger id="coupon-discount-type" className="w-full">
                 <SelectValue placeholder="Select Discount Type" />
               </SelectTrigger>
@@ -130,12 +138,18 @@ const Coupon = () => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            {errors.discountType && <p className="text-xs text-destructive mt-1">{errors.discountType}</p>}
+            {errors.discountType && (
+              <p className="text-xs text-destructive mt-1">
+                {errors.discountType}
+              </p>
+            )}
           </Field>
 
           {/* Discount Value */}
           <Field>
-            <FieldLabel htmlFor="coupon-discount-val">Discount Value</FieldLabel>
+            <FieldLabel htmlFor="coupon-discount-val">
+              Discount Value
+            </FieldLabel>
 
             <Input
               id="coupon-discount-val"
@@ -151,12 +165,18 @@ const Coupon = () => {
                 setErrors((prev) => ({ ...prev, discountValue: undefined }));
               }}
             />
-            {errors.discountValue && <p className="text-xs text-destructive mt-1">{errors.discountValue}</p>}
+            {errors.discountValue && (
+              <p className="text-xs text-destructive mt-1">
+                {errors.discountValue}
+              </p>
+            )}
           </Field>
 
           {/* Minimum Purchase */}
           <Field>
-            <FieldLabel htmlFor="coupon-min-purchase">Minimum Purchase</FieldLabel>
+            <FieldLabel htmlFor="coupon-min-purchase">
+              Minimum Purchase
+            </FieldLabel>
 
             <Input
               id="coupon-min-purchase"
@@ -172,7 +192,11 @@ const Coupon = () => {
                 setErrors((prev) => ({ ...prev, minPurchase: undefined }));
               }}
             />
-            {errors.minPurchase && <p className="text-xs text-destructive mt-1">{errors.minPurchase}</p>}
+            {errors.minPurchase && (
+              <p className="text-xs text-destructive mt-1">
+                {errors.minPurchase}
+              </p>
+            )}
           </Field>
 
           {/* Expiry Date */}
@@ -190,7 +214,11 @@ const Coupon = () => {
                 setErrors((prev) => ({ ...prev, expiryDate: undefined }));
               }}
             />
-            {errors.expiryDate && <p className="text-xs text-destructive mt-1">{errors.expiryDate}</p>}
+            {errors.expiryDate && (
+              <p className="text-xs text-destructive mt-1">
+                {errors.expiryDate}
+              </p>
+            )}
           </Field>
 
           {/* Button */}
