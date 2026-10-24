@@ -523,7 +523,7 @@ const Orders = () => {
                                   </div>
                                 )}
                                 <div className="min-w-0">
-                                  <p className="font-medium break-words">
+                                  <p className="font-medium wrap-break-word">
                                     {item.name || "-"}
                                   </p>
                                   <p className="text-xs text-muted-foreground wrap-break-word">
