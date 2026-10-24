@@ -124,8 +124,9 @@ const Orders = () => {
   );
   const pendingCount = useMemo(
     () =>
-      orders.filter((order) => ["Pending", "Processing", "Shipped"].includes(order.orderStatus))
-        .length,
+      orders.filter((order) =>
+        ["Pending", "Processing", "Shipped"].includes(order.orderStatus),
+      ).length,
     [orders],
   );
 
@@ -141,17 +142,26 @@ const Orders = () => {
       return;
     }
 
-    if (!selectedOrder || !draftStatus || draftStatus === selectedOrder.orderStatus) {
+    if (
+      !selectedOrder ||
+      !draftStatus ||
+      draftStatus === selectedOrder.orderStatus
+    ) {
       return;
     }
 
     setIsStatusSaving(true);
     try {
       const updated = await updateOrderStatus(selectedOrder._id, draftStatus);
-      const safeUpdated = updated || { ...selectedOrder, orderStatus: draftStatus };
+      const safeUpdated = updated || {
+        ...selectedOrder,
+        orderStatus: draftStatus,
+      };
 
       setOrders((prev) =>
-        prev.map((order) => (order._id === selectedOrder._id ? safeUpdated : order)),
+        prev.map((order) =>
+          order._id === selectedOrder._id ? safeUpdated : order,
+        ),
       );
       setSelectedOrder(safeUpdated);
       setDraftStatus(safeUpdated.orderStatus);
@@ -172,7 +182,9 @@ const Orders = () => {
       <div className="min-w-0 space-y-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
-            <h2 className="text-xl font-bold tracking-tight">Order Management</h2>
+            <h2 className="text-xl font-bold tracking-tight">
+              Order Management
+            </h2>
             <p className="text-sm text-muted-foreground mt-1">
               Review customer orders, payment details, and fulfillment statuses.
             </p>
@@ -199,7 +211,9 @@ const Orders = () => {
               className="w-full cursor-pointer sm:w-auto"
               disabled={isLoading}
               onClick={loadOrders}>
-              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+              <RefreshCw
+                className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+              />
               Refresh
             </Button>
           </div>
@@ -242,7 +256,9 @@ const Orders = () => {
               <div className="flex flex-col items-center text-center gap-3 py-10">
                 <AlertCircle className="h-8 w-8 text-destructive" />
                 <p className="font-medium">Could not load orders</p>
-                <p className="text-sm text-muted-foreground max-w-xl">{loadError}</p>
+                <p className="text-sm text-muted-foreground max-w-xl">
+                  {loadError}
+                </p>
                 <Button className="cursor-pointer" onClick={loadOrders}>
                   Try again
                 </Button>
@@ -271,14 +287,20 @@ const Orders = () => {
                       <TableHead scope="col">Payment</TableHead>
                       <TableHead scope="col">Status</TableHead>
                       <TableHead scope="col">Placed</TableHead>
-                      <TableHead scope="col" className="text-right">Action</TableHead>
+                      <TableHead scope="col" className="text-right">
+                        Action
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {orders.map((order) => {
-                      const customerName = `${order?.customer?.firstName || ""} ${order?.customer?.lastName || ""}`.trim();
+                      const customerName =
+                        `${order?.customer?.firstName || ""} ${order?.customer?.lastName || ""}`.trim();
                       const itemCount = Array.isArray(order.items)
-                        ? order.items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)
+                        ? order.items.reduce(
+                            (sum, item) => sum + (Number(item.quantity) || 0),
+                            0,
+                          )
                         : 0;
 
                       return (
@@ -286,7 +308,9 @@ const Orders = () => {
                           <TableCell className="font-medium whitespace-normal">
                             <div className="space-y-0.5 max-w-48">
                               <p>{order.orderNumber || "-"}</p>
-                              <p className="text-xs text-muted-foreground break-all">{order._id}</p>
+                              <p className="text-xs text-muted-foreground break-all">
+                                {order._id}
+                              </p>
                             </div>
                           </TableCell>
                           <TableCell className="whitespace-normal">
@@ -299,18 +323,26 @@ const Orders = () => {
                           </TableCell>
                           <TableCell>{itemCount}</TableCell>
                           <TableCell>
-                            {formatMoney(order?.pricing?.total, order?.pricing?.currency)}
+                            {formatMoney(
+                              order?.pricing?.total,
+                              order?.pricing?.currency,
+                            )}
                           </TableCell>
                           <TableCell className="whitespace-normal">
                             <div className="space-y-0.5">
-                              <p className="capitalize">{order?.payment?.method || "-"}</p>
+                              <p className="capitalize">
+                                {order?.payment?.method || "-"}
+                              </p>
                               <p className="text-xs text-muted-foreground">
                                 {order?.payment?.status || "-"}
                               </p>
                             </div>
                           </TableCell>
                           <TableCell>
-                            <Badge className={getStatusBadgeClass(order.orderStatus)}>
+                            <Badge
+                              className={getStatusBadgeClass(
+                                order.orderStatus,
+                              )}>
                               {order.orderStatus}
                             </Badge>
                           </TableCell>
@@ -341,7 +373,8 @@ const Orders = () => {
           <DialogHeader>
             <DialogTitle className="break-words">Order Details</DialogTitle>
             <DialogDescription className="break-words">
-              {selectedOrder?.orderNumber || "Order"} • {formatDate(selectedOrder?.createdAt)}
+              {selectedOrder?.orderNumber || "Order"} •{" "}
+              {formatDate(selectedOrder?.createdAt)}
             </DialogDescription>
           </DialogHeader>
 
@@ -350,22 +383,29 @@ const Orders = () => {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                 <Card className="py-4 lg:col-span-2">
                   <CardHeader>
-                    <CardTitle className="text-base">Customer Information</CardTitle>
+                    <CardTitle className="text-base">
+                      Customer Information
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Name</p>
                       <p className="font-medium break-words">
-                        {selectedOrder.customer?.firstName} {selectedOrder.customer?.lastName}
+                        {selectedOrder.customer?.firstName}{" "}
+                        {selectedOrder.customer?.lastName}
                       </p>
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Email</p>
-                      <p className="font-medium break-all">{selectedOrder.customer?.email || "-"}</p>
+                      <p className="font-medium break-all">
+                        {selectedOrder.customer?.email || "-"}
+                      </p>
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Phone</p>
-                      <p className="font-medium break-words">{selectedOrder.customer?.phone || "-"}</p>
+                      <p className="font-medium break-words">
+                        {selectedOrder.customer?.phone || "-"}
+                      </p>
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Address</p>
@@ -385,7 +425,9 @@ const Orders = () => {
                     {selectedOrder.customer?.notes ? (
                       <div className="min-w-0 sm:col-span-2">
                         <p className="text-muted-foreground">Notes</p>
-                        <p className="font-medium break-words">{selectedOrder.customer.notes}</p>
+                        <p className="font-medium break-words">
+                          {selectedOrder.customer.notes}
+                        </p>
                       </div>
                     ) : null}
                   </CardContent>
@@ -397,7 +439,10 @@ const Orders = () => {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Badge className={getStatusBadgeClass(selectedOrder.orderStatus)}>
+                      <Badge
+                        className={getStatusBadgeClass(
+                          selectedOrder.orderStatus,
+                        )}>
                         {selectedOrder.orderStatus}
                       </Badge>
                     </div>
@@ -421,7 +466,9 @@ const Orders = () => {
                     <Button
                       type="button"
                       className="w-full cursor-pointer"
-                      title={user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined}
+                      title={
+                        user?.isDemoAdmin ? DEMO_READ_ONLY_MESSAGE : undefined
+                      }
                       disabled={
                         user?.isDemoAdmin ||
                         isStatusSaving ||
@@ -460,7 +507,8 @@ const Orders = () => {
                       </TableHeader>
                       <TableBody>
                         {(selectedOrder.items || []).map((item, idx) => (
-                          <TableRow key={`${item.productId}-${item.variantId}-${idx}`}>
+                          <TableRow
+                            key={`${item.productId}-${item.variantId}-${idx}`}>
                             <TableCell className="whitespace-normal">
                               <div className="flex min-w-0 items-center gap-2">
                                 {item.image ? (
@@ -475,11 +523,19 @@ const Orders = () => {
                                   </div>
                                 )}
                                 <div className="min-w-0">
-                                  <p className="font-medium break-words">{item.name || "-"}</p>
+                                  <p className="font-medium break-words">
+                                    {item.name || "-"}
+                                  </p>
                                   <p className="text-xs text-muted-foreground break-words">
-                                    {[item.color, item.size, item.ram, item.storage]
+                                    {[
+                                      item.color,
+                                      item.size,
+                                      item.ram,
+                                      item.storage,
+                                    ]
                                       .filter(Boolean)
-                                      .join(" • ") || "Variant info not available"}
+                                      .join(" • ") ||
+                                      "Variant info not available"}
                                   </p>
                                 </div>
                               </div>
@@ -487,10 +543,16 @@ const Orders = () => {
                             <TableCell>{item.sku || "-"}</TableCell>
                             <TableCell>{item.quantity}</TableCell>
                             <TableCell>
-                              {formatMoney(item.unitPrice, selectedOrder?.pricing?.currency)}
+                              {formatMoney(
+                                item.unitPrice,
+                                selectedOrder?.pricing?.currency,
+                              )}
                             </TableCell>
                             <TableCell>
-                              {formatMoney(item.lineTotal, selectedOrder?.pricing?.currency)}
+                              {formatMoney(
+                                item.lineTotal,
+                                selectedOrder?.pricing?.currency,
+                              )}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -503,7 +565,9 @@ const Orders = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 <Card className="py-4">
                   <CardHeader>
-                    <CardTitle className="text-base">Payment Information</CardTitle>
+                    <CardTitle className="text-base">
+                      Payment Information
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                     <div className="min-w-0">
@@ -514,17 +578,22 @@ const Orders = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Payment status</p>
-                      <p className="font-medium">{selectedOrder.payment?.status || "-"}</p>
+                      <p className="font-medium">
+                        {selectedOrder.payment?.status || "-"}
+                      </p>
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Transaction ID</p>
-                      <p className="font-medium break-all">{selectedOrder.payment?.transactionId || "-"}</p>
+                      <p className="font-medium break-all">
+                        {selectedOrder.payment?.transactionId || "-"}
+                      </p>
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Amount</p>
                       <p className="font-medium">
                         {formatMoney(
-                          selectedOrder.payment?.amount ?? selectedOrder.pricing?.total,
+                          selectedOrder.payment?.amount ??
+                            selectedOrder.pricing?.total,
                           selectedOrder?.pricing?.currency,
                         )}
                       </p>
@@ -538,7 +607,9 @@ const Orders = () => {
                   </CardHeader>
                   <CardContent className="space-y-2 text-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Items subtotal</span>
+                      <span className="text-muted-foreground">
+                        Items subtotal
+                      </span>
                       <span className="font-medium">
                         {formatMoney(
                           selectedOrder.pricing?.itemsSubtotal,
@@ -550,13 +621,19 @@ const Orders = () => {
                       <span className="text-muted-foreground">Discount</span>
                       <span className="font-medium">
                         -{" "}
-                        {formatMoney(selectedOrder.pricing?.discount, selectedOrder.pricing?.currency)}
+                        {formatMoney(
+                          selectedOrder.pricing?.discount,
+                          selectedOrder.pricing?.currency,
+                        )}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Tax</span>
                       <span className="font-medium">
-                        {formatMoney(selectedOrder.pricing?.tax, selectedOrder.pricing?.currency)}
+                        {formatMoney(
+                          selectedOrder.pricing?.tax,
+                          selectedOrder.pricing?.currency,
+                        )}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -571,7 +648,10 @@ const Orders = () => {
                     <div className="flex items-center justify-between border-t pt-2 mt-2">
                       <span className="font-semibold">Total</span>
                       <span className="font-semibold">
-                        {formatMoney(selectedOrder.pricing?.total, selectedOrder.pricing?.currency)}
+                        {formatMoney(
+                          selectedOrder.pricing?.total,
+                          selectedOrder.pricing?.currency,
+                        )}
                       </span>
                     </div>
                   </CardContent>
