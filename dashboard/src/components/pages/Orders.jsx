@@ -495,7 +495,7 @@ const Orders = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <Table className="min-w-[680px]">
+                    <Table className="min-w-170">
                       <TableHeader>
                         <TableRow>
                           <TableHead>Product</TableHead>
