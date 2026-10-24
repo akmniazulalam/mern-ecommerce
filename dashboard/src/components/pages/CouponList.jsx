@@ -104,7 +104,9 @@ const CouponList = () => {
                   <TableRow key={coupon._id}>
                     {/* Coupon Code */}
                     <TableCell className="font-medium whitespace-normal">
-                      <span className="block max-w-48 break-all">{coupon.code}</span>
+                      <span className="block max-w-48 break-all">
+                        {coupon.code}
+                      </span>
                     </TableCell>
 
                     {/* Discount Type */}
@@ -132,7 +134,9 @@ const CouponList = () => {
                       {coupon.isActive ? (
                         <Badge className="bg-green-500">Active</Badge>
                       ) : (
-                        <Badge variant="destructive" className="dark:bg-red-700">
+                        <Badge
+                          variant="destructive"
+                          className="dark:bg-red-700">
                           Inactive
                         </Badge>
                       )}
