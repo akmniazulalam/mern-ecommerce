@@ -390,7 +390,7 @@ const Orders = () => {
                   <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Name</p>
-                      <p className="font-medium break-words">
+                      <p className="font-medium wrap-break-word">
                         {selectedOrder.customer?.firstName}{" "}
                         {selectedOrder.customer?.lastName}
                       </p>
