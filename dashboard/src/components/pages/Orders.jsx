@@ -371,7 +371,7 @@ const Orders = () => {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto p-4 sm:max-w-4xl sm:p-6">
           <DialogHeader>
-            <DialogTitle className="break-words">Order Details</DialogTitle>
+            <DialogTitle className="wrap-break-word">Order Details</DialogTitle>
             <DialogDescription className="break-words">
               {selectedOrder?.orderNumber || "Order"} •{" "}
               {formatDate(selectedOrder?.createdAt)}
