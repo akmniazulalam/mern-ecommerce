@@ -403,7 +403,7 @@ const Orders = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Phone</p>
-                      <p className="font-medium break-words">
+                      <p className="font-medium wrap-break-word">
                         {selectedOrder.customer?.phone || "-"}
                       </p>
                     </div>
