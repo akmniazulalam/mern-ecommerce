@@ -409,7 +409,7 @@ const Orders = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="text-muted-foreground">Address</p>
-                      <p className="font-medium break-words">
+                      <p className="font-medium wrap-break-word">
                         {[
                           selectedOrder.customer?.street,
                           selectedOrder.customer?.apartment,
