@@ -252,7 +252,7 @@ const Userlists = () => {
             </CardHeader>
 
             <CardContent>
-              <Table className="min-w-[760px]">
+              <Table className="min-w-190">
                 <TableHeader>
                   <TableRow>
                     <TableHead scope="col">User</TableHead>
