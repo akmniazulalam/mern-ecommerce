@@ -259,7 +259,7 @@ const UpdateProduct = () => {
 
           <Button
             type="button"
-            className="w-full sm:w-auto cursor-pointer min-w-[140px]"
+            className="w-full sm:w-auto cursor-pointer min-w-35"
             title={isDemoReadOnly ? DEMO_READ_ONLY_MESSAGE : undefined}
             disabled={isFormDisabled}
             onClick={handleUpdate}>
