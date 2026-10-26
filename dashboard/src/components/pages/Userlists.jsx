@@ -175,7 +175,7 @@ const Userlists = () => {
     );
 
     return (
-      <div className="flex w-full max-w-[13rem] whitespace-normal">
+      <div className="flex w-full max-w-52 whitespace-normal">
         {restriction ? (
           <TooltipHint message={restriction}>{roleSelect}</TooltipHint>
         ) : (
