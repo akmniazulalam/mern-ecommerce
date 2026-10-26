@@ -287,7 +287,7 @@ const Userlists = () => {
                       </TableCell>
 
                       {/* Email */}
-                      <TableCell className="max-w-[14rem] align-middle whitespace-normal break-all">
+                      <TableCell className="max-w-56 align-middle whitespace-normal break-all">
                         {user.email}
                       </TableCell>
 
