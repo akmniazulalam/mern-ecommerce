@@ -163,7 +163,7 @@ const Userlists = () => {
         onValueChange={(role) => handleRoleSelect(user, role)}
         disabled={isDisabled}>
         <SelectTrigger
-          className="w-full min-w-[7.5rem]"
+          className="w-full min-w-30"
           title={restriction || "Change user role"}>
           <SelectValue placeholder="Role" />
         </SelectTrigger>
