@@ -148,7 +148,7 @@ const Userlists = () => {
       {children}
       <span
         role="tooltip"
-        className="pointer-events-none absolute left-0 bottom-full z-50 mb-2 hidden max-w-[14rem] rounded-md border bg-popover px-2.5 py-1.5 text-xs leading-snug text-popover-foreground shadow-md whitespace-normal wrap-break-word group-hover:block group-focus:block group-focus-within:block">
+        className="pointer-events-none absolute left-0 bottom-full z-50 mb-2 hidden max-w-56 rounded-md border bg-popover px-2.5 py-1.5 text-xs leading-snug text-popover-foreground shadow-md whitespace-normal wrap-break-word group-hover:block group-focus:block group-focus-within:block">
         {message}
       </span>
     </span>
