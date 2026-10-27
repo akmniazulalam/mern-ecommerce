@@ -176,7 +176,7 @@ const Products = () => {
               <Textarea
                 value={productDescription}
                 placeholder="Describe the product for your storefront..."
-                className="resize-none min-h-[100px]"
+                className="resize-none min-h-25"
                 disabled={isFormDisabled}
                 onChange={(e) => setProductDescription(e.target.value)}
               />
