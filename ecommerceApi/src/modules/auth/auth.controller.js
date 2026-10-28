@@ -116,7 +116,7 @@ async function signupController(req, res) {
 
     try {
       await emailVerification(email, otp);
-    } catch (emailErr) {
+    } catch {
       await userSchema.deleteOne({ _id: user._id }).catch(() => {});
       return res.status(500).json({
         message: "Failed to send verification email. Please try again.",
@@ -233,7 +233,7 @@ async function getAllUsers(req, res) {
       message: "Get all users",
       data: users.map(formatUser),
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Failed to fetch users" });
   }
 }
@@ -274,7 +274,7 @@ async function deleteUser(req, res) {
       message: "Deleted successfully done",
       data: formatUser(user),
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Failed to delete user" });
   }
 }
@@ -321,7 +321,7 @@ async function updateUserRole(req, res) {
       message: "User role updated successfully",
       data: formatUser(user),
     });
-  } catch (error) {
+  } catch {
     return res.status(500).json({ message: "Failed to update user role" });
   }
 }
@@ -547,7 +547,7 @@ async function uploadAvatarController(req, res) {
       message: "Profile image updated",
       user,
     });
-  } catch (error) {
+  } catch {
     res.status(500).json({ message: "Upload failed" });
   }
 }
