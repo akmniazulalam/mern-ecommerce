@@ -11,4 +11,3 @@ db()
 app.listen(port, () => {
   console.log(`Server Running on port ${port}`);
 });
-const = ;
