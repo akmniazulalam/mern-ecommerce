@@ -78,13 +78,10 @@ const applyCouponController = asyncHandler(async (req, res) => {
     });
   }
 
-  let discount = 0;
-
-  if (coupon.discountType === "percentage") {
-    discount = (subtotal * coupon.discountValue) / 100;
-  } else {
-    discount = coupon.discountValue;
-  }
+  const discount =
+    coupon.discountType === "percentage"
+      ? (subtotal * coupon.discountValue) / 100
+      : coupon.discountValue;
 
   const total = subtotal - discount;
 
@@ -100,10 +97,7 @@ const applyCouponController = asyncHandler(async (req, res) => {
 // GET ALL COUPONS WITH PAGINATION SUPPORT
 const getCoupons = asyncHandler(async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page, 10) || 1);
-  const limit = Math.min(
-    100,
-    Math.max(1, parseInt(req.query.limit, 10) || 50),
-  );
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 50));
   const skip = (page - 1) * limit;
 
   const total = await Coupon.countDocuments({});
