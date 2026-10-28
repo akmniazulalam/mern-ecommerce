@@ -1,4 +1,3 @@
-const { getEnv } = require("../config/env");
 
 async function emailVerification(email, otp) {
   try {

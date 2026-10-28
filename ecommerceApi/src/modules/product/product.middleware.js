@@ -7,7 +7,6 @@ const {
   validateUpdateImages,
   validateVariants,
 } = require("./product.validators");
-const { off } = require("./product.model");
 
 function isValidProductId(id) {
   if (id === undefined || id === null || id === "") {

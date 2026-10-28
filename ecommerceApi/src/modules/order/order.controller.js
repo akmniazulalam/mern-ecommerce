@@ -1,4 +1,4 @@
-const { Order, ORDER_STATUSES } = require("./order.model");
+const { Order } = require("./order.model");
 const { sendError, handleMongoError } = require("./order.errors");
 const {
   validateCustomer,
