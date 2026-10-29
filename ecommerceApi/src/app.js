@@ -40,7 +40,10 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: getEnv("DB_URL") }),
+    store:
+      process.env.NODE_ENV === "test"
+        ? undefined
+        : MongoStore.create({ mongoUrl: getEnv("DB_URL") }),
     cookie: {
       secure: isProduction,
       maxAge: 1000 * 60 * 60 * 24 * 7,
