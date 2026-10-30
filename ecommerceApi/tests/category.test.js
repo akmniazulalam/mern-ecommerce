@@ -1,4 +1,3 @@
-
 process.env.DB_URL = "mongodb://127.0.0.1:27017/test";
 process.env.SESSION_SECRET = "test-session-secret";
 process.env.JWT_SECRET = "test-jwt-secret";
