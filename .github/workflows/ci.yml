@@ -1,4 +1,3 @@
-
 name: Backend CI
 
 on:
@@ -34,8 +33,8 @@ jobs:
       - name: Lint backend
         run: npm run lint
 
-      - name: Run backend tests
-        run: npm test
-
       - name: Check JavaScript syntax
         run: node --check server.js
+
+      - name: Run backend tests
+        run: npm test
