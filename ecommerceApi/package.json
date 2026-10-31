@@ -9,6 +9,10 @@
     "lint": "eslint .",
     "test": "jest --runInBand"
   },
+  "jest": {
+  "testEnvironment": "node",
+  "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
