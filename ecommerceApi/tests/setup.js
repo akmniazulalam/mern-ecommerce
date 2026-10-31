@@ -8,7 +8,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   if (mongoose.connection.readyState === 1) {
-    await mongoose.connection.dropDatabase();
+    await mongoose.connection.db.dropDatabase();
     await mongoose.disconnect();
   }
 });
