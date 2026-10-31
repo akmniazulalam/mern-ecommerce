@@ -24,4 +24,9 @@ describe("GET /api/v1/category/singlecategory/:id", () => {
       field: "id",
     });
   });
+  it("should return 404 when category ID is missing", async () => {
+    const response = await request(app).get("/api/v1/category/singlecategory/");
+
+    expect(response.status).toBe(404);
+  });
 });
