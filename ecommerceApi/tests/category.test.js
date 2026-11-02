@@ -10,7 +10,9 @@ process.env.DEMO_ADMIN_EMAIL = "demo@example.com";
 
 const request = require("supertest");
 const app = require("../src/app");
+const Category = require("../src/modules/category/category.model");
 
+// Existing validation tests
 describe("GET /api/v1/category/singlecategory/:id", () => {
   it("should return 400 when category ID is invalid", async () => {
     const response = await request(app).get(
@@ -18,15 +20,53 @@ describe("GET /api/v1/category/singlecategory/:id", () => {
     );
 
     expect(response.status).toBe(400);
-
     expect(response.body).toEqual({
       message: "Invalid category id",
       field: "id",
     });
   });
+
   it("should return 404 when category ID is missing", async () => {
-    const response = await request(app).get("/api/v1/category/singlecategory/");
+    const response = await request(app).get(
+      "/api/v1/category/singlecategory/",
+    );
 
     expect(response.status).toBe(404);
+  });
+});
+
+// Database integration test
+describe("GET /api/v1/category/getallcategory", () => {
+  let testCategory;
+
+  beforeEach(async () => {
+    testCategory = await Category.create({
+      name: `Test Category ${Date.now()}`,
+      description: "Category created for integration testing",
+    });
+  });
+
+  afterEach(async () => {
+    if (testCategory) {
+      await Category.findByIdAndDelete(testCategory._id);
+    }
+  });
+
+  it("should return all categories", async () => {
+    const response = await request(app).get(
+      "/api/v1/category/getallcategory",
+    );
+
+    expect(response.status).toBe(200);
+
+    expect(response.body.data).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          _id: testCategory._id.toString(),
+          name: testCategory.name,
+          description: testCategory.description,
+        }),
+      ]),
+    );
   });
 });
