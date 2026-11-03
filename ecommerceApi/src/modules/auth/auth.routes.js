@@ -10,7 +10,8 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: {
-    message: "Too many attempts from this IP, please try again after 15 minutes",
+    message:
+      "Too many attempts from this IP, please try again after 15 minutes",
   },
 });
 
@@ -20,7 +21,8 @@ const otpLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: {
-    message: "Too many OTP attempts from this IP, please try again after 15 minutes",
+    message:
+      "Too many OTP attempts from this IP, please try again after 15 minutes",
   },
 });
 
@@ -51,9 +53,13 @@ const handleAvatarUpload = (req, res, next) => {
   upload.single("image")(req, res, (err) => {
     if (err) {
       if (err instanceof multer.MulterError) {
-        return res.status(400).json({ message: `Upload error: ${err.message}` });
+        return res
+          .status(400)
+          .json({ message: `Upload error: ${err.message}` });
       }
-      return res.status(400).json({ message: err.message || "Invalid file upload" });
+      return res
+        .status(400)
+        .json({ message: err.message || "Invalid file upload" });
     }
     next();
   });
@@ -75,7 +81,9 @@ const {
 } = require("./auth.controller");
 const authMiddleware = require("./auth.middleware");
 const { adminMiddleware } = require("./auth.middleware");
-const { validateObjectIdParam } = require("../../common/middleware/requestValidation");
+const {
+  validateObjectIdParam,
+} = require("../../common/middleware/requestValidation");
 const {
   validateAvatarUpload,
   validateLoginRequest,
@@ -89,9 +97,19 @@ const router = express.Router();
 // Admin Dashboard signup (OTP-based, requires email verification)
 router.post("/signup", authLimiter, validateSignupRequest, signupController);
 // Orebi customer signup (no OTP, immediate login)
-router.post("/customer-signup", authLimiter, validateSignupRequest, customerSignupController);
+router.post(
+  "/customer-signup",
+  authLimiter,
+  validateSignupRequest,
+  customerSignupController,
+);
 router.post("/otpverify", otpLimiter, validateOtpRequest, otpController);
-router.post("/resendotp", otpLimiter, validateResendOtpRequest, resendOtpController);
+router.post(
+  "/resendotp",
+  otpLimiter,
+  validateResendOtpRequest,
+  resendOtpController,
+);
 router.get("/userlist", authMiddleware, adminMiddleware, getAllUsers);
 router.delete(
   "/deleteuser/:id",
