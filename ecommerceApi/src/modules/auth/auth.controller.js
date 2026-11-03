@@ -23,7 +23,8 @@ const sessionCookieOptions = {
 const otpAttemptsMap = new Map();
 
 function formatUser(user) {
-  const plainUser = typeof user?.toObject === "function" ? user.toObject() : user;
+  const plainUser =
+    typeof user?.toObject === "function" ? user.toObject() : user;
 
   if (!plainUser) {
     return plainUser;
@@ -437,35 +438,35 @@ async function loginController(req, res) {
   }
 
   bcrypt.compare(password, existingEmailUser.password, (err, result) => {
-      if (err) {
+    if (err) {
+      return res.status(500).json({ message: "Login failed" });
+    }
+    if (!result) {
+      return res.status(401).json({ message: "Password is not matched" });
+    }
+    const sessionUser = {
+      id: existingEmailUser.id,
+      email: existingEmailUser.email,
+      firstName: existingEmailUser.firstName,
+      lastName: existingEmailUser.lastName,
+      role: getEffectiveRole(existingEmailUser),
+      isPrimaryAdmin: isPrimaryAdminEmail(existingEmailUser.email),
+      isDemoAdmin: isDemoAdminEmail(existingEmailUser.email),
+      profileImage: existingEmailUser.profileImage || "",
+    };
+
+    req.session.isAuth = true;
+    req.session.user = sessionUser;
+    req.session.save((saveErr) => {
+      if (saveErr) {
         return res.status(500).json({ message: "Login failed" });
       }
-      if (!result) {
-        return res.status(401).json({ message: "Password is not matched" });
-      }
-      const sessionUser = {
-        id: existingEmailUser.id,
-        email: existingEmailUser.email,
-        firstName: existingEmailUser.firstName,
-        lastName: existingEmailUser.lastName,
-        role: getEffectiveRole(existingEmailUser),
-        isPrimaryAdmin: isPrimaryAdminEmail(existingEmailUser.email),
-        isDemoAdmin: isDemoAdminEmail(existingEmailUser.email),
-        profileImage: existingEmailUser.profileImage || "",
-      };
 
-      req.session.isAuth = true;
-      req.session.user = sessionUser;
-      req.session.save((saveErr) => {
-        if (saveErr) {
-          return res.status(500).json({ message: "Login failed" });
-        }
-
-        return res
-          .status(200)
-          .json({ message: "Login Successful", user: sessionUser });
-      });
+      return res
+        .status(200)
+        .json({ message: "Login Successful", user: sessionUser });
     });
+  });
 }
 
 function dashboardController(req, res) {
@@ -516,7 +517,9 @@ async function currentuserController(req, res) {
 function logoutController(req, res) {
   req.session.destroy(function (err) {
     if (err) {
-      return res.status(500).json({ message: "Failed to log out. Please try again." });
+      return res
+        .status(500)
+        .json({ message: "Failed to log out. Please try again." });
     } else {
       res.clearCookie("ecommerce.sid", sessionCookieOptions);
       res.clearCookie("connect.sid", sessionCookieOptions);
