@@ -1,10 +1,13 @@
-
 function normalizeRole(role) {
-  return String(role || "user").trim().toLowerCase();
+  return String(role || "user")
+    .trim()
+    .toLowerCase();
 }
 
 function normalizeEmail(email) {
-  return String(email || "").trim().toLowerCase();
+  return String(email || "")
+    .trim()
+    .toLowerCase();
 }
 
 function getPrimaryAdminEmail() {
@@ -18,7 +21,9 @@ function getDemoAdminEmail() {
 function isPrimaryAdminEmail(email) {
   const primaryAdminEmail = getPrimaryAdminEmail();
 
-  return primaryAdminEmail !== "" && normalizeEmail(email) === primaryAdminEmail;
+  return (
+    primaryAdminEmail !== "" && normalizeEmail(email) === primaryAdminEmail
+  );
 }
 
 function isDemoAdminEmail(email) {
