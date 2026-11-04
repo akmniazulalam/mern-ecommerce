@@ -26,7 +26,9 @@ function validateCreateOrderRequest(req) {
     return paymentValidation;
   }
 
-  const pricingValidation = validateOrderResult(validatePricingOverride(pricing));
+  const pricingValidation = validateOrderResult(
+    validatePricingOverride(pricing),
+  );
   if (pricingValidation) {
     return pricingValidation;
   }
