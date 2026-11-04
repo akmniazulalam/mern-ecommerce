@@ -12,7 +12,10 @@ function validateCategoryBody(req) {
   }
 
   if (isMissing(description)) {
-    return { field: "description", message: "Category description is required" };
+    return {
+      field: "description",
+      message: "Category description is required",
+    };
   }
 
   return null;
