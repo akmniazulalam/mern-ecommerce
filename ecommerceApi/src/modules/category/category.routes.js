@@ -7,14 +7,16 @@ const {
   updateCategoryController,
   deleteCategoryController,
   deleteAllCategoryController,
-  singleCategoryController
+  singleCategoryController,
 } = require("./category.controller");
 const {
   subCategoryController,
   getAllSubCategory,
-  deleteAllSubCategory
+  deleteAllSubCategory,
 } = require("../subcategory/subcategory.controller");
-const { validateObjectIdParam } = require("../../common/middleware/requestValidation");
+const {
+  validateObjectIdParam,
+} = require("../../common/middleware/requestValidation");
 const {
   validateCategoryBody,
   validateSubCategoryBody,
@@ -22,13 +24,38 @@ const {
 
 const adminOnly = [authMiddleware, adminMiddleware];
 
-router.post("/createcategory", ...adminOnly, validateCategoryBody, categoryController);
+router.post(
+  "/createcategory",
+  ...adminOnly,
+  validateCategoryBody,
+  categoryController,
+);
 router.get("/getallcategory", getAllCategory);
-router.post("/createsubcategory", ...adminOnly, validateSubCategoryBody, subCategoryController);
+router.post(
+  "/createsubcategory",
+  ...adminOnly,
+  validateSubCategoryBody,
+  subCategoryController,
+);
 router.get("/getallsubcategory", getAllSubCategory);
-router.patch("/updatecategory/:id", ...adminOnly, validateObjectIdParam("id", "category id"), validateCategoryBody, updateCategoryController);
-router.get("/singlecategory/:id", validateObjectIdParam("id", "category id"), singleCategoryController);
-router.delete("/deletecategory/:id", ...adminOnly, validateObjectIdParam("id", "category id"), deleteCategoryController);
+router.patch(
+  "/updatecategory/:id",
+  ...adminOnly,
+  validateObjectIdParam("id", "category id"),
+  validateCategoryBody,
+  updateCategoryController,
+);
+router.get(
+  "/singlecategory/:id",
+  validateObjectIdParam("id", "category id"),
+  singleCategoryController,
+);
+router.delete(
+  "/deletecategory/:id",
+  ...adminOnly,
+  validateObjectIdParam("id", "category id"),
+  deleteCategoryController,
+);
 router.delete("/deleteallcategory", ...adminOnly, deleteAllCategoryController);
 router.delete("/deleteallsubcategory", ...adminOnly, deleteAllSubCategory);
 
