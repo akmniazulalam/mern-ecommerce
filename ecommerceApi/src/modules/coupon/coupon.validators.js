@@ -26,12 +26,19 @@ function validateCreateCouponRequest(req) {
     };
   }
 
-  if (discountValue === undefined || discountValue === null || discountValue === "") {
+  if (
+    discountValue === undefined ||
+    discountValue === null ||
+    discountValue === ""
+  ) {
     return { field: "discountValue", message: "Discount value is required" };
   }
 
   if (!Number.isFinite(Number(discountValue))) {
-    return { field: "discountValue", message: "Discount value must be a number" };
+    return {
+      field: "discountValue",
+      message: "Discount value must be a number",
+    };
   }
 
   if (
@@ -40,7 +47,10 @@ function validateCreateCouponRequest(req) {
     minPurchase !== "" &&
     !Number.isFinite(Number(minPurchase))
   ) {
-    return { field: "minPurchase", message: "Minimum purchase must be a number" };
+    return {
+      field: "minPurchase",
+      message: "Minimum purchase must be a number",
+    };
   }
 
   if (
