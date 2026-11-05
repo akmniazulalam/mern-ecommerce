@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const ORDER_STATUSES = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
+const ORDER_STATUSES = [
+  "Pending",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+];
 const PAYMENT_METHODS = ["bank", "bank2", "card", "cod"];
 const PAYMENT_STATUSES = ["Pending", "Paid", "Failed", "Refunded"];
 
@@ -10,7 +16,7 @@ const statusHistorySchema = new Schema(
     status: { type: String, enum: ORDER_STATUSES, required: true },
     changedAt: { type: Date, default: Date.now, required: true },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const customerSchema = new Schema(
@@ -28,7 +34,7 @@ const customerSchema = new Schema(
     email: { type: String, trim: true, required: true },
     notes: { type: String, trim: true, default: "" },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const paymentSchema = new Schema(
@@ -45,7 +51,7 @@ const paymentSchema = new Schema(
     transactionId: { type: String, trim: true, default: "" },
     details: { type: Schema.Types.Mixed, default: {} },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const orderItemSchema = new Schema(
@@ -64,7 +70,7 @@ const orderItemSchema = new Schema(
     unitPrice: { type: Number, required: true, min: 0 },
     lineTotal: { type: Number, required: true, min: 0 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const pricingSchema = new Schema(
@@ -76,7 +82,7 @@ const pricingSchema = new Schema(
     shippingCost: { type: Number, required: true, min: 0, default: 0 },
     total: { type: Number, required: true, min: 0 },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const orderSchema = new Schema(
@@ -85,14 +91,23 @@ const orderSchema = new Schema(
     // Supports guest checkout (no authenticated session).
     userId: { type: String, required: false, index: true, default: "guest" },
     customer: { type: customerSchema, required: true },
-    items: { type: [orderItemSchema], required: true, validate: (v) => v.length > 0 },
+    items: {
+      type: [orderItemSchema],
+      required: true,
+      validate: (v) => v.length > 0,
+    },
     pricing: { type: pricingSchema, required: true },
     payment: { type: paymentSchema, required: true },
     shippingMethod: { type: String, trim: true, default: "standard" },
-    orderStatus: { type: String, enum: ORDER_STATUSES, required: true, default: "Pending" },
+    orderStatus: {
+      type: String,
+      enum: ORDER_STATUSES,
+      required: true,
+      default: "Pending",
+    },
     statusHistory: { type: [statusHistorySchema], default: [] },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 orderSchema.index({ userId: 1, orderStatus: 1, createdAt: -1 });
@@ -101,4 +116,3 @@ module.exports = {
   Order: mongoose.model("Order", orderSchema),
   ORDER_STATUSES,
 };
-
