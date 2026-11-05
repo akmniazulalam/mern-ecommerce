@@ -24,35 +24,71 @@ function validateCustomer(customer) {
   const postcode = toTrimmedString(customer.postcode);
 
   if (!firstName) {
-    return { status: 400, field: "customer.firstName", message: "First name is required" };
+    return {
+      status: 400,
+      field: "customer.firstName",
+      message: "First name is required",
+    };
   }
   if (!lastName) {
-    return { status: 400, field: "customer.lastName", message: "Last name is required" };
+    return {
+      status: 400,
+      field: "customer.lastName",
+      message: "Last name is required",
+    };
   }
   if (!email) {
-    return { status: 400, field: "customer.email", message: "Email is required" };
+    return {
+      status: 400,
+      field: "customer.email",
+      message: "Email is required",
+    };
   }
   if (!emailValidation(email)) {
-    return { status: 400, field: "customer.email", message: "Email format is invalid" };
+    return {
+      status: 400,
+      field: "customer.email",
+      message: "Email format is invalid",
+    };
   }
   if (!phone) {
-    return { status: 400, field: "customer.phone", message: "Phone is required" };
+    return {
+      status: 400,
+      field: "customer.phone",
+      message: "Phone is required",
+    };
   }
   if (!/^\+?[0-9\s-]{7,}$/.test(phone)) {
-    return { status: 400, field: "customer.phone", message: "Phone format is invalid" };
+    return {
+      status: 400,
+      field: "customer.phone",
+      message: "Phone format is invalid",
+    };
   }
 
   if (!country) {
-    return { status: 400, field: "customer.country", message: "Country is required" };
+    return {
+      status: 400,
+      field: "customer.country",
+      message: "Country is required",
+    };
   }
   if (!street) {
-    return { status: 400, field: "customer.street", message: "Street address is required" };
+    return {
+      status: 400,
+      field: "customer.street",
+      message: "Street address is required",
+    };
   }
   if (!city) {
     return { status: 400, field: "customer.city", message: "City is required" };
   }
   if (!postcode) {
-    return { status: 400, field: "customer.postcode", message: "Postcode is required" };
+    return {
+      status: 400,
+      field: "customer.postcode",
+      message: "Postcode is required",
+    };
   }
 
   // Optional strings
@@ -81,7 +117,13 @@ function validateCustomer(customer) {
   };
 }
 
-const ORDER_STATUSES = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
+const ORDER_STATUSES = [
+  "Pending",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+];
 const PAYMENT_METHODS = ["bank", "bank2", "card", "cod"];
 const PAYMENT_STATUSES = ["Pending", "Paid", "Failed", "Refunded"];
 
@@ -96,7 +138,11 @@ function validatePayment(payment) {
 
   const method = toTrimmedString(payment.method).toLowerCase();
   if (!method) {
-    return { status: 400, field: "payment.method", message: "Payment method is required" };
+    return {
+      status: 400,
+      field: "payment.method",
+      message: "Payment method is required",
+    };
   }
   if (!PAYMENT_METHODS.includes(method)) {
     return {
@@ -106,7 +152,9 @@ function validatePayment(payment) {
     };
   }
 
-  const statusNormalized = (toTrimmedString(payment.status) || "Pending").toLowerCase();
+  const statusNormalized = (
+    toTrimmedString(payment.status) || "Pending"
+  ).toLowerCase();
   const canonicalPaymentStatus = PAYMENT_STATUSES.find(
     (s) => s.toLowerCase() === statusNormalized,
   );
@@ -122,13 +170,23 @@ function validatePayment(payment) {
   const currency = toTrimmedString(payment.currency) || "USD";
 
   const amountRaw = payment.amount;
-  const amount = amountRaw === undefined || amountRaw === null ? undefined : Number(amountRaw);
+  const amount =
+    amountRaw === undefined || amountRaw === null
+      ? undefined
+      : Number(amountRaw);
   if (amount !== undefined && (Number.isNaN(amount) || amount < 0)) {
-    return { status: 400, field: "payment.amount", message: "Payment amount is invalid" };
+    return {
+      status: 400,
+      field: "payment.amount",
+      message: "Payment amount is invalid",
+    };
   }
 
   // Do not require details to avoid forcing PCI-risk payloads.
-  const details = payment.details && typeof payment.details === "object" ? payment.details : {};
+  const details =
+    payment.details && typeof payment.details === "object"
+      ? payment.details
+      : {};
 
   // Best-effort sanitization: if full card number arrives, drop it.
   if (details.cardNumber) {
@@ -156,10 +214,16 @@ function validatePayment(payment) {
 function validateOrderStatus(status) {
   const normalized = toTrimmedString(status);
   if (!normalized) {
-    return { status: 400, field: "status", message: "Order status is required" };
+    return {
+      status: 400,
+      field: "status",
+      message: "Order status is required",
+    };
   }
   const statusNormalized = normalized.toLowerCase();
-  const canonical = ORDER_STATUSES.find((s) => s.toLowerCase() === statusNormalized);
+  const canonical = ORDER_STATUSES.find(
+    (s) => s.toLowerCase() === statusNormalized,
+  );
   if (!canonical) {
     return {
       status: 400,
@@ -171,12 +235,18 @@ function validateOrderStatus(status) {
 }
 
 function validatePricingOverride(pricing) {
-  if (pricing === undefined || pricing === null) return { status: 200, data: null };
+  if (pricing === undefined || pricing === null)
+    return { status: 200, data: null };
   if (!pricing || typeof pricing !== "object") {
-    return { status: 400, field: "pricing", message: "Pricing must be an object" };
+    return {
+      status: 400,
+      field: "pricing",
+      message: "Pricing must be an object",
+    };
   }
 
-  const discount = pricing.discount === undefined ? 0 : Number(pricing.discount);
+  const discount =
+    pricing.discount === undefined ? 0 : Number(pricing.discount);
   const tax = pricing.tax === undefined ? 0 : Number(pricing.tax);
   const shippingCost =
     pricing.shippingCost === undefined ? 0 : Number(pricing.shippingCost);
@@ -184,7 +254,8 @@ function validatePricingOverride(pricing) {
   const errors = [];
   if (Number.isNaN(discount) || discount < 0) errors.push("Invalid discount");
   if (Number.isNaN(tax) || tax < 0) errors.push("Invalid tax");
-  if (Number.isNaN(shippingCost) || shippingCost < 0) errors.push("Invalid shippingCost");
+  if (Number.isNaN(shippingCost) || shippingCost < 0)
+    errors.push("Invalid shippingCost");
   if (errors.length) {
     return { status: 400, field: "pricing", message: errors.join(", ") };
   }
@@ -200,4 +271,3 @@ module.exports = {
   validatePricingOverride,
   ORDER_STATUSES,
 };
-
