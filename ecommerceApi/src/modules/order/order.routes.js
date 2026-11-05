@@ -1,7 +1,9 @@
 const express = require("express");
 const authMiddleware = require("../auth/auth.middleware");
 const { adminMiddleware } = require("../auth/auth.middleware");
-const { validateObjectIdParam } = require("../../common/middleware/requestValidation");
+const {
+  validateObjectIdParam,
+} = require("../../common/middleware/requestValidation");
 const {
   validateAdminOrderQuery,
   validateCreateOrderRequest,
@@ -19,16 +21,37 @@ const {
 const router = express.Router();
 
 // Checkout -> create a new order snapshot from the authenticated user's cart
-router.post("/create", authMiddleware, validateCreateOrderRequest, createOrderController);
+router.post(
+  "/create",
+  authMiddleware,
+  validateCreateOrderRequest,
+  createOrderController,
+);
 
 // User order history
 router.get("/mine", authMiddleware, getMyOrdersController);
 // Admin order listing (fulfillment dashboard)
-router.get("/admin", authMiddleware, adminMiddleware, validateAdminOrderQuery, getAllOrdersController);
-router.get("/:id", authMiddleware, validateObjectIdParam("id", "order id"), getOrderByIdController);
+router.get(
+  "/admin",
+  authMiddleware,
+  adminMiddleware,
+  validateAdminOrderQuery,
+  getAllOrdersController,
+);
+router.get(
+  "/:id",
+  authMiddleware,
+  validateObjectIdParam("id", "order id"),
+  getOrderByIdController,
+);
 
 // Admin fulfillment updates (or cancellation by the order owner)
-router.patch("/:id/status", authMiddleware, validateObjectIdParam("id", "order id"), validateOrderStatusRequest, updateOrderStatusController);
+router.patch(
+  "/:id/status",
+  authMiddleware,
+  validateObjectIdParam("id", "order id"),
+  validateOrderStatusRequest,
+  updateOrderStatusController,
+);
 
 module.exports = router;
-
