@@ -10,8 +10,8 @@
     "test": "jest --runInBand"
   },
   "jest": {
-  "testEnvironment": "node",
-  "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
   },
   "keywords": [],
   "author": "",
