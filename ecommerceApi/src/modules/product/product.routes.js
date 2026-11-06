@@ -26,7 +26,13 @@ const withProductId = [validateProductIdParam];
 /**
  * Legacy endpoints (unchanged paths for dashboard / storefront).
  */
-router.post("/createproduct", ...adminOnly, ...writeWithVariantImages, validateProductCreateRequest, productController);
+router.post(
+  "/createproduct",
+  ...adminOnly,
+  ...writeWithVariantImages,
+  validateProductCreateRequest,
+  productController,
+);
 router.get("/getproduct", validateProductListQuery, getProductController);
 router.get("/singleproduct/:id", ...withProductId, getSingleProductController);
 router.patch(
@@ -37,7 +43,12 @@ router.patch(
   validateProductUpdateRequest,
   updateProductController,
 );
-router.delete("/deleteproduct/:id", ...adminOnly, ...withProductId, deleteProduct);
+router.delete(
+  "/deleteproduct/:id",
+  ...adminOnly,
+  ...withProductId,
+  deleteProduct,
+);
 router.delete("/deleteallproduct", ...adminOnly, deleteAllProduct);
 
 /**
@@ -45,12 +56,25 @@ router.delete("/deleteallproduct", ...adminOnly, deleteAllProduct);
  * Base path: /api/v1/product
  */
 router.get("/", validateProductListQuery, getProductController);
-router.post("/", ...adminOnly, ...writeWithVariantImages, validateProductCreateRequest, productController);
+router.post(
+  "/",
+  ...adminOnly,
+  ...writeWithVariantImages,
+  validateProductCreateRequest,
+  productController,
+);
 router.delete("/all", ...adminOnly, deleteAllProduct);
 
 router.get("/:id/variants", ...withProductId, getProductVariantsController);
 router.get("/:id", ...withProductId, getSingleProductController);
-router.patch("/:id", ...adminOnly, ...withProductId, ...writeWithVariantImages, validateProductUpdateRequest, updateProductController);
+router.patch(
+  "/:id",
+  ...adminOnly,
+  ...withProductId,
+  ...writeWithVariantImages,
+  validateProductUpdateRequest,
+  updateProductController,
+);
 router.delete("/:id", ...adminOnly, ...withProductId, deleteProduct);
 
 module.exports = router;
