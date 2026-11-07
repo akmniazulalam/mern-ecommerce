@@ -69,7 +69,6 @@ describe("GET /api/v1/category/getallcategory", () => {
   });
 });
 
-
 describe("POST /api/v1/category/createcategory", () => {
   let testUser;
   let testCategoryName;
@@ -103,12 +102,10 @@ describe("POST /api/v1/category/createcategory", () => {
     agent = request.agent(app);
 
     // Login using the actual login endpoint
-    const loginResponse = await agent
-      .post("/api/v1/auth/login")
-      .send({
-        email: testEmail,
-        password,
-      });
+    const loginResponse = await agent.post("/api/v1/auth/login").send({
+      email: testEmail,
+      password,
+    });
 
     expect(loginResponse.status).toBe(200);
 
@@ -128,18 +125,14 @@ describe("POST /api/v1/category/createcategory", () => {
   });
 
   it("should create a category when an admin is authenticated", async () => {
-    const response = await agent
-      .post("/api/v1/category/createcategory")
-      .send({
-        name: testCategoryName,
-        description: "Test category description",
-      });
+    const response = await agent.post("/api/v1/category/createcategory").send({
+      name: testCategoryName,
+      description: "Test category description",
+    });
 
     expect(response.status).toBe(200);
 
-    expect(response.body.message).toBe(
-      "Category Added Successfully"
-    );
+    expect(response.body.message).toBe("Category Added Successfully");
 
     // Verify that the category was actually saved in MongoDB
     const createdCategory = await Category.findOne({
@@ -147,8 +140,6 @@ describe("POST /api/v1/category/createcategory", () => {
     });
 
     expect(createdCategory).not.toBeNull();
-    expect(createdCategory.description).toBe(
-      "Test category description"
-    );
+    expect(createdCategory.description).toBe("Test category description");
   });
 });
