@@ -9,7 +9,9 @@ process.env.PRIMARY_ADMIN_EMAIL = "admin@example.com";
 process.env.DEMO_ADMIN_EMAIL = "demo@example.com";
 
 const request = require("supertest");
+const bcrypt = require("bcrypt");
 const app = require("../src/app");
+const User = require("../src/modules/auth/auth.model");
 const Category = require("../src/modules/category/category.model");
 
 // Existing validation tests
@@ -63,6 +65,90 @@ describe("GET /api/v1/category/getallcategory", () => {
           description: testCategory.description,
         }),
       ]),
+    );
+  });
+});
+
+
+describe("POST /api/v1/category/createcategory", () => {
+  let testUser;
+  let testCategoryName;
+  let agent;
+  let originalPrimaryAdminEmail;
+
+  beforeEach(async () => {
+    originalPrimaryAdminEmail = process.env.PRIMARY_ADMIN_EMAIL;
+
+    const uniqueId = Date.now();
+
+    const testEmail = `test-admin-${uniqueId}@example.com`;
+    const password = "TestPassword123!";
+
+    // Make this test user the primary admin
+    process.env.PRIMARY_ADMIN_EMAIL = testEmail;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create temporary admin user
+    testUser = await User.create({
+      firstName: "Test",
+      lastName: "Admin",
+      email: testEmail,
+      password: hashedPassword,
+      isVerified: true,
+      role: "admin",
+    });
+
+    // Create an agent to preserve the session cookie
+    agent = request.agent(app);
+
+    // Login using the actual login endpoint
+    const loginResponse = await agent
+      .post("/api/v1/auth/login")
+      .send({
+        email: testEmail,
+        password,
+      });
+
+    expect(loginResponse.status).toBe(200);
+
+    testCategoryName = `Test Category ${uniqueId}`;
+  });
+
+  afterEach(async () => {
+    if (testCategoryName) {
+      await Category.deleteOne({ name: testCategoryName });
+    }
+
+    if (testUser) {
+      await User.findByIdAndDelete(testUser._id);
+    }
+
+    process.env.PRIMARY_ADMIN_EMAIL = originalPrimaryAdminEmail;
+  });
+
+  it("should create a category when an admin is authenticated", async () => {
+    const response = await agent
+      .post("/api/v1/category/createcategory")
+      .send({
+        name: testCategoryName,
+        description: "Test category description",
+      });
+
+    expect(response.status).toBe(200);
+
+    expect(response.body.message).toBe(
+      "Category Added Successfully"
+    );
+
+    // Verify that the category was actually saved in MongoDB
+    const createdCategory = await Category.findOne({
+      name: testCategoryName,
+    });
+
+    expect(createdCategory).not.toBeNull();
+    expect(createdCategory.description).toBe(
+      "Test category description"
     );
   });
 });
