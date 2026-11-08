@@ -160,4 +160,18 @@ describe("POST /api/v1/category/createcategory - Authentication", () => {
       message: "Unauthorized access",
     });
   });
+  it("should return 400 when category name is missing", async () => {
+  const response = await agent
+    .post("/api/v1/category/createcategory")
+    .send({
+      description: "Test category description",
+    });
+
+  expect(response.status).toBe(400);
+
+  expect(response.body).toEqual({
+    message: "Category name is required",
+    field: "name",
+  });
+});
 });
