@@ -171,4 +171,16 @@ describe("POST /api/v1/category/createcategory - Authentication", () => {
       field: "name",
     });
   });
+  it("should return 400 when category description is missing", async () => {
+    const response = await agent.post("/api/v1/category/createcategory").send({
+      name: "Test Category Without Description",
+    });
+
+    expect(response.status).toBe(400);
+
+    expect(response.body).toEqual({
+      message: "Category description is required",
+      field: "description",
+    });
+  });
 });
