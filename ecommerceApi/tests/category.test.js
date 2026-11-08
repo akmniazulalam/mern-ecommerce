@@ -144,7 +144,6 @@ describe("POST /api/v1/category/createcategory", () => {
   });
 });
 
-
 describe("POST /api/v1/category/createcategory - Authentication", () => {
   it("should return 401 when user is not authenticated", async () => {
     const response = await request(app)
@@ -161,17 +160,15 @@ describe("POST /api/v1/category/createcategory - Authentication", () => {
     });
   });
   it("should return 400 when category name is missing", async () => {
-  const response = await agent
-    .post("/api/v1/category/createcategory")
-    .send({
+    const response = await agent.post("/api/v1/category/createcategory").send({
       description: "Test category description",
     });
 
-  expect(response.status).toBe(400);
+    expect(response.status).toBe(400);
 
-  expect(response.body).toEqual({
-    message: "Category name is required",
-    field: "name",
+    expect(response.body).toEqual({
+      message: "Category name is required",
+      field: "name",
+    });
   });
-});
 });
