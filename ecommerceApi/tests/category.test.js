@@ -8,9 +8,9 @@ process.env.RESEND_API_KEY = "test-resend-key";
 process.env.PRIMARY_ADMIN_EMAIL = "admin@example.com";
 process.env.DEMO_ADMIN_EMAIL = "demo@example.com";
 
-const request = require("supertest");
 const bcrypt = require("bcrypt");
 const app = require("../src/app");
+const request = require("supertest");
 const User = require("../src/modules/auth/auth.model");
 const Category = require("../src/modules/category/category.model");
 
