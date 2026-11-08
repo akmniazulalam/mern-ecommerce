@@ -69,6 +69,7 @@ describe("GET /api/v1/category/getallcategory", () => {
   });
 });
 
+// Database integration test for creating a category
 describe("POST /api/v1/category/createcategory", () => {
   let testUser;
   let testCategoryName;
