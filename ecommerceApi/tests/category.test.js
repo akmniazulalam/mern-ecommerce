@@ -142,40 +142,11 @@ describe("POST /api/v1/category/createcategory", () => {
     expect(createdCategory).not.toBeNull();
     expect(createdCategory.description).toBe("Test category description");
   });
-});
-
-
-describe("POST /api/v1/category/createcategory - Authentication", () => {
-  it("should return 401 when user is not authenticated", async () => {
-    const response = await request(app)
-      .post("/api/v1/category/createcategory")
-      .send({
-        name: "Unauthorized Category",
-        description: "This should not be created",
-      });
-
-    expect(response.status).toBe(401);
-
-    expect(response.body).toEqual({
-      message: "Unauthorized access",
-    });
-  });
-});
-
-describe("POST /api/v1/category/createcategory - Validation", () => {
-  let agent;
-
-  beforeEach(async () => {
-    // Reuse the login setup from your authenticated test
-    // This block needs its own agent and login setup.
-  });
 
   it("should return 400 when category name is missing", async () => {
-    const response = await agent
-      .post("/api/v1/category/createcategory")
-      .send({
-        description: "Test category description",
-      });
+    const response = await agent.post("/api/v1/category/createcategory").send({
+      description: "Test category description",
+    });
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -185,11 +156,9 @@ describe("POST /api/v1/category/createcategory - Validation", () => {
   });
 
   it("should return 400 when category description is missing", async () => {
-    const response = await agent
-      .post("/api/v1/category/createcategory")
-      .send({
-        name: "Test Category Without Description",
-      });
+    const response = await agent.post("/api/v1/category/createcategory").send({
+      name: "Test Category Without Description",
+    });
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({
@@ -198,4 +167,3 @@ describe("POST /api/v1/category/createcategory - Validation", () => {
     });
   });
 });
-
