@@ -143,3 +143,21 @@ describe("POST /api/v1/category/createcategory", () => {
     expect(createdCategory.description).toBe("Test category description");
   });
 });
+
+
+describe("POST /api/v1/category/createcategory - Authentication", () => {
+  it("should return 401 when user is not authenticated", async () => {
+    const response = await request(app)
+      .post("/api/v1/category/createcategory")
+      .send({
+        name: "Unauthorized Category",
+        description: "This should not be created",
+      });
+
+    expect(response.status).toBe(401);
+
+    expect(response.body).toEqual({
+      message: "Unauthorized access",
+    });
+  });
+});
