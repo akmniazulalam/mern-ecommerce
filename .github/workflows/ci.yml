@@ -38,3 +38,5 @@ jobs:
 
       - name: Run backend tests
         run: npm test
+        env:
+          TEST_DB_URL: ${{ secrets.TEST_DB_URL}}
