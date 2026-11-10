@@ -13,7 +13,7 @@ const ALLOWED_VARIANT_KEYS = new Set([
   "ram",
   "storage",
   "attributes",
-  "offer"
+  "offer",
 ]);
 
 function parseVariantsJson(variantsPayload) {
@@ -131,7 +131,11 @@ function validateVariantEntry(variant, index, options = {}) {
   const prefix = `variants[${index}]`;
 
   const price = Number(variant.price);
-  if (variant.price === undefined || variant.price === "" || Number.isNaN(price)) {
+  if (
+    variant.price === undefined ||
+    variant.price === "" ||
+    Number.isNaN(price)
+  ) {
     return {
       field: `${prefix}.price`,
       message: "Price is required",
@@ -190,8 +194,12 @@ function validateVariantEntry(variant, index, options = {}) {
     };
   }
 
-  const saleStartDate = variant.saleStartDate ? new Date(variant.saleStartDate) : undefined;
-  const saleEndDate = variant.saleEndDate ? new Date(variant.saleEndDate) : undefined;
+  const saleStartDate = variant.saleStartDate
+    ? new Date(variant.saleStartDate)
+    : undefined;
+  const saleEndDate = variant.saleEndDate
+    ? new Date(variant.saleEndDate)
+    : undefined;
 
   if (saleStartDate && saleEndDate && saleStartDate > saleEndDate) {
     return {
@@ -225,7 +233,11 @@ function validateVariantEntry(variant, index, options = {}) {
   }
 
   const stock = Number(variant.stock);
-  if (variant.stock === undefined || variant.stock === "" || Number.isNaN(stock)) {
+  if (
+    variant.stock === undefined ||
+    variant.stock === "" ||
+    Number.isNaN(stock)
+  ) {
     return {
       field: `${prefix}.stock`,
       message: "Stock is required",
@@ -246,7 +258,11 @@ function validateVariantEntry(variant, index, options = {}) {
     };
   }
 
-  if (variant.sku !== undefined && variant.sku !== null && String(variant.sku).trim() === "") {
+  if (
+    variant.sku !== undefined &&
+    variant.sku !== null &&
+    String(variant.sku).trim() === ""
+  ) {
     return {
       field: `${prefix}.sku`,
       message: "SKU cannot be empty when provided",
