@@ -22,14 +22,17 @@ function normalizeAttributes(attributes) {
   }
 
   const entries = Object.entries(attributes).filter(
-    ([, value]) => value !== undefined && value !== null && String(value).trim() !== "",
+    ([, value]) =>
+      value !== undefined && value !== null && String(value).trim() !== "",
   );
 
   if (entries.length === 0) {
     return undefined;
   }
 
-  return new Map(entries.map(([key, value]) => [String(key).trim(), String(value).trim()]));
+  return new Map(
+    entries.map(([key, value]) => [String(key).trim(), String(value).trim()]),
+  );
 }
 
 function normalizeImages(images) {
@@ -171,7 +174,9 @@ function formatVariant(variant) {
     return variant;
   }
 
-  const plain = variant.toObject ? variant.toObject({ flattenMaps: true }) : { ...variant };
+  const plain = variant.toObject
+    ? variant.toObject({ flattenMaps: true })
+    : { ...variant };
 
   if (plain.attributes instanceof Map) {
     plain.attributes = Object.fromEntries(plain.attributes);
@@ -185,7 +190,9 @@ function formatProductResponse(product) {
     return null;
   }
 
-  const doc = product.toObject ? product.toObject({ flattenMaps: true }) : product;
+  const doc = product.toObject
+    ? product.toObject({ flattenMaps: true })
+    : product;
 
   if (Array.isArray(doc.variants)) {
     doc.variants = doc.variants.map((variant) => formatVariant(variant));
