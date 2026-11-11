@@ -4,10 +4,10 @@ const asyncHandler = require("../../common/middleware/asyncHandler");
 
 const subCategoryController = asyncHandler(async (req, res) => {
   const { name, description, categoryId } = req.body;
-  const existingSubCategory = await subCategorySchema.findOne({name})
+  const existingSubCategory = await subCategorySchema.findOne({ name });
 
-  if(existingSubCategory){
-    return res.json({message: "Already Exist"})
+  if (existingSubCategory) {
+    return res.json({ message: "Already Exist" });
   }
   const createSubCategory = new subCategorySchema({
     name,
@@ -16,7 +16,11 @@ const subCategoryController = asyncHandler(async (req, res) => {
   });
   await createSubCategory.save();
 
-  await categorySchema.findOneAndUpdate({_id: categoryId}, { $push: {subcategorylist: createSubCategory._id}}, {new: true})
+  await categorySchema.findOneAndUpdate(
+    { _id: categoryId },
+    { $push: { subcategorylist: createSubCategory._id } },
+    { new: true },
+  );
 
   res.status(200).json({ message: "Subcategory Added Successfully" });
 });
@@ -27,8 +31,12 @@ const getAllSubCategory = asyncHandler(async (req, res) => {
 });
 
 const deleteAllSubCategory = asyncHandler(async (req, res) => {
-  const AllSubCategory = await subCategorySchema.deleteMany({})
-  res.json({message: "Success", data: AllSubCategory})
+  const AllSubCategory = await subCategorySchema.deleteMany({});
+  res.json({ message: "Success", data: AllSubCategory });
 });
 
-module.exports = { subCategoryController, getAllSubCategory, deleteAllSubCategory };
+module.exports = {
+  subCategoryController,
+  getAllSubCategory,
+  deleteAllSubCategory,
+};
