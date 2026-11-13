@@ -39,7 +39,10 @@ export async function createProduct({ name, description, category, variants }) {
   return normalizeProductFromApi(unwrapApiData(response));
 }
 
-export async function updateProduct(id, { name, description, category, variants }) {
+export async function updateProduct(
+  id,
+  { name, description, category, variants },
+) {
   const formData = buildProductFormData(
     { name, description, category, variants },
     "update",
