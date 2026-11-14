@@ -150,6 +150,7 @@ describe("POST /api/v1/category/createcategory", () => {
     });
 
     expect(response.status).toBe(400);
+    
     expect(response.body).toEqual({
       message: "Category name is required",
       field: "name",
