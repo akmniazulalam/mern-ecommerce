@@ -169,3 +169,55 @@ describe("POST /api/v1/category/createcategory", () => {
     });
   });
 });
+
+
+describe("POST /api/v1/category/createcategory - Authorization", () => {
+  let testUser;
+  let agent;
+
+  beforeEach(async () => {
+    const uniqueId = Date.now();
+    const testEmail = `test-user-${uniqueId}@example.com`;
+    const password = "TestPassword123!";
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    testUser = await User.create({
+      firstName: "Test",
+      lastName: "User",
+      email: testEmail,
+      password: hashedPassword,
+      isVerified: true,
+      role: "user",
+    });
+
+    agent = request.agent(app);
+
+    const loginResponse = await agent.post("/api/v1/auth/login").send({
+      email: testEmail,
+      password,
+    });
+
+    expect(loginResponse.status).toBe(200);
+  });
+
+  afterEach(async () => {
+    if (testUser) {
+      await User.findByIdAndDelete(testUser._id);
+    }
+  });
+
+  it("should return 403 when a normal user tries to create a category", async () => {
+    const response = await agent
+      .post("/api/v1/category/createcategory")
+      .send({
+        name: "Unauthorized Category",
+        description: "Normal user should not create this",
+      });
+
+    expect(response.status).toBe(403);
+    expect(response.body).toEqual({
+      message: "Forbidden",
+    });
+  });
+});
