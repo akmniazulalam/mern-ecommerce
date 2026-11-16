@@ -170,7 +170,6 @@ describe("POST /api/v1/category/createcategory", () => {
   });
 });
 
-
 describe("POST /api/v1/category/createcategory - Authorization", () => {
   let testUser;
   let agent;
@@ -221,8 +220,6 @@ describe("POST /api/v1/category/createcategory - Authorization", () => {
     });
   });
 });
-
-
 
 describe("GET /api/v1/category/singlecategory/:id", () => {
   let testCategory;
