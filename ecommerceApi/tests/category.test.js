@@ -221,3 +221,37 @@ describe("POST /api/v1/category/createcategory - Authorization", () => {
     });
   });
 });
+
+
+
+describe("GET /api/v1/category/singlecategory/:id", () => {
+  let testCategory;
+
+  beforeEach(async () => {
+    testCategory = await Category.create({
+      name: `Single Test Category ${Date.now()}`,
+      description: "Testing single category retrieval",
+    });
+  });
+
+  afterEach(async () => {
+    if (testCategory) {
+      await Category.findByIdAndDelete(testCategory._id);
+    }
+  });
+
+  it("should return a single category when a valid ID is provided", async () => {
+    const response = await request(app).get(
+      `/api/v1/category/singlecategory/${testCategory._id}`
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toEqual(
+      expect.objectContaining({
+        _id: testCategory._id.toString(),
+        name: testCategory.name,
+        description: testCategory.description,
+      })
+    );
+  });
+});
