@@ -360,6 +360,8 @@ describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
     if (testUser) {
       await User.findByIdAndDelete(testUser._id);
     }
+
+    process.env.PRIMARY_ADMIN_EMAIL = originalPrimaryAdminEmail;
   });
 
   it("should return 400 when category ID is invalid", async () => {
