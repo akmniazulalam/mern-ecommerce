@@ -252,3 +252,60 @@ describe("GET /api/v1/category/singlecategory/:id", () => {
     );
   });
 });
+
+
+describe("PATCH /api/v1/category/updatecategory/:id", () => {
+  let testUser;
+  let testCategory;
+  let agent;
+  let originalPrimaryAdminEmail;
+
+  beforeEach(async () => {
+    originalPrimaryAdminEmail = process.env.PRIMARY_ADMIN_EMAIL;
+
+    const uniqueId = Date.now();
+    const testEmail = `test-admin-${uniqueId}@example.com`;
+    const password = "TestPassword123!";
+
+    process.env.PRIMARY_ADMIN_EMAIL = testEmail;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    testUser = await User.create({
+      firstName: "Test",
+      lastName: "Admin",
+      email: testEmail,
+      password: hashedPassword,
+      isVerified: true,
+      role: "admin",
+    });
+
+    testCategory = await Category.create({
+      name: `Original Category ${uniqueId}`,
+      description: "Original description",
+    });
+
+    agent = request.agent(app);
+
+    const loginResponse = await agent.post("/api/v1/auth/login").send({
+      email: testEmail,
+      password,
+    });
+
+    expect(loginResponse.status).toBe(200);
+  });
+
+  afterEach(async () => {
+    if (testCategory) {
+      await Category.findByIdAndDelete(testCategory._id);
+    }
+
+    if (testUser) {
+      await User.findByIdAndDelete(testUser._id);
+    }
+
+    process.env.PRIMARY_ADMIN_EMAIL = originalPrimaryAdminEmail;
+  });
+
+  
+});
