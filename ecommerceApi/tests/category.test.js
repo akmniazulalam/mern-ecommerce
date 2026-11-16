@@ -150,7 +150,7 @@ describe("POST /api/v1/category/createcategory", () => {
     });
 
     expect(response.status).toBe(400);
-    
+
     expect(response.body).toEqual({
       message: "Category name is required",
       field: "name",
@@ -207,12 +207,10 @@ describe("POST /api/v1/category/createcategory - Authorization", () => {
   });
 
   it("should return 403 when a normal user tries to create a category", async () => {
-    const response = await agent
-      .post("/api/v1/category/createcategory")
-      .send({
-        name: "Unauthorized Category",
-        description: "Normal user should not create this",
-      });
+    const response = await agent.post("/api/v1/category/createcategory").send({
+      name: "Unauthorized Category",
+      description: "Normal user should not create this",
+    });
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({
@@ -239,7 +237,7 @@ describe("GET /api/v1/category/singlecategory/:id", () => {
 
   it("should return a single category when a valid ID is provided", async () => {
     const response = await request(app).get(
-      `/api/v1/category/singlecategory/${testCategory._id}`
+      `/api/v1/category/singlecategory/${testCategory._id}`,
     );
 
     expect(response.status).toBe(200);
@@ -248,11 +246,10 @@ describe("GET /api/v1/category/singlecategory/:id", () => {
         _id: testCategory._id.toString(),
         name: testCategory.name,
         description: testCategory.description,
-      })
+      }),
     );
   });
 });
-
 
 describe("PATCH /api/v1/category/updatecategory/:id", () => {
   let testUser;
@@ -321,5 +318,62 @@ describe("PATCH /api/v1/category/updatecategory/:id", () => {
 
     expect(updatedCategory.name).toBe("Updated Test Category");
     expect(updatedCategory.description).toBe("Updated test description");
+  });
+});
+
+describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
+  let testUser;
+  let agent;
+  let originalPrimaryAdminEmail;
+
+  beforeEach(async () => {
+    originalPrimaryAdminEmail = process.env.PRIMARY_ADMIN_EMAIL;
+
+    const uniqueId = Date.now();
+    const testEmail = `test-admin-${uniqueId}@example.com`;
+    const password = "TestPassword123!";
+
+    process.env.PRIMARY_ADMIN_EMAIL = testEmail;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    testUser = await User.create({
+      firstName: "Test",
+      lastName: "Admin",
+      email: testEmail,
+      password: hashedPassword,
+      isVerified: true,
+      role: "admin",
+    });
+
+    agent = request.agent(app);
+
+    const loginResponse = await agent.post("/api/v1/auth/login").send({
+      email: testEmail,
+      password,
+    });
+
+    expect(loginResponse.status).toBe(200);
+  });
+
+  afterEach(async () => {
+    if (testUser) {
+      await User.findByIdAndDelete(testUser._id);
+    }
+  });
+
+  it("should return 400 when category ID is invalid", async () => {
+    const response = await agent
+      .patch("/api/v1/category/updatecategory/invalid123")
+      .send({
+        name: "Updated Category",
+        description: "Updated description",
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: "Invalid category id",
+      field: "id",
+    });
   });
 });
