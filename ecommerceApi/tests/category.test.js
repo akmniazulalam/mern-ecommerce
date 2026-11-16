@@ -307,5 +307,19 @@ describe("PATCH /api/v1/category/updatecategory/:id", () => {
     process.env.PRIMARY_ADMIN_EMAIL = originalPrimaryAdminEmail;
   });
 
-  
+  it("should update a category when an admin is authenticated", async () => {
+    const response = await agent
+      .patch(`/api/v1/category/updatecategory/${testCategory._id}`)
+      .send({
+        name: "Updated Test Category",
+        description: "Updated test description",
+      });
+
+    expect(response.status).toBe(200);
+
+    const updatedCategory = await Category.findById(testCategory._id);
+
+    expect(updatedCategory.name).toBe("Updated Test Category");
+    expect(updatedCategory.description).toBe("Updated test description");
+  });
 });
