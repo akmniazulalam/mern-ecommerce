@@ -36,6 +36,18 @@ describe("GET /api/v1/category/singlecategory/:id", () => {
   });
 });
 
+describe("GET /api/v1/category/singlecategory/:id - Not Found", () => {
+  it("should return 404 when category does not exist", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId();
+
+    const response = await request(app).get(
+      `/api/v1/category/singlecategory/${nonExistentId}`,
+    );
+
+    expect(response.status).toBe(404);
+  });
+});
+
 // Database integration test
 describe("GET /api/v1/category/getallcategory", () => {
   let testCategory;
