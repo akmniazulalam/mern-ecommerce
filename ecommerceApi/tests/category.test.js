@@ -400,4 +400,16 @@ describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
       message: "Category name is required",
     });
   });
+
+  it("should return 400 when category description is missing", async () => {
+    const response = await agent
+      .patch(`/api/v1/category/updatecategory/${testCategory._id}`)
+      .send({ name: "Updated name" });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      field: "description",
+      message: "Category description is required",
+    });
+  });
 });
