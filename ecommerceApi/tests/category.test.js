@@ -323,6 +323,7 @@ describe("PATCH /api/v1/category/updatecategory/:id", () => {
 
 describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
   let testUser;
+  let testCategory;
   let agent;
   let originalPrimaryAdminEmail;
 
@@ -346,6 +347,11 @@ describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
       role: "admin",
     });
 
+    testCategory = await Category.create({
+      name: `Original Category ${Date.now()}`,
+      description: "Original description",
+    });
+
     agent = request.agent(app);
 
     const loginResponse = await agent.post("/api/v1/auth/login").send({
@@ -357,6 +363,10 @@ describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
   });
 
   afterEach(async () => {
+    if (testCategory) {
+      await Category.findByIdAndDelete(testCategory._id);
+    }
+
     if (testUser) {
       await User.findByIdAndDelete(testUser._id);
     }
@@ -376,6 +386,18 @@ describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
     expect(response.body).toEqual({
       message: "Invalid category id",
       field: "id",
+    });
+  });
+
+  it("should return 400 when category name is missing", async () => {
+    const response = await agent
+      .patch(`/api/v1/category/updatecategory/${testCategory._id}`)
+      .send({ description: "Updated description" });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      field: "name",
+      message: "Category name is required",
     });
   });
 });
