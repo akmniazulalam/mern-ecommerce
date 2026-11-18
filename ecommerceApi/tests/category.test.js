@@ -413,3 +413,64 @@ describe("PATCH /api/v1/category/updatecategory/:id - Validation", () => {
     });
   });
 });
+
+describe("PATCH /api/v1/category/updatecategory/:id - Authorization", () => {
+  let testUser;
+  let testCategory;
+  let agent;
+
+  beforeEach(async () => {
+    const uniqueId = Date.now();
+    const testEmail = `test-user-${uniqueId}@example.com`;
+    const password = "TestPassword123!";
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    testUser = await User.create({
+      firstName: "Test",
+      lastName: "User",
+      email: testEmail,
+      password: hashedPassword,
+      isVerified: true,
+      role: "user",
+    });
+
+    testCategory = await Category.create({
+      name: `Test Category ${uniqueId}`,
+      description: "Testing authorization",
+    });
+
+    agent = request.agent(app);
+
+    const loginResponse = await agent.post("/api/v1/auth/login").send({
+      email: testEmail,
+      password,
+    });
+
+    expect(loginResponse.status).toBe(200);
+  });
+
+  afterEach(async () => {
+    if (testCategory) {
+      await Category.findByIdAndDelete(testCategory._id);
+    }
+
+    if (testUser) {
+      await User.findByIdAndDelete(testUser._id);
+    }
+  });
+
+  it("should return 403 when a normal user tries to update a category", async () => {
+    const response = await agent
+      .patch(`/api/v1/category/updatecategory/${testCategory._id}`)
+      .send({
+        name: "Updated Category",
+        description: "Updated description",
+      });
+
+    expect(response.status).toBe(403);
+    expect(response.body).toEqual({
+      message: "Forbidden",
+    });
+  });
+});
