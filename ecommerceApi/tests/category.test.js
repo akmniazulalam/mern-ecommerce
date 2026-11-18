@@ -45,6 +45,7 @@ describe("GET /api/v1/category/singlecategory/:id - Not Found", () => {
     );
 
     expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Category not found");
   });
 });
 
