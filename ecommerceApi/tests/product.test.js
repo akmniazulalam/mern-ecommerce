@@ -46,3 +46,16 @@ describe("GET /api/v1/product/getproduct", () => {
     expect(response.body.meta.total).toBeGreaterThanOrEqual(1);
   });
 });
+
+describe("GET /api/v1/product/getproduct - Empty List", () => {
+  it("should return an empty array when no products exist", async () => {
+    const response = await request(app).get(
+      "/api/v1/product/getproduct",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Success");
+    expect(response.body.data).toEqual([]);
+    expect(response.body.meta.total).toBe(0);
+  });
+});
