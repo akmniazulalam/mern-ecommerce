@@ -68,3 +68,47 @@ describe("GET /api/v1/product/getproduct - Empty List", () => {
     expect(response.body.meta.total).toBe(0);
   });
 });
+
+describe("GET /api/v1/product/singleproduct/:id", () => {
+  let testProduct;
+
+  beforeEach(async () => {
+    testProduct = await Product.create({
+      name: `Single Test Product ${Date.now()}`,
+      description: "Product created for single product testing",
+      category: "Test Category",
+      variants: [
+        {
+          sku: `SINGLE-${Date.now()}`,
+          price: 1500,
+          stock: 10,
+          color: "Black",
+          size: "M",
+        },
+      ],
+    });
+  });
+
+  afterEach(async () => {
+    if (testProduct) {
+      await Product.findByIdAndDelete(testProduct._id);
+    }
+  });
+
+  it("should return a single product by ID", async () => {
+    const response = await request(app).get(
+      `/api/v1/product/singleproduct/${testProduct._id}`,
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Success");
+
+    expect(response.body.data).toEqual(
+      expect.objectContaining({
+        _id: testProduct._id.toString(),
+        name: testProduct.name,
+        description: testProduct.description,
+      }),
+    );
+  });
+});
