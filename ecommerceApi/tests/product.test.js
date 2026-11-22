@@ -10,6 +10,7 @@ process.env.DEMO_ADMIN_EMAIL = "demo@example.com";
 
 const request = require("supertest");
 const app = require("../src/app");
+const mongoose = require("mongoose");
 const Product = require("../src/modules/product/product.model");
 
 describe("GET /api/v1/product/getproduct", () => {
@@ -58,9 +59,7 @@ describe("GET /api/v1/product/getproduct", () => {
 
 describe("GET /api/v1/product/getproduct - Empty List", () => {
   it("should return an empty array when no products exist", async () => {
-    const response = await request(app).get(
-      "/api/v1/product/getproduct",
-    );
+    const response = await request(app).get("/api/v1/product/getproduct");
 
     expect(response.status).toBe(200);
     expect(response.body.message).toBe("Success");
@@ -120,5 +119,18 @@ describe("GET /api/v1/product/singleproduct/:id - Invalid ID", () => {
     );
 
     expect(response.status).toBe(400);
+  });
+});
+
+describe("GET /api/v1/product/singleproduct/:id - Not Found", () => {
+  it("should return 404 when product does not exist", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId();
+
+    const response = await request(app).get(
+      `/api/v1/product/singleproduct/${nonExistentId}`,
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Product not found");
   });
 });
