@@ -112,3 +112,13 @@ describe("GET /api/v1/product/singleproduct/:id", () => {
     );
   });
 });
+
+describe("GET /api/v1/product/singleproduct/:id - Invalid ID", () => {
+  it("should return 400 when product ID is invalid", async () => {
+    const response = await request(app).get(
+      "/api/v1/product/singleproduct/abc123",
+    );
+
+    expect(response.status).toBe(400);
+  });
+});
