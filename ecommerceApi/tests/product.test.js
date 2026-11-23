@@ -217,3 +217,24 @@ describe("GET /api/v1/product/:id/variants - Not Found", () => {
     expect(response.body.message).toBe("Product not found");
   });
 });
+
+describe("GET /api/v1/product/:id/variants - Empty Variants", () => {
+  let testProduct;
+
+  beforeEach(async () => {
+    testProduct = await Product.create({
+      name: `Empty Variant Product ${Date.now()}`,
+      description: "Product without variants",
+      category: "Test Category",
+      variants: [],
+    });
+  });
+
+  afterEach(async () => {
+    if (testProduct) {
+      await Product.findByIdAndDelete(testProduct._id);
+    }
+  });
+
+  
+});
