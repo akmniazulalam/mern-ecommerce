@@ -236,5 +236,19 @@ describe("GET /api/v1/product/:id/variants - Empty Variants", () => {
     }
   });
 
-  
+  it("should return an empty array when product has no variants", async () => {
+    const response = await request(app).get(
+      `/api/v1/product/${testProduct._id}/variants`,
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Success");
+    expect(response.body.data).toEqual([]);
+
+    expect(response.body.meta).toEqual({
+      productId: testProduct._id.toString(),
+      productName: testProduct.name,
+      variantCount: 0,
+    });
+  });
 });
