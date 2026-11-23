@@ -194,6 +194,7 @@ describe("GET /api/v1/product/:id/variants", () => {
           stock: 10,
         }),
         expect.objectContaining({
+          sku: `VAR-B-${testProduct.variants[1].sku.split("-").pop()}`,
           size: "L",
           color: "White",
           price: 1800,
