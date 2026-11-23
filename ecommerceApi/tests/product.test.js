@@ -134,3 +134,39 @@ describe("GET /api/v1/product/singleproduct/:id - Not Found", () => {
     expect(response.body.message).toBe("Product not found");
   });
 });
+
+describe("GET /api/v1/product/:id/variants", () => {
+  let testProduct;
+
+  beforeEach(async () => {
+    testProduct = await Product.create({
+      name: `Variant Test Product ${Date.now()}`,
+      description: "Product created for variant testing",
+      category: "Test Category",
+      variants: [
+        {
+          sku: `VAR-A-${Date.now()}`,
+          size: "M",
+          color: "Black",
+          price: 1500,
+          stock: 10,
+        },
+        {
+          sku: `VAR-B-${Date.now()}`,
+          size: "L",
+          color: "White",
+          price: 1800,
+          stock: 5,
+        },
+      ],
+    });
+  });
+
+  afterEach(async () => {
+    if (testProduct) {
+      await Product.findByIdAndDelete(testProduct._id);
+    }
+  });
+
+  
+});
