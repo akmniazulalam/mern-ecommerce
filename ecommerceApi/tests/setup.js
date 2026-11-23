@@ -3,6 +3,8 @@ require("dotenv").config();
 
 const mongoose = require("mongoose");
 
+jest.setTimeout(30000);
+
 beforeAll(async () => {
   await mongoose.connect(process.env.TEST_DB_URL);
 });
