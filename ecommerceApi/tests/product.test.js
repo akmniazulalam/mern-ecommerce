@@ -203,3 +203,16 @@ describe("GET /api/v1/product/:id/variants", () => {
     );
   });
 });
+
+describe("GET /api/v1/product/:id/variants - Not Found", () => {
+  it("should return 404 when product does not exist", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId();
+
+    const response = await request(app).get(
+      `/api/v1/product/${nonExistentId}/variants`,
+    );
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe("Product not found");
+  });
+});
