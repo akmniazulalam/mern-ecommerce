@@ -168,5 +168,38 @@ describe("GET /api/v1/product/:id/variants", () => {
     }
   });
 
-  
+  it("should return all variants of a product", async () => {
+    const response = await request(app).get(
+      `/api/v1/product/${testProduct._id}/variants`,
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Success");
+
+    expect(response.body.data).toHaveLength(2);
+
+    expect(response.body.meta).toEqual({
+      productId: testProduct._id.toString(),
+      productName: testProduct.name,
+      variantCount: 2,
+    });
+
+    expect(response.body.data).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          sku: `VAR-A-${testProduct.variants[0].sku.split("-").pop()}`,
+          size: "M",
+          color: "Black",
+          price: 1500,
+          stock: 10,
+        }),
+        expect.objectContaining({
+          size: "L",
+          color: "White",
+          price: 1800,
+          stock: 5,
+        }),
+      ]),
+    );
+  });
 });
