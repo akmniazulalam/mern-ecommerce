@@ -332,5 +332,16 @@ describe("GET /api/v1/product/getproduct - Second Page Pagination", () => {
     });
   });
 
-  
+  it("should return products from the second page", async () => {
+    const response = await request(app).get(
+      "/api/v1/product/getproduct?page=2&limit=2",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toHaveLength(2);
+
+    expect(response.body.meta.page).toBe(2);
+    expect(response.body.meta.limit).toBe(2);
+    expect(response.body.meta.hasPrevPage).toBe(true);
+  });
 });
