@@ -296,4 +296,41 @@ describe("GET /api/v1/product/getproduct - Pagination", () => {
   });
 });
 
+describe("GET /api/v1/product/getproduct - Second Page Pagination", () => {
+  let testProducts = [];
 
+  beforeEach(async () => {
+    testProducts = await Product.create([
+      {
+        name: `Page Test A ${Date.now()}`,
+        description: "First pagination product",
+        variants: [{ price: 1000, stock: 10 }],
+      },
+      {
+        name: `Page Test B ${Date.now()}`,
+        description: "Second pagination product",
+        variants: [{ price: 2000, stock: 10 }],
+      },
+      {
+        name: `Page Test C ${Date.now()}`,
+        description: "Third pagination product",
+        variants: [{ price: 3000, stock: 10 }],
+      },
+      {
+        name: `Page Test D ${Date.now()}`,
+        description: "Fourth pagination product",
+        variants: [{ price: 4000, stock: 10 }],
+      },
+    ]);
+  });
+
+  afterEach(async () => {
+    await Product.deleteMany({
+      _id: {
+        $in: testProducts.map((product) => product._id),
+      },
+    });
+  });
+
+  
+});
