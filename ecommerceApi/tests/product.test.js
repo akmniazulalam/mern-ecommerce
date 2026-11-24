@@ -252,3 +252,37 @@ describe("GET /api/v1/product/:id/variants - Empty Variants", () => {
     });
   });
 });
+
+describe("GET /api/v1/product/getproduct - Pagination", () => {
+  let testProducts = [];
+
+  beforeEach(async () => {
+    testProducts = await Product.create([
+      {
+        name: `Pagination Product A ${Date.now()}`,
+        description: "First pagination product",
+        variants: [{ price: 1000, stock: 10 }],
+      },
+      {
+        name: `Pagination Product B ${Date.now()}`,
+        description: "Second pagination product",
+        variants: [{ price: 2000, stock: 10 }],
+      },
+      {
+        name: `Pagination Product C ${Date.now()}`,
+        description: "Third pagination product",
+        variants: [{ price: 3000, stock: 10 }],
+      },
+    ]);
+  });
+
+  afterEach(async () => {
+    await Product.deleteMany({
+      _id: { $in: testProducts.map((product) => product._id) },
+    });
+  });
+
+  
+});
+
+
