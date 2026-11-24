@@ -282,7 +282,18 @@ describe("GET /api/v1/product/getproduct - Pagination", () => {
     });
   });
 
-  
+  it("should return only 2 products when limit is 2", async () => {
+    const response = await request(app).get(
+      "/api/v1/product/getproduct?page=1&limit=2",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toHaveLength(2);
+
+    expect(response.body.meta.page).toBe(1);
+    expect(response.body.meta.limit).toBe(2);
+    expect(response.body.meta.total).toBeGreaterThanOrEqual(3);
+  });
 });
 
 
