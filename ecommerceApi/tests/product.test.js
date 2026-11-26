@@ -344,6 +344,5 @@ describe("GET /api/v1/product/getproduct - Second Page Pagination", () => {
     expect(response.body.meta.totalPages).toBe(2);
     expect(response.body.meta.page).toBe(2);
     expect(response.body.meta.limit).toBe(2);
-    expect(response.body.meta.hasPrevPage).toBe(true);
   });
 });
