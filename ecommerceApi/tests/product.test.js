@@ -345,4 +345,18 @@ describe("GET /api/v1/product/getproduct - Second Page Pagination", () => {
     expect(response.body.meta.page).toBe(2);
     expect(response.body.meta.limit).toBe(2);
   });
+
+  it("should return empty data when requesting a page beyond available pages", async () => {
+    const response = await request(app).get(
+      "/api/v1/product/getproduct?page=3&limit=2",
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toHaveLength(0);
+    expect(response.body.meta.page).toBe(3);
+    expect(response.body.meta.limit).toBe(2);
+    expect(response.body.meta.totalPages).toBe(2);
+    expect(response.body.meta.hasNextPage).toBe(false);
+    expect(response.body.meta.hasPrevPage).toBe(true);
+  });
 });
