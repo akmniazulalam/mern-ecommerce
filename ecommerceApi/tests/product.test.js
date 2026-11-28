@@ -359,4 +359,12 @@ describe("GET /api/v1/product/getproduct - Second Page Pagination", () => {
     expect(response.body.meta.hasNextPage).toBe(false);
     expect(response.body.meta.hasPrevPage).toBe(true);
   });
+
+  it("should return 400 when page number is zero", async () => {
+    const response = await request(app).get(
+      "/api/v1/product/getproduct?page=0",
+    );
+
+    expect(response.status).toBe(400);
+  });
 });
