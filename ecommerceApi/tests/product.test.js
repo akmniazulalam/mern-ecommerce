@@ -366,5 +366,7 @@ describe("GET /api/v1/product/getproduct - Second Page Pagination", () => {
     );
 
     expect(response.status).toBe(400);
+    expect(response.body.field).toBe("page");
+    expect(response.body.message).toBe("page must be a positive integer");
   });
 });
